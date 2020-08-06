@@ -55,7 +55,7 @@ PCApplicationService.prototype.pcFormCreateSerivce = async (params) => {
 		console.log("pcFormCreateSerivce", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-			message: messages.technicalError,
+			message: err,
 		};
 	}
 };
@@ -78,7 +78,7 @@ PCApplicationService.prototype.pcFormBasicDetailsSerivce = async (params) => {
 		console.log("pcFormBasicDetailsSerivce", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-			message: messages.technicalError,
+			message: err,
 		};
 	}
 };
@@ -119,7 +119,7 @@ PCApplicationService.prototype.pcFormDetailsSerivce = async (params) => {
 		console.log("pcFormDetailsSerivce", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-			message: messages.technicalError,
+			message: err,
 		};
 	}
 };
@@ -142,7 +142,7 @@ PCApplicationService.prototype.pcFormMemberSerivce = async (params) => {
 		console.log("pcFormMemberSerivce", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-			message: messages.technicalError,
+			message: err,
 		};
 	}
 };
@@ -165,7 +165,7 @@ PCApplicationService.prototype.pcFormAmountSerivce = async (params) => {
 		console.log("pcFormAmountSerivce", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-			message: messages.technicalError,
+			message: err,
 		};
 	}
 };
@@ -188,7 +188,7 @@ PCApplicationService.prototype.pcFormBankDetailsSerivce = async (params) => {
 		console.log("pcFormBankDetailsSerivce", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-			message: messages.technicalError,
+			message: err,
 		};
 	}
 };
@@ -208,7 +208,7 @@ PCApplicationService.prototype.pcFormProposedActivitySerivce = async (params) =>
 		console.log("pcFormProposedActivitySerivce", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-			message: messages.technicalError,
+			message: err,
 		};
 	}
 };
@@ -254,7 +254,7 @@ PCApplicationService.prototype.pcFormUploadDocSerivce = async (params) => {
 		console.log("pcFormUploadDocSerivce", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-			message: messages.technicalError,
+			message: err,
 		};
 	}
 };
@@ -271,12 +271,14 @@ PCApplicationService.prototype.getPcFormService = async (params) => {
 					model: pcFormBasicDetails,
 					as: "basicDetails",
 					where: { TNTRP07_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
 					attributes: pcFormBasicDetails.selectedFields,
 				},
 				{
 					model: pcFormDetails,
 					as: "pcDetails",
 					where: { TNTRP08_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
 					attributes: pcFormDetails.selectedFields,
 					include: [
 						{
@@ -331,24 +333,28 @@ PCApplicationService.prototype.getPcFormService = async (params) => {
 					model: pcFormMembers,
 					as: "pcFormMembers",
 					where: { TNTRP09_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
 					attributes: pcFormMembers.selectedFields,
 				},
 				{
 					model: pcFormAmountRecevied,
 					as: "pcFormAmountRecevied",
 					where: { TNTRP10_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
 					attributes: pcFormAmountRecevied.selectedFields,
 				},
 				{
 					model: pcFormBankDetails,
 					as: "pcFormBankDetails",
 					where: { TNTRP11_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
 					attributes: pcFormBankDetails.selectedFields,
 				},
 				{
 					model: pcFormProposedActivity,
 					as: "pcFormProposedActivity",
 					where: { TNTRP12_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
 					attributes: pcFormProposedActivity.selectedFields,
 					include: [
 						{
@@ -362,6 +368,7 @@ PCApplicationService.prototype.getPcFormService = async (params) => {
 					model: pcFormUploadDocument,
 					as: "pcFormUploadDocument",
 					where: { TNTRP13_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
 					attributes: pcFormUploadDocument.selectedFields,
 					include: [
 						{
@@ -369,48 +376,58 @@ PCApplicationService.prototype.getPcFormService = async (params) => {
 							as: "regCertificateList",
 							attributes: selectedPcDoc.selectedFields,
 							where: { docType: PC_UPLOAD_DOC.REG_CERTIFICATE },
+							required: false,
 						},
 						{
 							model: selectedPcDoc,
 							as: "auditStatementList",
 							attributes: selectedPcDoc.selectedFields,
 							where: { docType: PC_UPLOAD_DOC.AUDIT_STATEMENT },
+							required: false,
 						},
 						{
 							model: selectedPcDoc,
 							as: "bankPassBookList",
 							attributes: selectedPcDoc.selectedFields,
 							where: { docType: PC_UPLOAD_DOC.BANK_PASSBOOK },
+							required: false,
 						},
 						{
 							model: selectedPcDoc,
 							as: "latestMomResList",
 							attributes: selectedPcDoc.selectedFields,
 							where: { docType: PC_UPLOAD_DOC.LATEST_MOM },
+							required: false,
 						},
 						{
 							model: selectedPcDoc,
 							as: "businessPlanList",
 							attributes: selectedPcDoc.selectedFields,
 							where: { docType: PC_UPLOAD_DOC.BUSSINESS_PLAN },
+							required: false,
 						},
 					],
 				},
 			],
+			nested: true,
 		});
-		formData = formData.get({ plain: true });
-		formData.basicDetails.district = await districtMaster.findOne({
-			where: { districtId: formData.basicDetails.district },
-			attributes: districtMaster.selectedFields,
-		});
-		formData.basicDetails.block = await blockMaster.findOne({
-			where: { blockId: formData.basicDetails.block },
-			attributes: blockMaster.selectedFields,
-		});
-		formData.basicDetails.panchayat = await panchayatMaster.findOne({
-			where: { panchayatId: formData.basicDetails.panchayat },
-			attributes: panchayatMaster.selectedFields,
-		});
+		if (formData) {
+			formData = formData.get({ plain: true });
+			if (formData.basicDetails) {
+				formData.basicDetails.district = await districtMaster.findOne({
+					where: { districtId: formData.basicDetails.district },
+					attributes: districtMaster.selectedFields,
+				});
+				formData.basicDetails.block = await blockMaster.findOne({
+					where: { blockId: formData.basicDetails.block },
+					attributes: blockMaster.selectedFields,
+				});
+				formData.basicDetails.panchayat = await panchayatMaster.findOne({
+					where: { panchayatId: formData.basicDetails.panchayat },
+					attributes: panchayatMaster.selectedFields,
+				});
+			}
+		}
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -420,7 +437,7 @@ PCApplicationService.prototype.getPcFormService = async (params) => {
 		console.log("getPcFormService", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-			message: messages.technicalError,
+			message: err,
 		};
 	}
 };
@@ -460,7 +477,7 @@ PCApplicationService.prototype.getPcMasterService = async (params) => {
 		console.log("getPcMasterService", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-			message: messages.technicalError,
+			message: err,
 		};
 	}
 };
@@ -481,7 +498,7 @@ PCApplicationService.prototype.updatePcFormStatus = async (params) => {
 		console.log("updatePcFormStatus", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-			message: messages.technicalError,
+			message: err,
 		};
 	}
 };
@@ -602,7 +619,7 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 		console.log("getPcApplicationService", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-			message: messages.technicalError,
+			message: err,
 		};
 	}
 };
@@ -632,7 +649,7 @@ PCApplicationService.prototype.updateOpenApplicationService = async (params) => 
 		console.log("updateOpenApplicationService", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-			message: messages.technicalError,
+			message: err,
 		};
 	}
 };
@@ -732,7 +749,7 @@ PCApplicationService.prototype.getPcApplicationStatusService = async (params) =>
 		console.log("getPcApplicationStatusService", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-			message: messages.technicalError,
+			message: err,
 		};
 	}
 };
@@ -751,7 +768,7 @@ PCApplicationService.prototype.updateFirstTrancheService = async (params) => {
 		console.log("updateFirstTrancheService", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-			message: messages.technicalError,
+			message: err,
 		};
 	}
 };
@@ -774,7 +791,7 @@ PCApplicationService.prototype.updateSecondTrancheService = async (params) => {
 		console.log("updateSecondTrancheService", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-			message: messages.technicalError,
+			message: err,
 		};
 	}
 };
@@ -802,7 +819,7 @@ PCApplicationService.prototype.updateSecondTrancheUcService = async (params) => 
 		console.log("updateSecondTrancheUcService", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-			message: messages.technicalError,
+			message: err,
 		};
 	}
 };
@@ -830,7 +847,7 @@ PCApplicationService.prototype.startAssesmentService = async (params) => {
 		console.log("startAssesmentService", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-			message: messages.technicalError,
+			message: err,
 		};
 	}
 };
@@ -841,7 +858,7 @@ PCApplicationService.prototype.submitAssesmentService = async (params) => {
 		console.log("submitAssesmentService", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-			message: messages.technicalError,
+			message: err,
 		};
 	}
 };

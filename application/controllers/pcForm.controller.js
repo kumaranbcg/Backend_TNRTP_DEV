@@ -40,7 +40,7 @@ PCFormController.prototype.pcFormFill = async (req, res) => {
 				break;
 			}
 			case PC_FORM_STAGE.PROPOSED_ACTIVITY: {
-				result = await service.pcFormProposedActivitySerivce({ ...req.body });
+				result = await service.pcFormProposedActivitySerivce([...req.body]);
 				break;
 			}
 			case PC_FORM_STAGE.UPLOAD_DOCUMENTS: {
