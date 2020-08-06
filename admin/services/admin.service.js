@@ -115,7 +115,7 @@ AdminService.prototype.getStaffListService = async (params) => {
 			data: { staffList: rows, meta },
 		};
 	} catch (err) {
-		console.log(err);
+		console.log("getStaffListService", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: messages.technicalError,
@@ -140,6 +140,7 @@ AdminService.prototype.getDistrictSerivce = async (params) => {
 			data: { districtList: rows },
 		};
 	} catch (err) {
+		console.log("getDistrictSerivce", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: messages.technicalError,
@@ -168,6 +169,7 @@ AdminService.prototype.geBlockSerivce = async (params) => {
 			data: { blockList: rows },
 		};
 	} catch (err) {
+		console.log("geBlockSerivce", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: messages.technicalError,
@@ -195,6 +197,7 @@ AdminService.prototype.gePanchayatSerivce = async (params) => {
 			data: { panchayatList: rows },
 		};
 	} catch (err) {
+		console.log("gePanchayatSerivce", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: messages.technicalError,

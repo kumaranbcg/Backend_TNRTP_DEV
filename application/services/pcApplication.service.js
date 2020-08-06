@@ -52,6 +52,7 @@ PCApplicationService.prototype.pcFormCreateSerivce = async (params) => {
 			data: { formId: formData.formId },
 		};
 	} catch (err) {
+		console.log("pcFormCreateSerivce", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: messages.technicalError,
@@ -74,7 +75,7 @@ PCApplicationService.prototype.pcFormBasicDetailsSerivce = async (params) => {
 			message: messages.success,
 		};
 	} catch (err) {
-		console.log(err);
+		console.log("pcFormBasicDetailsSerivce", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: messages.technicalError,
@@ -115,7 +116,7 @@ PCApplicationService.prototype.pcFormDetailsSerivce = async (params) => {
 			message: messages.success,
 		};
 	} catch (err) {
-		console.log(err);
+		console.log("pcFormDetailsSerivce", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: messages.technicalError,
@@ -138,7 +139,7 @@ PCApplicationService.prototype.pcFormMemberSerivce = async (params) => {
 			message: messages.success,
 		};
 	} catch (err) {
-		console.log(err);
+		console.log("pcFormMemberSerivce", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: messages.technicalError,
@@ -161,7 +162,7 @@ PCApplicationService.prototype.pcFormAmountSerivce = async (params) => {
 			message: messages.success,
 		};
 	} catch (err) {
-		console.log(err);
+		console.log("pcFormAmountSerivce", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: messages.technicalError,
@@ -184,7 +185,7 @@ PCApplicationService.prototype.pcFormBankDetailsSerivce = async (params) => {
 			message: messages.success,
 		};
 	} catch (err) {
-		console.log(err);
+		console.log("pcFormBankDetailsSerivce", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: messages.technicalError,
@@ -204,7 +205,7 @@ PCApplicationService.prototype.pcFormProposedActivitySerivce = async (params) =>
 			message: messages.success,
 		};
 	} catch (err) {
-		console.log(err);
+		console.log("pcFormProposedActivitySerivce", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: messages.technicalError,
@@ -250,7 +251,7 @@ PCApplicationService.prototype.pcFormUploadDocSerivce = async (params) => {
 			message: messages.success,
 		};
 	} catch (err) {
-		console.log(err);
+		console.log("pcFormUploadDocSerivce", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: messages.technicalError,
@@ -416,7 +417,7 @@ PCApplicationService.prototype.getPcFormService = async (params) => {
 			data: formData,
 		};
 	} catch (err) {
-		console.log(err);
+		console.log("getPcFormService", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: messages.technicalError,
@@ -456,6 +457,7 @@ PCApplicationService.prototype.getPcMasterService = async (params) => {
 			},
 		};
 	} catch (err) {
+		console.log("getPcMasterService", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: messages.technicalError,
@@ -476,6 +478,7 @@ PCApplicationService.prototype.updatePcFormStatus = async (params) => {
 			message: messages.success,
 		};
 	} catch (err) {
+		console.log("updatePcFormStatus", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: messages.technicalError,
@@ -596,7 +599,7 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 			},
 		};
 	} catch (err) {
-		console.log(err);
+		console.log("getPcApplicationService", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: messages.technicalError,
@@ -626,7 +629,7 @@ PCApplicationService.prototype.updateOpenApplicationService = async (params) => 
 			message: messages.success,
 		};
 	} catch (err) {
-		console.log(err);
+		console.log("updateOpenApplicationService", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: messages.technicalError,
@@ -726,7 +729,7 @@ PCApplicationService.prototype.getPcApplicationStatusService = async (params) =>
 			data: openApplicationDetails,
 		};
 	} catch (err) {
-		console.log(err);
+		console.log("getPcApplicationStatusService", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: messages.technicalError,
@@ -745,7 +748,7 @@ PCApplicationService.prototype.updateFirstTrancheService = async (params) => {
 			message: messages.success,
 		};
 	} catch (err) {
-		console.log(err);
+		console.log("updateFirstTrancheService", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: messages.technicalError,
@@ -768,7 +771,7 @@ PCApplicationService.prototype.updateSecondTrancheService = async (params) => {
 			message: messages.success,
 		};
 	} catch (err) {
-		console.log(err);
+		console.log("updateSecondTrancheService", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: messages.technicalError,
@@ -796,7 +799,7 @@ PCApplicationService.prototype.updateSecondTrancheUcService = async (params) => 
 			message: messages.success,
 		};
 	} catch (err) {
-		console.log(err);
+		console.log("updateSecondTrancheUcService", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: messages.technicalError,
@@ -824,6 +827,7 @@ PCApplicationService.prototype.startAssesmentService = async (params) => {
 			data: formData,
 		};
 	} catch (err) {
+		console.log("startAssesmentService", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: messages.technicalError,
@@ -834,6 +838,7 @@ PCApplicationService.prototype.submitAssesmentService = async (params) => {
 	try {
 		const { assessmentData, assessmentDoc } = params;
 	} catch (err) {
+		console.log("submitAssesmentService", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: messages.technicalError,
