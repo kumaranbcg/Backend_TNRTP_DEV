@@ -33,7 +33,7 @@ AdminService.prototype.getStaffListService = async (params) => {
 							},
 						},
 						{
-							"$TNRTP06_STAFF_MASTER.TNRTP06_EMAIL_ID$": {
+							"$TNRTP06_STAFF_MASTER.TNRTP06_EMAIL_N$": {
 								[Op.like]: `%${filterData}%`,
 							},
 						},
@@ -42,17 +42,17 @@ AdminService.prototype.getStaffListService = async (params) => {
 			: {};
 		const { rows, count } = await staffMaster.findAndCountAll({
 			where: {
-				TNRTP06_ROLE: roleCondition,
-				TNRTP06_STATUS: statusCondition,
+				TNRTP06_ROLE_D: roleCondition,
+				TNRTP06_STATUS_D: statusCondition,
 				...searchCondition,
 			},
 			attributes: [
 				["TNRTP06_STAFF_MASTER_D", "staffId"],
-				["TNRTP06_USER_NAME", "userName"],
-				["TNRTP06_STATUS", "isActive"],
-				["TNRTP06_ROLE", "role"],
-				["TNRTP06_MOBILE_NUMBER", "mobileNumber"],
-				["TNRTP06_EMAIL_ID", "emailId"],
+				["TNRTP06_USER_NAME_N", "userName"],
+				["TNRTP06_STATUS_D", "isActive"],
+				["TNRTP06_ROLE_D", "role"],
+				["TNRTP06_MOBILE_NUMBER_R", "mobileNumber"],
+				["TNRTP06_EMAIL_N", "emailId"],
 				["TNRTP06_CREATED_AT", "createdAt"],
 			],
 			include: [
@@ -91,8 +91,8 @@ AdminService.prototype.getStaffListService = async (params) => {
 					model: staffMaster,
 					as: "createdBy",
 					attributes: [
-						["TNRTP06_USER_NAME", "userName"],
-						["TNRTP06_ROLE", "role"],
+						["TNRTP06_USER_NAME_N", "userName"],
+						["TNRTP06_ROLE_D", "role"],
 					],
 				},
 			],

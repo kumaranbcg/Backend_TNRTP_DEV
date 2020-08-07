@@ -3,22 +3,22 @@ module.exports = (sequelize, DataTypes) => {
 		"TNRTP06_STAFF_MASTER",
 		{
 			TNRTP06_STAFF_MASTER_D: { type: DataTypes.INTEGER, primaryKey: true },
-			TNRTP06_USER_NAME: { type: DataTypes.STRING },
-			TNRTP06_STATUS: { type: DataTypes.BOOLEAN },
-			TNRTP06_ROLE: { type: DataTypes.INTEGER },
-			TNRTP06_CREATED_BY: { type: DataTypes.INTEGER },
-			TNRTP06_EMAIL_ID: {
+			TNRTP06_USER_NAME_N: { type: DataTypes.STRING },
+			TNRTP06_STATUS_D: { type: DataTypes.BOOLEAN },
+			TNRTP06_ROLE_D: { type: DataTypes.INTEGER },
+			TNRTP06_CREATED_D: { type: DataTypes.INTEGER },
+			TNRTP06_EMAIL_N: {
 				type: DataTypes.STRING,
 				validate: {
 					isEmail: true,
 				},
 			},
-			TNRTP06_MOBILE_NUMBER: { type: DataTypes.STRING },
-			TNRTP06_PASSWORD: { type: DataTypes.STRING },
+			TNRTP06_MOBILE_NUMBER_R: { type: DataTypes.STRING },
+			TNRTP06_PASSWORD_N: { type: DataTypes.STRING },
 			TNRTP06_DISTRICT: { type: DataTypes.INTEGER },
 			TNRTP06_BLOCK: { type: DataTypes.INTEGER },
 			TNRTP06_PANCHAYAT: { type: DataTypes.INTEGER },
-			TNRTP06_IS_NEW_USER: { type: DataTypes.BOOLEAN },
+			TNRTP06_IS_NEW_USER_D: { type: DataTypes.BOOLEAN },
 			TNRTP06_CREATED_AT: { type: DataTypes.DATE },
 			TNRTP06_UPDATED_AT: { type: DataTypes.DATE },
 		},
@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
 
 	staffMaster.associate = function (models) {
 		staffMaster.belongsTo(models["staffMaster"], {
-			foreignKey: "TNRTP06_CREATED_BY",
+			foreignKey: "TNRTP06_CREATED_D",
 			as: "createdBy",
 		});
 		staffMaster.hasOne(models.staffAddress, {
