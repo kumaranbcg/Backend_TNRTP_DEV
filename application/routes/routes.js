@@ -129,4 +129,30 @@ router.get(
 	PCFormController.getAssesment
 );
 
+router.post(
+	"/application/pcServiceArea",
+	verifyToken,
+	hasRole(STAFF_ROLE.DPMU),
+	PCFormController.pcServiceArea
+);
+router.get(
+	"/application/getPcServiceArea",
+	verifyToken,
+	hasRole(STAFF_ROLE.DPMU),
+	PCFormController.getPcServiceArea
+);
+
+router.post(
+	"/application/pcCoverageArea",
+	verifyToken,
+	hasRole(STAFF_ROLE.DPMU),
+	PCFormController.pcCoverageArea
+);
+router.get(
+	"/application/getPcCoverageArea",
+	verifyToken,
+	hasRole(STAFF_ROLE.DPMU),
+	PCFormController.getPcCoverageArea
+);
+
 module.exports = router;

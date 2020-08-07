@@ -38,8 +38,6 @@ module.exports = (sequelize, DataTypes) => {
 		pcAssessment.hasMany(models.pcAssessmentDoc, {
 			foreignKey: "TNRTP29_PC_APPLICATION_ASSESSMENT_MASTER_D",
 			as: "documents",
-			onDelete: "CASCADE",
-			hooks: true,
 		});
 	};
 	pcAssessment.selectedFields = [

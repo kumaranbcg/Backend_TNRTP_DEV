@@ -26,6 +26,16 @@ const {
 	pcDisbursment,
 	pcAssessmentDoc,
 	pcAssessment,
+	pcAuditYear,
+	pcConvergence,
+	pcLinkage,
+	pcPartnership,
+	pcAreaMember,
+	pcAreaMemberBlock,
+	pcCoverageArea,
+	pcCoverageBlock,
+	pcCoveragePanchayat,
+	pcCoverageMembers,
 } = require("../models");
 const messages = require("./../configs/errorMsgs.js");
 const errorCodes = require("./../configs/errorCodes.js");
@@ -306,11 +316,13 @@ PCApplicationService.prototype.getPcFormService = async (params) => {
 						{
 							model: selectedPc,
 							as: "pcTypes",
+							required: false,
 							attributes: selectedPc.selectedFields,
 							include: [
 								{
 									model: pcTypes,
 									as: "pcTypesData",
+									required: false,
 									attributes: pcTypes.selectedFields,
 								},
 							],
@@ -318,11 +330,13 @@ PCApplicationService.prototype.getPcFormService = async (params) => {
 						{
 							model: selectedPcCommodity,
 							as: "pcCommodityTypes",
+							required: false,
 							attributes: selectedPcCommodity.selectedFields,
 							include: [
 								{
 									model: pcCommodityTypes,
 									as: "pcCommodityTypesData",
+									required: false,
 									attributes: pcCommodityTypes.selectedFields,
 								},
 							],
@@ -330,11 +344,13 @@ PCApplicationService.prototype.getPcFormService = async (params) => {
 						{
 							model: selectedPcSector,
 							as: "pcSectorTypes",
+							required: false,
 							attributes: selectedPcSector.selectedFields,
 							include: [
 								{
 									model: pcSectorTypes,
 									as: "pcSectorTypesData",
+									required: false,
 									attributes: pcSectorTypes.selectedFields,
 								},
 							],
@@ -342,11 +358,13 @@ PCApplicationService.prototype.getPcFormService = async (params) => {
 						{
 							model: registrationUnder,
 							as: "registrationUnderData",
+							required: false,
 							attributes: registrationUnder.selectedFields,
 						},
 						{
 							model: formedSupported,
 							as: "formSupportedData",
+							required: false,
 							attributes: formedSupported.selectedFields,
 						},
 					],
@@ -382,6 +400,7 @@ PCApplicationService.prototype.getPcFormService = async (params) => {
 						{
 							model: activityTimeline,
 							as: "activityTimelineData",
+							required: false,
 							attributes: activityTimeline.selectedFields,
 						},
 					],
@@ -437,15 +456,15 @@ PCApplicationService.prototype.getPcFormService = async (params) => {
 			formData = formData.get({ plain: true });
 			if (formData.basicDetails) {
 				formData.basicDetails.district = await districtMaster.findOne({
-					where: { districtId: formData.basicDetails.district },
+					where: { value: formData.basicDetails.district },
 					attributes: districtMaster.selectedFields,
 				});
 				formData.basicDetails.block = await blockMaster.findOne({
-					where: { blockId: formData.basicDetails.block },
+					where: { value: formData.basicDetails.block },
 					attributes: blockMaster.selectedFields,
 				});
 				formData.basicDetails.panchayat = await panchayatMaster.findOne({
-					where: { panchayatId: formData.basicDetails.panchayat },
+					where: { value: formData.basicDetails.panchayat },
 					attributes: panchayatMaster.selectedFields,
 				});
 			}
@@ -563,23 +582,27 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 				{
 					model: pcFormBasicDetails,
 					as: "basicDetails",
+					required: false,
 					where: { TNRTP07_DELETED_F: DELETE_STATUS.NOT_DELETED, districtId },
 					attributes: pcFormBasicDetails.selectedFields,
 				},
 				{
 					model: pcFormDetails,
 					as: "pcDetails",
+					required: false,
 					where: { TNRTP08_DELETED_F: DELETE_STATUS.NOT_DELETED },
 					attributes: pcFormDetails.selectedFields,
 					include: [
 						{
 							model: selectedPcCommodity,
 							as: "pcCommodityTypes",
+							required: false,
 							attributes: selectedPcCommodity.selectedFields,
 							include: [
 								{
 									model: pcCommodityTypes,
 									as: "pcCommodityTypesData",
+									required: false,
 									attributes: pcCommodityTypes.selectedFields,
 								},
 							],
@@ -589,6 +612,7 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 				{
 					model: pcFormProposedActivity,
 					as: "pcFormProposedActivity",
+					required: false,
 					where: { TNRTP12_DELETED_F: DELETE_STATUS.NOT_DELETED },
 
 					attributes: pcFormProposedActivity.selectedFields,
@@ -713,6 +737,7 @@ PCApplicationService.prototype.getPcApplicationStatusService = async (params) =>
 				{
 					model: pcApplicationStatus,
 					as: "pcApplicationStatus",
+					required: false,
 					attributes: pcApplicationStatus.selectedFields,
 					include: [
 						{
@@ -792,7 +817,7 @@ PCApplicationService.prototype.getPcApplicationStatusService = async (params) =>
 							model: pcRequiredDoc,
 							as: "secondTrancheApproval",
 							required: false,
-							// where: { docType: PC_STAFF_DOC.FIRST_TRANCHE },
+							where: { docType: PC_STAFF_DOC.SECOND_TRANCHE },
 							attributes: pcRequiredDoc.selectedFields,
 						},
 					],
@@ -917,7 +942,7 @@ PCApplicationService.prototype.updateSecondTrancheUcService = async (params) => 
 PCApplicationService.prototype.startAssesmentService = async (params) => {
 	try {
 		const { formId } = params;
-		let formData = await pcFormMaster.findOne({
+		let membersData = await pcFormMaster.findOne({
 			where: { formId, TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED },
 			attributes: ["formId", "userId", "name"],
 			include: [
@@ -929,10 +954,22 @@ PCApplicationService.prototype.startAssesmentService = async (params) => {
 				},
 			],
 		});
+		let auditYearMaster = await pcAuditYear.findAll({
+			attributes: pcAuditYear.selectedFields,
+		});
+		let convergenceMaster = await pcConvergence.findAll({
+			attributes: pcConvergence.selectedFields,
+		});
+		let linkageMaster = await pcLinkage.findAll({
+			attributes: pcLinkage.selectedFields,
+		});
+		let partnershipMaster = await pcPartnership.findAll({
+			attributes: pcPartnership.selectedFields,
+		});
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
-			data: formData,
+			data: { membersData, auditYearMaster, convergenceMaster, linkageMaster, partnershipMaster },
 		};
 	} catch (err) {
 		console.log("startAssesmentService", err);
@@ -978,6 +1015,7 @@ PCApplicationService.prototype.getAssesmentService = async (params) => {
 				{
 					model: pcAssessmentDoc,
 					as: "documents",
+					required: false,
 					attributes: pcAssessmentDoc.selectedFields,
 				},
 			],
@@ -989,6 +1027,142 @@ PCApplicationService.prototype.getAssesmentService = async (params) => {
 		};
 	} catch (err) {
 		console.log("getAssesmentService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+PCApplicationService.prototype.pcServiceAreaService = async (params) => {
+	try {
+		let { formId, areaMembers } = params;
+		if (areaMembers && areaMembers.length) {
+			areaMembers.map((element) => {
+				element.formId = formId;
+			});
+		}
+		await pcAreaMember.bulkCreate([...areaMembers], {
+			include: [
+				{
+					model: pcAreaMemberBlock,
+					as: "areaMembersBlock",
+				},
+			],
+		});
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+		};
+	} catch (err) {
+		console.log("pcServiceAreaService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+PCApplicationService.prototype.getPcServiceAreaService = async (params) => {
+	try {
+		const { formId } = params;
+		let serviceArea = await pcAreaMember.findAll({
+			where: { formId },
+			attributes: pcAreaMember.selectedFields,
+			include: [
+				{
+					model: pcAreaMemberBlock,
+					as: "areaMembersBlock",
+					required: false,
+					attributes: pcAreaMemberBlock.selectedFields,
+				},
+			],
+		});
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+			data: serviceArea,
+		};
+	} catch (err) {
+		console.log("getPcServiceAreaService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+PCApplicationService.prototype.pcCoverageAreaService = async (params) => {
+	try {
+		const { formId, coverageMembers, coverageDistrict } = params;
+		if (coverageDistrict && coverageDistrict.length) {
+			coverageDistrict.map((element) => {
+				element.formId = formId;
+			});
+			await pcCoverageArea.destroy({ where: { formId } }).then(() => {
+				return pcCoverageArea.bulkCreate([...coverageDistrict], {
+					include: [
+						{
+							model: pcCoverageBlock,
+							as: "coverageBlock",
+							include: [
+								{
+									model: pcCoveragePanchayat,
+									as: "coveragePanchayat",
+								},
+							],
+						},
+					],
+				});
+			});
+		}
+		if (coverageMembers) {
+			coverageMembers.formId = formId;
+			await pcCoverageMembers.create({ ...coverageMembers });
+		}
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+		};
+	} catch (err) {
+		console.log("pcServiceAreaService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+PCApplicationService.prototype.getPcCoverageAreaService = async (params) => {
+	try {
+		const { formId } = params;
+		let coverageData = await pcCoverageArea.findAll({
+			where: { formId },
+			attributes: pcCoverageArea.selectedFields,
+			include: [
+				{
+					model: pcCoverageBlock,
+					as: "coverageBlock",
+					required: false,
+					attributes: pcCoverageBlock.selectedFields,
+					include: [
+						{
+							model: pcCoveragePanchayat,
+							as: "coveragePanchayat",
+							required: false,
+							attributes: pcCoveragePanchayat.selectedFields,
+						},
+					],
+				},
+			],
+		});
+		let coverageMembers = await pcCoverageMembers.findOne({
+			where: { formId },
+			attributes: pcCoverageMembers.selectedFields,
+		});
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+			data: { coverageData, coverageMembers },
+		};
+	} catch (err) {
+		console.log("getPcCoverageAreaService", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: err,

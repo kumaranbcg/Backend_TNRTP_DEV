@@ -130,8 +130,8 @@ AdminService.prototype.getDistrictSerivce = async (params) => {
 			},
 			order: [["TNRTP07_DISTRICT_NAME", "ASC"]],
 			attributes: [
-				["TNRTP07_DISTRICT_MASTER_D", "districtId"],
-				["TNRTP07_DISTRICT_NAME", "districtName"],
+				["TNRTP07_DISTRICT_MASTER_D", "value"],
+				["TNRTP07_DISTRICT_NAME", "label"],
 			],
 		});
 		return {
@@ -159,8 +159,8 @@ AdminService.prototype.geBlockSerivce = async (params) => {
 			},
 			order: [["TNRTP08_BLOCK_NAME", "ASC"]],
 			attributes: [
-				["TNRTP08_BLOCK_MASTER_D", "blockId"],
-				["TNRTP08_BLOCK_NAME", "blockName"],
+				["TNRTP08_BLOCK_MASTER_D", "value"],
+				["TNRTP08_BLOCK_NAME", "label"],
 			],
 		});
 		return {
@@ -187,8 +187,8 @@ AdminService.prototype.gePanchayatSerivce = async (params) => {
 			},
 			order: [["TNRTP09_PANCHAYAT_NAME", "ASC"]],
 			attributes: [
-				["TNRTP09_PANCHAYAT_MASTER_D", "panchayatId"],
-				["TNRTP09_PANCHAYAT_NAME", "panchayatName"],
+				["TNRTP09_PANCHAYAT_MASTER_D", "value"],
+				["TNRTP09_PANCHAYAT_NAME", "label"],
 			],
 		});
 		return {
