@@ -42,6 +42,7 @@ const schemas = {
 		}).required(),
 		pcFormMembers: BaseJoi.object({
 			formId: BaseJoi.number().required(),
+			totalMembers: BaseJoi.number().required(),
 			noOfMale: BaseJoi.number().required(),
 			noOfFemale: BaseJoi.number().required(),
 			noOfTransGender: BaseJoi.number().required(),
@@ -51,6 +52,7 @@ const schemas = {
 			activeInactiveTotal: BaseJoi.number().required(),
 			noOfSHGMembers: BaseJoi.number().required(),
 			noOfSHGTotal: BaseJoi.number().required(),
+			noOfNonSHGTotal: BaseJoi.number().required(),
 			shgTotal: BaseJoi.number().required(),
 			noOfDiffAbled: BaseJoi.number().required(),
 			noOfWidow: BaseJoi.number().required(),

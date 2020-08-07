@@ -110,7 +110,10 @@ PCFormController.prototype.getPCMasters = async (req, res) => {
 };
 PCFormController.prototype.uploadDoc = async (req, res) => {
 	try {
-		if (req.body && req.body.error) {
+		if (req.files && req.files.errors) {
+			return res.status(errorCodes.HTTP_BAD_REQUEST).json({ message: errMessages.invalidDocType });
+		}
+		if (req.body && req.body.errors) {
 			return res.status(errorCodes.HTTP_BAD_REQUEST).json({ message: errMessages.docUploadFailed });
 		}
 		return res

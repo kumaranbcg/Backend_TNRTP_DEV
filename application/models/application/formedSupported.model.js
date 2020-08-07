@@ -2,13 +2,13 @@ module.exports = (sequelize, DataTypes) => {
 	const formedSupported = sequelize.define(
 		"TNRTP03_FORMED_SUPPORTED_BY_MASTER",
 		{
-			formedById: {
+			value: {
 				type: DataTypes.INTEGER,
 				primaryKey: true,
 				autoIncrement: true,
 				field: "TNRTP03_FORMED_SUPPORTED_BY_MASTER_D",
 			},
-			formedByName: { type: DataTypes.STRING, field: "TNRTP03_FORMED_SUPPORTED_BY_NAME_N" },
+			label: { type: DataTypes.STRING, field: "TNRTP03_FORMED_SUPPORTED_BY_NAME_N" },
 			TNRTP03_STATUS_D: { type: DataTypes.INTEGER },
 			TNRTP03_CREATED_AT: { type: DataTypes.DATE },
 			TNRTP03_UPDATED_AT: { type: DataTypes.DATE },
@@ -18,6 +18,6 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: false,
 		}
 	);
-	formedSupported.selectedFields = ["formedById", "formedByName"];
+	formedSupported.selectedFields = ["value", "label"];
 	return formedSupported;
 };

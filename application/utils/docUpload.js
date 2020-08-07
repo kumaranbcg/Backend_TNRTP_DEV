@@ -24,7 +24,11 @@ docUpload = async (req, res, next) => {
 	const filter = (req, res, file, cb) => {
 		if (
 			path.extname(file.originalname).toLowerCase() === ".pdf" ||
-			path.extname(file.originalname).toLowerCase() === ".jpg"
+			path.extname(file.originalname).toLowerCase() === ".jpg" ||
+			path.extname(file.originalname).toLowerCase() === ".png" ||
+			path.extname(file.originalname).toLowerCase() === ".jpeg" ||
+			path.extname(file.originalname).toLowerCase() === ".docx" ||
+			path.extname(file.originalname).toLowerCase() === ".xlsx"
 		) {
 			cb(null, true);
 		} else {

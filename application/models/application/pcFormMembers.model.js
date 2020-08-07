@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
 				autoIncrement: true,
 			},
 			formId: { type: DataTypes.INTEGER, field: "TNRTP09_PC_FORMS_MASTER_D" },
+			totalMembers: { type: DataTypes.INTEGER, field: "TNRTP09_TOTAL_MEMBERS_D" },
 			noOfActive: { type: DataTypes.INTEGER, field: "TNRTP09_NO_OF_ACTIVE_D" },
 			noOfInActive: { type: DataTypes.INTEGER, field: "TNRTP09_NO_OF_INACTIVE_D" },
 			activeInactiveTotal: { type: DataTypes.INTEGER, field: "TNRTP09_ACTIVE_INACTIVE_TOTAL_D" },
@@ -38,6 +39,7 @@ module.exports = (sequelize, DataTypes) => {
 			vulnerableTotal: { type: DataTypes.INTEGER, field: "TNRTP09_VULNERABLE_TOTAL_D" },
 			noOfSHGMembers: { type: DataTypes.INTEGER, field: "TNRTP09_NO_OF_SHG_MEMBERS_D" },
 			noOfSHGTotal: { type: DataTypes.INTEGER, field: "TNRTP09_NO_OF_SHG_HOUSE_HOLDS_D" },
+			noOfNonSHGTotal: { type: DataTypes.INTEGER, field: "TNRTP09_NO_OF_NON_SHG_HOUSE_HOLDS_D" },
 			shgTotal: { type: DataTypes.INTEGER, field: "TNRTP09_SHG_TOTAL_D" },
 			status: {
 				type: DataTypes.INTEGER,
@@ -56,6 +58,7 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	);
 	pcFormMembers.selectedFields = [
+		"totalMembers",
 		"noOfActive",
 		"noOfInActive",
 		"activeInactiveTotal",
@@ -82,6 +85,7 @@ module.exports = (sequelize, DataTypes) => {
 		"vulnerableTotal",
 		"noOfSHGMembers",
 		"noOfSHGTotal",
+		"noOfNonSHGTotal",
 		"shgTotal",
 	];
 	return pcFormMembers;

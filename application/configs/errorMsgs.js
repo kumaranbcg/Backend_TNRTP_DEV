@@ -8,6 +8,7 @@ module.exports = {
 	validOtp: "OTP validation success",
 	contentFILL: "Invalid Credentials!",
 	docUploadFailed: "Failed to upload document.Please try again",
+	invalidDocType: "Upload documents only with type .png, .jpg, .docx and .xlsx.",
 	docUploadSuccess: "Document uploaded successfully",
 	technicalError: "Technical error occured!!",
 	alreadyRegistered: "Mobile number you have entered already registered",
