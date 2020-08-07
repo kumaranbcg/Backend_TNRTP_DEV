@@ -7,7 +7,10 @@ module.exports = (sequelize, DataTypes) => {
 				primaryKey: true,
 				autoIncrement: true,
 			},
-			formId: { type: DataTypes.INTEGER, field: "TNRTP21_PC_FORMS_MASTER_D" },
+			appDisbursmentId: {
+				type: DataTypes.INTEGER,
+				field: "TNRTP21_PC_FORMS_APP_DISBUSRMENT_MASTER_D",
+			},
 			docName: { type: DataTypes.STRING, field: "TNRTP21_PC_REQUIRED_DOCUMENT_NAME_N" },
 			docUrl: { type: DataTypes.STRING, field: "TNRTP21_PC_REQUIRED_DOCUMENT_URL_N" },
 			docType: { type: DataTypes.INTEGER, field: "TNRTP21_REQUIRED_DOCUMENT_TYPE_D" },
@@ -21,6 +24,6 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: false,
 		}
 	);
-	pcRequiredDoc.selectedFields = ["docName", "docUrl", "docType"];
+	pcRequiredDoc.selectedFields = ["docName", "docUrl"];
 	return pcRequiredDoc;
 };

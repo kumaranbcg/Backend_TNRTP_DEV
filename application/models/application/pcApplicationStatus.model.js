@@ -12,15 +12,6 @@ module.exports = (sequelize, DataTypes) => {
 			activityCategory: { type: DataTypes.INTEGER, field: "TNRTP20_IS_ACTIVITY_ESMF_CATEGORY_N" },
 			dmpuVerifyDate: { type: DataTypes.DATE, field: "TNRTP20_DPMU_VERIFICATION_DATE" },
 			isSmpuVerified: { type: DataTypes.BOOLEAN, field: "TNRTP20_IS_SPMU_VERIFIED_D" },
-			smpuApprovalLetter: {
-				type: DataTypes.INTEGER,
-				field: "TNRTP20_SELECTED_PC_SPMU_APPROVAL_LETTER_D",
-			},
-			decMom: { type: DataTypes.INTEGER, field: "TNRTP20_SELECTED_PC_DEC_MOM_D" },
-			signedAssesment: {
-				type: DataTypes.INTEGER,
-				field: "TNRTP20_SELECTED_PC_SIGNED_ASSESSMENT_D",
-			},
 			applicationStatus: { type: DataTypes.INTEGER, field: "TNRTP20_IS_APPLICATION_STATUS_D" },
 			remarks: { type: DataTypes.STRING, field: "TNRTP20_IS_REMARK_N" },
 			status: { type: DataTypes.INTEGER, field: "TNRTP20_STATUS_D" },
@@ -36,16 +27,16 @@ module.exports = (sequelize, DataTypes) => {
 	);
 	pcApplicationStatus.associate = function (models) {
 		pcApplicationStatus.hasMany(models.pcRequiredDoc, {
-			foreignKey: "TNRTP21_PC_FORMS_MASTER_D",
-			as: "smpuApprovalLetterList",
+			foreignKey: "TNRTP21_PC_FORMS_APP_DISBUSRMENT_MASTER_D",
+			as: "smpuApprovalLetter",
 		});
 		pcApplicationStatus.hasMany(models.pcRequiredDoc, {
-			foreignKey: "TNRTP21_PC_FORMS_MASTER_D",
-			as: "decMomList",
+			foreignKey: "TNRTP21_PC_FORMS_APP_DISBUSRMENT_MASTER_D",
+			as: "decMom",
 		});
 		pcApplicationStatus.hasMany(models.pcRequiredDoc, {
-			foreignKey: "TNRTP21_PC_FORMS_MASTER_D",
-			as: "signedAssesmentList",
+			foreignKey: "TNRTP21_PC_FORMS_APP_DISBUSRMENT_MASTER_D",
+			as: "signedAssesment",
 		});
 	};
 	pcApplicationStatus.selectedFields = [
@@ -53,7 +44,6 @@ module.exports = (sequelize, DataTypes) => {
 		"activityCategory",
 		"dmpuVerifyDate",
 		"isSmpuVerified",
-		"smpuApprovalLetter",
 		"applicationStatus",
 		"remarks",
 		["TNRTP20_UPDATED_D", "approvedBy"],

@@ -216,31 +216,26 @@ PCApplicationService.prototype.pcFormUploadDocSerivce = async (params) => {
 		const { formId } = params;
 		if (params.regCertificate && params.regCertificate.length) {
 			params.regCertificate.map((element) => {
-				element.formId = formId;
 				element.docType = PC_UPLOAD_DOC.REG_CERTIFICATE;
 			});
 		}
 		if (params.auditStatement && params.auditStatement.length) {
 			params.auditStatement.map((element) => {
-				element.formId = formId;
 				element.docType = PC_UPLOAD_DOC.AUDIT_STATEMENT;
 			});
 		}
 		if (params.bankPassBook && params.bankPassBook.length) {
 			params.bankPassBook.map((element) => {
-				element.formId = formId;
 				element.docType = PC_UPLOAD_DOC.BANK_PASSBOOK;
 			});
 		}
 		if (params.latestMomRes && params.latestMomRes.length) {
 			params.latestMomRes.map((element) => {
-				element.formId = formId;
 				element.docType = PC_UPLOAD_DOC.LATEST_MOM;
 			});
 		}
 		if (params.businessPlan && params.businessPlan.length) {
 			params.businessPlan.map((element) => {
-				element.formId = formId;
 				element.docType = PC_UPLOAD_DOC.BUSSINESS_PLAN;
 			});
 		}
@@ -652,16 +647,44 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 };
 PCApplicationService.prototype.updateOpenApplicationService = async (params) => {
 	try {
-		const { formId, smpuApprovalLetter, decMom, signedAssesment, userData } = params;
-		let docData = [...smpuApprovalLetter, ...decMom, ...signedAssesment];
-		params.smpuApprovalLetter = params.smpuApprovalLetter.length ? formId : null;
-		params.decMom = params.decMom.length ? formId : null;
-		params.signedAssesment = params.signedAssesment.length ? formId : null;
+		const { formId, userData } = params;
+		if (params.smpuApprovalLetter && params.smpuApprovalLetter.length) {
+			params.smpuApprovalLetter.map((element) => {
+				element.docType = PC_STAFF_DOC.SMPU_APPROVAL;
+			});
+		}
+		if (params.decMom && params.decMom.length) {
+			params.decMom.map((element) => {
+				element.docType = PC_STAFF_DOC.DECMM;
+			});
+		}
+		if (params.signedAssesment && params.signedAssesment.length) {
+			params.signedAssesment.map((element) => {
+				element.docType = PC_STAFF_DOC.SIGNED_ASSESMENT;
+			});
+		}
 		delete params.userData;
 		params.TNRTP20_CREATED_D = userData.userId;
 		params.TNRTP20_UPDATED_D = userData.userId;
-		await pcApplicationStatus.create({ ...params });
-		await pcRequiredDoc.bulkCreate([...docData]);
+		await pcApplicationStatus.create(
+			{ ...params },
+			{
+				include: [
+					{
+						model: pcRequiredDoc,
+						as: "smpuApprovalLetter",
+					},
+					{
+						model: pcRequiredDoc,
+						as: "decMom",
+					},
+					{
+						model: pcRequiredDoc,
+						as: "signedAssesment",
+					},
+				],
+			}
+		);
 		await pcFormMaster.update(
 			{ status: params.applicationStatus },
 			{
@@ -694,19 +717,22 @@ PCApplicationService.prototype.getPcApplicationStatusService = async (params) =>
 					include: [
 						{
 							model: pcRequiredDoc,
-							as: "smpuApprovalLetterList",
+							as: "smpuApprovalLetter",
+							required: false,
 							where: { docType: PC_STAFF_DOC.SMPU_APPROVAL },
 							attributes: pcRequiredDoc.selectedFields,
 						},
 						{
 							model: pcRequiredDoc,
-							as: "decMomList",
+							as: "decMom",
+							required: false,
 							where: { docType: PC_STAFF_DOC.DECMM },
 							attributes: pcRequiredDoc.selectedFields,
 						},
 						{
 							model: pcRequiredDoc,
-							as: "signedAssesmentList",
+							as: "signedAssesment",
+							required: false,
 							where: { docType: PC_STAFF_DOC.SIGNED_ASSESMENT },
 							attributes: pcRequiredDoc.selectedFields,
 						},
@@ -715,6 +741,7 @@ PCApplicationService.prototype.getPcApplicationStatusService = async (params) =>
 				{
 					model: pcDisbursment,
 					as: "firstTranche",
+					required: false,
 					where: { disbursmentType: DISBURSEMENT_STATE.FIRST_TRANCHE },
 					attributes: [
 						"disbursmentType",
@@ -727,6 +754,7 @@ PCApplicationService.prototype.getPcApplicationStatusService = async (params) =>
 				{
 					model: pcDisbursment,
 					as: "secondTranche",
+					required: false,
 					where: { disbursmentType: DISBURSEMENT_STATE.SECOND_TRANCHE },
 					attributes: [
 						"disbursmentType",
@@ -739,14 +767,16 @@ PCApplicationService.prototype.getPcApplicationStatusService = async (params) =>
 					include: [
 						{
 							model: pcRequiredDoc,
-							as: "firstUcCertificateList",
-							// where: { docType: PC_STAFF_DOC.FIRST_TRANCHE },
+							as: "firstUcCertificate",
+							required: false,
+							where: { docType: PC_STAFF_DOC.FIRST_TRANCHE },
 							attributes: pcRequiredDoc.selectedFields,
 						},
 						{
 							model: pcRequiredDoc,
-							as: "smpuTrancheApprovalList",
-							// where: { docType: PC_STAFF_DOC.SMPU_APPROVAL },
+							as: "smpuTrancheApproval",
+							required: false,
+							where: { docType: PC_STAFF_DOC.SMPU_TRANCHE_APPROVAL },
 							attributes: pcRequiredDoc.selectedFields,
 						},
 					],
@@ -754,12 +784,14 @@ PCApplicationService.prototype.getPcApplicationStatusService = async (params) =>
 				{
 					model: pcDisbursment,
 					as: "secondTrancheUc",
+					required: false,
 					where: { disbursmentType: DISBURSEMENT_STATE.SECOND_TRANCHE_UC },
 					attributes: ["disbursmentSubmitDate"],
 					include: [
 						{
 							model: pcRequiredDoc,
-							as: "secondTrancheApprovalList",
+							as: "secondTrancheApproval",
+							required: false,
 							// where: { docType: PC_STAFF_DOC.FIRST_TRANCHE },
 							attributes: pcRequiredDoc.selectedFields,
 						},
@@ -801,15 +833,35 @@ PCApplicationService.prototype.updateFirstTrancheService = async (params) => {
 };
 PCApplicationService.prototype.updateSecondTrancheService = async (params) => {
 	try {
-		const { formId, firstUcCertificate, smpuTrancheApproval, userData } = params;
-		let docData = [...firstUcCertificate, ...smpuTrancheApproval];
-		params.firstUcCertificate = params.firstUcCertificate.length ? formId : null;
-		params.smpuTrancheApproval = params.smpuTrancheApproval.length ? formId : null;
+		const { userData } = params;
+		if (params.firstUcCertificate && params.firstUcCertificate.length) {
+			params.firstUcCertificate.map((element) => {
+				element.docType = PC_STAFF_DOC.FIRST_TRANCHE;
+			});
+		}
+		if (params.smpuTrancheApproval && params.smpuTrancheApproval.length) {
+			params.smpuTrancheApproval.map((element) => {
+				element.docType = PC_STAFF_DOC.SMPU_TRANCHE_APPROVAL;
+			});
+		}
+		delete params.userData;
 		params.TNRTP22_CREATED_D = userData.userId;
 		params.TNRTP22_UPDATED_D = userData.userId;
-		delete params.userData;
-		await pcDisbursment.create({ ...params });
-		await pcRequiredDoc.bulkCreate([...docData]);
+		await pcDisbursment.create(
+			{ ...params },
+			{
+				include: [
+					{
+						model: pcRequiredDoc,
+						as: "firstUcCertificate",
+					},
+					{
+						model: pcRequiredDoc,
+						as: "smpuTrancheApproval",
+					},
+				],
+			}
+		);
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -824,14 +876,26 @@ PCApplicationService.prototype.updateSecondTrancheService = async (params) => {
 };
 PCApplicationService.prototype.updateSecondTrancheUcService = async (params) => {
 	try {
-		const { formId, secondTrancheApproval, userData } = params;
-		let docData = [...secondTrancheApproval];
-		params.secondTrancheApproval = params.secondTrancheApproval.length ? formId : null;
+		const { formId, userData } = params;
+		if (params.secondTrancheApproval && params.secondTrancheApproval.length) {
+			params.secondTrancheApproval.map((element) => {
+				element.docType = PC_STAFF_DOC.SECOND_TRANCHE;
+			});
+		}
+		delete params.userData;
 		params.TNRTP22_CREATED_D = userData.userId;
 		params.TNRTP22_UPDATED_D = userData.userId;
-		delete params.userData;
-		await pcDisbursment.create({ ...params });
-		await pcRequiredDoc.bulkCreate([...docData]);
+		await pcDisbursment.create(
+			{ ...params },
+			{
+				include: [
+					{
+						model: pcRequiredDoc,
+						as: "secondTrancheApproval",
+					},
+				],
+			}
+		);
 		await pcFormMaster.update(
 			{ status: params.applicationStatus },
 			{

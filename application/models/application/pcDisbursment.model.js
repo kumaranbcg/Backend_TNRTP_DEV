@@ -19,18 +19,6 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.DATE,
 				field: "TNRTP22_PC_FIRST_TRANCHE_UC_SUMBIT_DATE",
 			},
-			firstUcCertificate: {
-				type: DataTypes.INTEGER,
-				field: "TNRTP22_SELECTED_PC_FIRST_UC_CERTIFICATE_D",
-			},
-			smpuTrancheApproval: {
-				type: DataTypes.INTEGER,
-				field: "TNRTP22_SELECTED_PC_SPMU_APPROVAL_LETTER_D",
-			},
-			secondTrancheApproval: {
-				type: DataTypes.INTEGER,
-				field: "TNRTP22_SELECTED_PC_SECOND_UC_CERTIFICATE_D",
-			},
 			TNRTP22_STATUS_D: { type: DataTypes.INTEGER },
 			TNRTP22_CREATED_AT: { type: DataTypes.DATE },
 			TNRTP22_UPDATED_AT: { type: DataTypes.DATE },
@@ -44,16 +32,16 @@ module.exports = (sequelize, DataTypes) => {
 	);
 	pcDisbursment.associate = function (models) {
 		pcDisbursment.hasMany(models.pcRequiredDoc, {
-			foreignKey: "TNRTP21_PC_FORMS_MASTER_D",
-			as: "firstUcCertificateList",
+			foreignKey: "TNRTP21_PC_FORMS_APP_DISBUSRMENT_MASTER_D",
+			as: "firstUcCertificate",
 		});
 		pcDisbursment.hasMany(models.pcRequiredDoc, {
-			foreignKey: "TNRTP21_PC_FORMS_MASTER_D",
-			as: "smpuTrancheApprovalList",
+			foreignKey: "TNRTP21_PC_FORMS_APP_DISBUSRMENT_MASTER_D",
+			as: "smpuTrancheApproval",
 		});
 		pcDisbursment.hasMany(models.pcRequiredDoc, {
-			foreignKey: "TNRTP21_PC_FORMS_MASTER_D",
-			as: "secondTrancheApprovalList",
+			foreignKey: "TNRTP21_PC_FORMS_APP_DISBUSRMENT_MASTER_D",
+			as: "secondTrancheApproval",
 		});
 	};
 	pcDisbursment.selectedFields = [

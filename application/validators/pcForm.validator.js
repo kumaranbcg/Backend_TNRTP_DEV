@@ -23,22 +23,19 @@ const schemas = {
 			promotingOrgName: BaseJoi.string().required(),
 			formSupportedBy: BaseJoi.number().required(),
 			noOfPG: BaseJoi.number().required(),
-			typesOfPc: BaseJoi.array()
+			pcTypes: BaseJoi.array()
 				.items({
-					formId: BaseJoi.number().required(),
-					typePc: BaseJoi.number().required(),
+					value: BaseJoi.number().required(),
 				})
 				.required(),
-			typesOfCommodity: BaseJoi.array()
+			pcCommodityTypes: BaseJoi.array()
 				.items({
-					formId: BaseJoi.number().required(),
-					typeCommodity: BaseJoi.number().required(),
+					value: BaseJoi.number().required(),
 				})
 				.required(),
-			typesOfSector: BaseJoi.array()
+			pcSectorTypes: BaseJoi.array()
 				.items({
-					formId: BaseJoi.number().required(),
-					typeSector: BaseJoi.number().required(),
+					value: BaseJoi.number().required(),
 				})
 				.required(),
 			othersName: BaseJoi.optional(),
@@ -117,42 +114,32 @@ const schemas = {
 			formId: BaseJoi.number().required(),
 			regCertificate: BaseJoi.array()
 				.items({
-					formId: BaseJoi.number().required(),
 					docUrl: BaseJoi.string().required(),
 					docName: BaseJoi.string().required(),
-					docType: BaseJoi.number().required(),
 				})
 				.required(),
 			auditStatement: BaseJoi.array()
 				.items({
-					formId: BaseJoi.number().required(),
 					docUrl: BaseJoi.string().required(),
 					docName: BaseJoi.string().required(),
-					docType: BaseJoi.number().required(),
 				})
 				.required(),
 			bankPassBook: BaseJoi.array()
 				.items({
-					formId: BaseJoi.number().required(),
 					docUrl: BaseJoi.string().required(),
 					docName: BaseJoi.string().required(),
-					docType: BaseJoi.number().required(),
 				})
 				.required(),
 			latestMomRes: BaseJoi.array()
 				.items({
-					formId: BaseJoi.number().required(),
 					docUrl: BaseJoi.string().required(),
 					docName: BaseJoi.string().required(),
-					docType: BaseJoi.number().required(),
 				})
 				.required(),
 			businessPlan: BaseJoi.array()
 				.items({
-					formId: BaseJoi.number().required(),
 					docUrl: BaseJoi.string().required(),
 					docName: BaseJoi.string().required(),
-					docType: BaseJoi.number().required(),
 				})
 				.required(),
 			remarks: BaseJoi.string().required(),
