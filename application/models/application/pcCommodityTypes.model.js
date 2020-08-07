@@ -10,8 +10,8 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			label: { type: DataTypes.INTEGER, field: "TNRTP05_TYPE_OF_COMMODITY_NAME_N" },
 			status: { type: DataTypes.INTEGER, field: "TNRTP05_STATUS_D" },
-			TNTRP05_CREATED_AT: { type: DataTypes.DATE },
-			TNTRP05_UPDATED_AT: { type: DataTypes.DATE },
+			TNRTP05_CREATED_AT: { type: DataTypes.DATE },
+			TNRTP05_UPDATED_AT: { type: DataTypes.DATE },
 		},
 		{
 			freezeTableName: true,

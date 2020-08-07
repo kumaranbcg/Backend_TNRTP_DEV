@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
 			as: "createdBy",
 		});
 		staffMaster.hasOne(models.staffAddress, {
-			foreignKey: "TNTRP12_STAFF_MASTER_D",
+			foreignKey: "TNRTP12_STAFF_MASTER_D",
 			as: "address",
 		});
 	};

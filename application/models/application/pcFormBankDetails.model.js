@@ -19,13 +19,13 @@ module.exports = (sequelize, DataTypes) => {
 			status: {
 				type: DataTypes.INTEGER,
 				defaultValue: FORM_SECTION_STATUS.FILLED,
-				field: "TNTRP11_STATUS_D",
+				field: "TNRTP11_STATUS_D",
 			},
-			TNTRP11_DELETED_F: { type: DataTypes.BOOLEAN, defaultValue: DELETE_STATUS.NOT_DELETED },
-			TNTRP11_CREATED_AT: { type: DataTypes.DATE },
-			TNTRP11_UPDATED_AT: { type: DataTypes.DATE },
-			TNTRP11_CREATED_D: { type: DataTypes.INTEGER },
-			TNTRP11_UPDATED_D: { type: DataTypes.INTEGER },
+			TNRTP11_DELETED_F: { type: DataTypes.BOOLEAN, defaultValue: DELETE_STATUS.NOT_DELETED },
+			TNRTP11_CREATED_AT: { type: DataTypes.DATE },
+			TNRTP11_UPDATED_AT: { type: DataTypes.DATE },
+			TNRTP11_CREATED_D: { type: DataTypes.INTEGER },
+			TNRTP11_UPDATED_D: { type: DataTypes.INTEGER },
 		},
 		{
 			getterMethods: {

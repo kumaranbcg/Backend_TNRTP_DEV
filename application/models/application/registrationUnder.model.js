@@ -10,8 +10,8 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			regUnderName: { type: DataTypes.STRING, field: "TNRTP02_REGISTRATION_UNDER_NAME_N" },
 			TNRTP02_STATUS_D: { type: DataTypes.INTEGER },
-			TNTRP02_CREATED_AT: { type: DataTypes.DATE },
-			TNTRP02_UPDATED_AT: { type: DataTypes.DATE },
+			TNRTP02_CREATED_AT: { type: DataTypes.DATE },
+			TNRTP02_UPDATED_AT: { type: DataTypes.DATE },
 		},
 		{
 			freezeTableName: true,

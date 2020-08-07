@@ -13,8 +13,8 @@ module.exports = (sequelize, DataTypes) => {
 			docType: { type: DataTypes.INTEGER, field: "TNRTP21_REQUIRED_DOCUMENT_TYPE_D" },
 			docStatus: { type: DataTypes.INTEGER, field: "TNRTP21_REQUIRED_DOCUMENT_STATUS_D" },
 			TNRTP21_STATUS_D: { type: DataTypes.INTEGER },
-			TNTRP21_CREATED_AT: { type: DataTypes.DATE },
-			TNTRP21_UPDATED_AT: { type: DataTypes.DATE },
+			TNRTP21_CREATED_AT: { type: DataTypes.DATE },
+			TNRTP21_UPDATED_AT: { type: DataTypes.DATE },
 		},
 		{
 			freezeTableName: true,

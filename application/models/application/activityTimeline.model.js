@@ -10,8 +10,8 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			activityName: { type: DataTypes.STRING, field: "TNRTP15_ACTIVITY_TIMELINE_NAME_N" },
 			TNRTP15_STATUS_D: { type: DataTypes.INTEGER },
-			TNTRP15_CREATED_AT: { type: DataTypes.DATE },
-			TNTRP15_UPDATED_AT: { type: DataTypes.DATE },
+			TNRTP15_CREATED_AT: { type: DataTypes.DATE },
+			TNRTP15_UPDATED_AT: { type: DataTypes.DATE },
 		},
 		{
 			freezeTableName: true,

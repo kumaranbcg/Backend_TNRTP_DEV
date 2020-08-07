@@ -10,8 +10,8 @@ module.exports = (sequelize, DataTypes) => {
 			basicDetailsId: { type: DataTypes.INTEGER, field: "TNRTP18_PC_FORMS_DETAILS_MASTER_D" },
 			value: { type: DataTypes.INTEGER, field: "TNRTP18_TYPE_OF_COMMODITY_MASTER_D" },
 			TNRTP18_STATUS_D: { type: DataTypes.INTEGER },
-			TNTRP18_CREATED_AT: { type: DataTypes.DATE },
-			TNTRP18_UPDATED_AT: { type: DataTypes.DATE },
+			TNRTP18_CREATED_AT: { type: DataTypes.DATE },
+			TNRTP18_UPDATED_AT: { type: DataTypes.DATE },
 		},
 		{
 			freezeTableName: true,

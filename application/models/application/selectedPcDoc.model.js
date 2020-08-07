@@ -15,8 +15,8 @@ module.exports = (sequelize, DataTypes) => {
 			docUrl: { type: DataTypes.STRING, field: "TNRTP19_PC_UPLOAD_DOCUMENT_URL_N" },
 			docType: { type: DataTypes.INTEGER, field: "TNRTP19_UPLOAD_DOCUMENT_TYPE_D" },
 			TNRTP19_STATUS_D: { type: DataTypes.INTEGER },
-			TNTRP19_CREATED_AT: { type: DataTypes.DATE },
-			TNTRP19_UPDATED_AT: { type: DataTypes.DATE },
+			TNRTP19_CREATED_AT: { type: DataTypes.DATE },
+			TNRTP19_UPDATED_AT: { type: DataTypes.DATE },
 		},
 		{
 			freezeTableName: true,

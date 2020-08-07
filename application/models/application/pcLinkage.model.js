@@ -9,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			linkageName: { type: DataTypes.STRING, field: "TNRTP26_PC_LINKAGE_NAME_N" },
 			TNRTP26_STATUS_D: { type: DataTypes.INTEGER },
-			TNTRP26_CREATED_AT: { type: DataTypes.DATE },
-			TNTRP26_UPDATED_AT: { type: DataTypes.DATE },
+			TNRTP26_CREATED_AT: { type: DataTypes.DATE },
+			TNRTP26_UPDATED_AT: { type: DataTypes.DATE },
 		},
 		{
 			freezeTableName: true,

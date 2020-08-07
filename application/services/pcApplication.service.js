@@ -291,20 +291,20 @@ PCApplicationService.prototype.getPcFormService = async (params) => {
 		// let data = await districtMaster.findAll();
 		// console.log(data);
 		let formData = await pcFormMaster.findOne({
-			where: { formId, TNTRP01_DELETED_F: DELETE_STATUS.NOT_DELETED },
+			where: { formId, TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED },
 			attributes: ["formId", "userId", "name"],
 			include: [
 				{
 					model: pcFormBasicDetails,
 					as: "basicDetails",
-					where: { TNTRP07_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					where: { TNRTP07_DELETED_F: DELETE_STATUS.NOT_DELETED },
 					required: false,
 					attributes: pcFormBasicDetails.selectedFields,
 				},
 				{
 					model: pcFormDetails,
 					as: "pcDetails",
-					where: { TNTRP08_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					where: { TNRTP08_DELETED_F: DELETE_STATUS.NOT_DELETED },
 					required: false,
 					attributes: pcFormDetails.selectedFields,
 					include: [
@@ -359,28 +359,28 @@ PCApplicationService.prototype.getPcFormService = async (params) => {
 				{
 					model: pcFormMembers,
 					as: "pcFormMembers",
-					where: { TNTRP09_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					where: { TNRTP09_DELETED_F: DELETE_STATUS.NOT_DELETED },
 					required: false,
 					attributes: pcFormMembers.selectedFields,
 				},
 				{
 					model: pcFormAmountRecevied,
 					as: "pcFormAmountRecevied",
-					where: { TNTRP10_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					where: { TNRTP10_DELETED_F: DELETE_STATUS.NOT_DELETED },
 					required: false,
 					attributes: pcFormAmountRecevied.selectedFields,
 				},
 				{
 					model: pcFormBankDetails,
 					as: "pcFormBankDetails",
-					where: { TNTRP11_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					where: { TNRTP11_DELETED_F: DELETE_STATUS.NOT_DELETED },
 					required: false,
 					attributes: pcFormBankDetails.selectedFields,
 				},
 				{
 					model: pcFormProposedActivity,
 					as: "pcFormProposedActivity",
-					where: { TNTRP12_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					where: { TNRTP12_DELETED_F: DELETE_STATUS.NOT_DELETED },
 					required: false,
 					attributes: pcFormProposedActivity.selectedFields,
 					include: [
@@ -394,7 +394,7 @@ PCApplicationService.prototype.getPcFormService = async (params) => {
 				{
 					model: pcFormUploadDocument,
 					as: "pcFormUploadDocument",
-					where: { TNTRP13_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					where: { TNRTP13_DELETED_F: DELETE_STATUS.NOT_DELETED },
 					required: false,
 					attributes: pcFormUploadDocument.selectedFields,
 					include: [
@@ -512,7 +512,7 @@ PCApplicationService.prototype.updatePcFormStatus = async (params) => {
 	try {
 		const { formId, status } = params;
 		await pcFormMaster.update(
-			{ status, TNTRP01_UPDATED_AT: new Date() },
+			{ status, TNRTP01_UPDATED_AT: new Date() },
 			{
 				where: { formId },
 			}
@@ -555,26 +555,26 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 			  }
 			: {};
 		let { rows, count } = await pcFormMaster.findAndCountAll({
-			where: { TNTRP01_DELETED_F: DELETE_STATUS.NOT_DELETED, status, ...searchCondition },
+			where: { TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED, status, ...searchCondition },
 			attributes: [
 				"formId",
 				"userId",
 				"name",
 				"status",
-				["TNTRP01_CREATED_AT", "appDate"],
-				["TNTRP01_UPDATED_AT", "appSubmitDate"],
+				["TNRTP01_CREATED_AT", "appDate"],
+				["TNRTP01_UPDATED_AT", "appSubmitDate"],
 			],
 			include: [
 				{
 					model: pcFormBasicDetails,
 					as: "basicDetails",
-					where: { TNTRP07_DELETED_F: DELETE_STATUS.NOT_DELETED, districtId },
+					where: { TNRTP07_DELETED_F: DELETE_STATUS.NOT_DELETED, districtId },
 					attributes: pcFormBasicDetails.selectedFields,
 				},
 				{
 					model: pcFormDetails,
 					as: "pcDetails",
-					where: { TNTRP08_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					where: { TNRTP08_DELETED_F: DELETE_STATUS.NOT_DELETED },
 					attributes: pcFormDetails.selectedFields,
 					include: [
 						{
@@ -594,7 +594,7 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 				{
 					model: pcFormProposedActivity,
 					as: "pcFormProposedActivity",
-					where: { TNTRP12_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					where: { TNRTP12_DELETED_F: DELETE_STATUS.NOT_DELETED },
 
 					attributes: pcFormProposedActivity.selectedFields,
 				},
@@ -603,7 +603,7 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 			nested: true,
 			subQuery: false,
 			limit,
-			order: [["TNTRP01_CREATED_AT", sortBy == ORDERBY.ASC ? "ASC" : "DESC"]],
+			order: [["TNRTP01_CREATED_AT", sortBy == ORDERBY.ASC ? "ASC" : "DESC"]],
 			distinct: "TNRTP01_PC_FORMS_MASTER_D",
 			offset: (page - 1) * limit,
 		});
@@ -685,7 +685,7 @@ PCApplicationService.prototype.getPcApplicationStatusService = async (params) =>
 		const { formId } = params;
 		let openApplicationDetails = await pcFormMaster.findOne({
 			where: { formId },
-			attributes: ["formId", "userId", "name", "status", ["TNTRP01_UPDATED_AT", "appRecievedDate"]],
+			attributes: ["formId", "userId", "name", "status", ["TNRTP01_UPDATED_AT", "appRecievedDate"]],
 			include: [
 				{
 					model: pcApplicationStatus,
@@ -854,13 +854,13 @@ PCApplicationService.prototype.startAssesmentService = async (params) => {
 	try {
 		const { formId } = params;
 		let formData = await pcFormMaster.findOne({
-			where: { formId, TNTRP01_DELETED_F: DELETE_STATUS.NOT_DELETED },
+			where: { formId, TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED },
 			attributes: ["formId", "userId", "name"],
 			include: [
 				{
 					model: pcFormMembers,
 					as: "pcFormMembers",
-					where: { TNTRP09_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					where: { TNRTP09_DELETED_F: DELETE_STATUS.NOT_DELETED },
 					attributes: pcFormMembers.selectedFields,
 				},
 			],

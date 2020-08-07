@@ -59,7 +59,7 @@ AdminService.prototype.getStaffListService = async (params) => {
 				{
 					model: staffAddress,
 					as: "address",
-					attributes: [["TNTRP12_STAFF_ADDRESS_D", "addresssId"]],
+					attributes: [["TNRTP12_STAFF_ADDRESS_D", "addresssId"]],
 					include: [
 						{
 							model: districtMaster,
