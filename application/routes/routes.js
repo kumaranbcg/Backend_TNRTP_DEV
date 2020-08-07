@@ -122,4 +122,11 @@ router.post(
 	PCFormController.submitAssesment
 );
 
+router.get(
+	"/application/getAssesment",
+	verifyToken,
+	hasRole(STAFF_ROLE.DPMU),
+	PCFormController.getAssesment
+);
+
 module.exports = router;

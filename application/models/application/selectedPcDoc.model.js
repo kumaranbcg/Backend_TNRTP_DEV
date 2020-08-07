@@ -7,7 +7,10 @@ module.exports = (sequelize, DataTypes) => {
 				primaryKey: true,
 				autoIncrement: true,
 			},
-			formId: { type: DataTypes.INTEGER, field: "TNRTP19_PC_FORMS_MASTER_D" },
+			uploadDocumentId: {
+				type: DataTypes.INTEGER,
+				field: "TNRTP19_PC_FORMS_UPLOAD_DOCUMENT_MASTER_D",
+			},
 			docName: { type: DataTypes.STRING, field: "TNRTP19_PC_UPLOAD_DOCUMENT_NAME_N" },
 			docUrl: { type: DataTypes.STRING, field: "TNRTP19_PC_UPLOAD_DOCUMENT_URL_N" },
 			docType: { type: DataTypes.INTEGER, field: "TNRTP19_UPLOAD_DOCUMENT_TYPE_D" },
@@ -20,6 +23,6 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: false,
 		}
 	);
-	selectedPcDoc.selectedFields = ["docName", "docUrl", "docType"];
+	selectedPcDoc.selectedFields = ["docName", "docUrl"];
 	return selectedPcDoc;
 };

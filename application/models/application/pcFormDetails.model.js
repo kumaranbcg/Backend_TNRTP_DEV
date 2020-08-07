@@ -17,9 +17,6 @@ module.exports = (sequelize, DataTypes) => {
 			formSupportedBy: { type: DataTypes.INTEGER, field: "TNRTP08_FORMED_SUPPORTED_BY_MASTER_D" },
 			othersName: { type: DataTypes.STRING, field: "TNRTP08_OTHERS_NAME_N" },
 			noOfPG: { type: DataTypes.INTEGER, field: "TNRTP08_NO_OF_PG_N" },
-			typesOfPC: { type: DataTypes.INTEGER, field: "TNRTP08_TYPE_OF_PC_MASTER_D" },
-			typesOfSector: { type: DataTypes.INTEGER, field: "TNRTP08_TYPE_OF_SECTOR_MASTER_D" },
-			typesOfCommodity: { type: DataTypes.INTEGER, field: "TNRTP08_TYPE_OF_COMMODITY_MASTER_D" },
 			status: {
 				type: DataTypes.INTEGER,
 				defaultValue: FORM_SECTION_STATUS.FILLED,
@@ -38,15 +35,15 @@ module.exports = (sequelize, DataTypes) => {
 	);
 	pcFormDetails.associate = function (models) {
 		pcFormDetails.hasMany(models.selectedPc, {
-			foreignKey: "TNRTP16_PC_FORMS_MASTER_D",
+			foreignKey: "TNRTP16_PC_FORMS_DETAILS_MASTER_D",
 			as: "pcTypes",
 		});
 		pcFormDetails.hasMany(models.selectedPcCommodity, {
-			foreignKey: "TNRTP18_PC_FORMS_MASTER_D",
+			foreignKey: "TNRTP18_PC_FORMS_DETAILS_MASTER_D",
 			as: "pcCommodityTypes",
 		});
 		pcFormDetails.hasMany(models.selectedPcSector, {
-			foreignKey: "TNRTP17_PC_FORMS_MASTER_D",
+			foreignKey: "TNRTP17_PC_FORMS_DETAILS_MASTER_D",
 			as: "pcSectorTypes",
 		});
 		pcFormDetails.belongsTo(models.registrationUnder, {

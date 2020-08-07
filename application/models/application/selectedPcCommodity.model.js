@@ -7,8 +7,8 @@ module.exports = (sequelize, DataTypes) => {
 				primaryKey: true,
 				autoIncrement: true,
 			},
-			formId: { type: DataTypes.INTEGER, field: "TNRTP18_PC_FORMS_MASTER_D" },
-			typeCommodity: { type: DataTypes.INTEGER, field: "TNRTP18_TYPE_OF_COMMODITY_MASTER_D" },
+			basicDetailsId: { type: DataTypes.INTEGER, field: "TNRTP18_PC_FORMS_DETAILS_MASTER_D" },
+			value: { type: DataTypes.INTEGER, field: "TNRTP18_TYPE_OF_COMMODITY_MASTER_D" },
 			TNRTP18_STATUS_D: { type: DataTypes.INTEGER },
 			TNTRP18_CREATED_AT: { type: DataTypes.DATE },
 			TNTRP18_UPDATED_AT: { type: DataTypes.DATE },
@@ -24,6 +24,6 @@ module.exports = (sequelize, DataTypes) => {
 			as: "pcCommodityTypesData",
 		});
 	};
-	selectedPcCommodity.selectedFields = ["formId"];
+	selectedPcCommodity.selectedFields = ["basicDetailsId"];
 	return selectedPcCommodity;
 };

@@ -24,6 +24,8 @@ const {
 	pcApplicationStatus,
 	pcRequiredDoc,
 	pcDisbursment,
+	pcAssessmentDoc,
+	pcAssessment,
 } = require("../models");
 const messages = require("./../configs/errorMsgs.js");
 const errorCodes = require("./../configs/errorCodes.js");
@@ -37,7 +39,9 @@ const {
 } = require("../constants/index");
 const { Op } = require("sequelize");
 class PCApplicationService {}
-
+(async () => {
+	await pcAssessment.destroy({ where: { formId: 1 } });
+})();
 PCApplicationService.prototype.pcFormCreateSerivce = async (params) => {
 	try {
 		const { userId } = params;
@@ -85,32 +89,27 @@ PCApplicationService.prototype.pcFormBasicDetailsSerivce = async (params) => {
 PCApplicationService.prototype.pcFormDetailsSerivce = async (params) => {
 	try {
 		const { formId } = params;
-		let formData = await pcFormDetails.findOne({
-			where: { formId },
+		await pcFormDetails.destroy({ where: { formId } }).then(() => {
+			return pcFormDetails.create(
+				{ ...params },
+				{
+					include: [
+						{
+							model: selectedPc,
+							as: "pcTypes",
+						},
+						{
+							model: selectedPcCommodity,
+							as: "pcCommodityTypes",
+						},
+						{
+							model: selectedPcSector,
+							as: "pcSectorTypes",
+						},
+					],
+				}
+			);
 		});
-		let selectedPcData = params.typesOfPc;
-		let selectedPcSectorData = params.typesOfSector;
-		let selectedPcCommodityData = params.typesOfCommodity;
-		params.typesOfPC = formId;
-		params.typesOfSector = formId;
-		params.typesOfCommodity = formId;
-		if (formData) {
-			await formData.update({ ...params });
-			await selectedPc.destroy({ where: { formId } }).then(() => {
-				return selectedPc.bulkCreate([...selectedPcData]);
-			});
-			await selectedPcSector.destroy({ where: { formId } }).then(() => {
-				return selectedPcSector.bulkCreate([...selectedPcSectorData]);
-			});
-			await selectedPcCommodity.destroy({ where: { formId } }).then(() => {
-				return selectedPcCommodity.bulkCreate([...selectedPcCommodityData]);
-			});
-		} else {
-			await pcFormDetails.create({ ...params });
-			await selectedPc.bulkCreate([...selectedPcData]);
-			await selectedPcSector.bulkCreate([...selectedPcSectorData]);
-			await selectedPcCommodity.bulkCreate([...selectedPcCommodityData]);
-		}
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -214,38 +213,66 @@ PCApplicationService.prototype.pcFormProposedActivitySerivce = async (params) =>
 };
 PCApplicationService.prototype.pcFormUploadDocSerivce = async (params) => {
 	try {
-		const {
-			formId,
-			regCertificate,
-			auditStatement,
-			bankPassBook,
-			latestMomRes,
-			businessPlan,
-		} = params;
-		let docData = [
-			...regCertificate,
-			...auditStatement,
-			...bankPassBook,
-			...latestMomRes,
-			...businessPlan,
-		];
-		params.regCertificate = params.regCertificate.length ? formId : null;
-		params.auditStatement = params.auditStatement.length ? formId : null;
-		params.bankPassBook = params.bankPassBook.length ? formId : null;
-		params.latestMomRes = params.latestMomRes.length ? formId : null;
-		params.businessPlan = params.businessPlan.length ? formId : null;
-		let formData = await pcFormUploadDocument.findOne({
-			where: { formId },
-		});
-		if (formData) {
-			await formData.update({ ...params });
-			await selectedPcDoc.destroy({ where: { formId } }).then(() => {
-				return selectedPcDoc.bulkCreate([...docData]);
+		const { formId } = params;
+		if (params.regCertificate && params.regCertificate.length) {
+			params.regCertificate.map((element) => {
+				element.formId = formId;
+				element.docType = PC_UPLOAD_DOC.REG_CERTIFICATE;
 			});
-		} else {
-			await pcFormUploadDocument.create({ ...params });
-			await selectedPcDoc.bulkCreate([...docData]);
 		}
+		if (params.auditStatement && params.auditStatement.length) {
+			params.auditStatement.map((element) => {
+				element.formId = formId;
+				element.docType = PC_UPLOAD_DOC.AUDIT_STATEMENT;
+			});
+		}
+		if (params.bankPassBook && params.bankPassBook.length) {
+			params.bankPassBook.map((element) => {
+				element.formId = formId;
+				element.docType = PC_UPLOAD_DOC.BANK_PASSBOOK;
+			});
+		}
+		if (params.latestMomRes && params.latestMomRes.length) {
+			params.latestMomRes.map((element) => {
+				element.formId = formId;
+				element.docType = PC_UPLOAD_DOC.LATEST_MOM;
+			});
+		}
+		if (params.businessPlan && params.businessPlan.length) {
+			params.businessPlan.map((element) => {
+				element.formId = formId;
+				element.docType = PC_UPLOAD_DOC.BUSSINESS_PLAN;
+			});
+		}
+		await pcFormUploadDocument.destroy({ where: { formId } }).then(() => {
+			return pcFormUploadDocument.create(
+				{ ...params },
+				{
+					include: [
+						{
+							model: selectedPcDoc,
+							as: "regCertificate",
+						},
+						{
+							model: selectedPcDoc,
+							as: "auditStatement",
+						},
+						{
+							model: selectedPcDoc,
+							as: "bankPassBook",
+						},
+						{
+							model: selectedPcDoc,
+							as: "latestMomRes",
+						},
+						{
+							model: selectedPcDoc,
+							as: "businessPlan",
+						},
+					],
+				}
+			);
+		});
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -373,35 +400,35 @@ PCApplicationService.prototype.getPcFormService = async (params) => {
 					include: [
 						{
 							model: selectedPcDoc,
-							as: "regCertificateList",
+							as: "regCertificate",
 							attributes: selectedPcDoc.selectedFields,
 							where: { docType: PC_UPLOAD_DOC.REG_CERTIFICATE },
 							required: false,
 						},
 						{
 							model: selectedPcDoc,
-							as: "auditStatementList",
+							as: "auditStatement",
 							attributes: selectedPcDoc.selectedFields,
 							where: { docType: PC_UPLOAD_DOC.AUDIT_STATEMENT },
 							required: false,
 						},
 						{
 							model: selectedPcDoc,
-							as: "bankPassBookList",
+							as: "bankPassBook",
 							attributes: selectedPcDoc.selectedFields,
 							where: { docType: PC_UPLOAD_DOC.BANK_PASSBOOK },
 							required: false,
 						},
 						{
 							model: selectedPcDoc,
-							as: "latestMomResList",
+							as: "latestMomRes",
 							attributes: selectedPcDoc.selectedFields,
 							where: { docType: PC_UPLOAD_DOC.LATEST_MOM },
 							required: false,
 						},
 						{
 							model: selectedPcDoc,
-							as: "businessPlanList",
+							as: "businessPlan",
 							attributes: selectedPcDoc.selectedFields,
 							where: { docType: PC_UPLOAD_DOC.BUSSINESS_PLAN },
 							required: false,
@@ -853,9 +880,51 @@ PCApplicationService.prototype.startAssesmentService = async (params) => {
 };
 PCApplicationService.prototype.submitAssesmentService = async (params) => {
 	try {
-		const { assessmentData, assessmentDoc } = params;
+		const { formId } = params;
+		params.assessments.map((element) => {
+			element.formId = formId;
+		});
+		await pcAssessment.bulkCreate([...params.assessments], {
+			include: [
+				{
+					model: pcAssessmentDoc,
+					as: "documents",
+				},
+			],
+		});
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+		};
 	} catch (err) {
 		console.log("submitAssesmentService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+PCApplicationService.prototype.getAssesmentService = async (params) => {
+	try {
+		const { formId } = params;
+		let assessmentData = await pcAssessment.findAll({
+			where: { formId },
+			attributes: pcAssessment.selectedFields,
+			include: [
+				{
+					model: pcAssessmentDoc,
+					as: "documents",
+					attributes: pcAssessmentDoc.selectedFields,
+				},
+			],
+		});
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+			data: assessmentData,
+		};
+	} catch (err) {
+		console.log("getAssesmentService", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: err,

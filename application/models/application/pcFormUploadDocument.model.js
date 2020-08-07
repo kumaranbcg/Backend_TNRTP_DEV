@@ -9,20 +9,6 @@ module.exports = (sequelize, DataTypes) => {
 				autoIncrement: true,
 			},
 			formId: { type: DataTypes.INTEGER, field: "TNRTP13_PC_FORMS_MASTER_D" },
-			regCertificate: {
-				type: DataTypes.INTEGER,
-				field: "TNRTP13_SELECTED_PC_REGISTRATION_CERTIFICATE_D",
-			},
-			auditStatement: { type: DataTypes.INTEGER, field: "TNRTP13_SELECTED_PC_AUDIT_STATEMENT_D" },
-			bankPassBook: { type: DataTypes.STRING, field: "TNRTP13_SELECTED_PC_BANK_PASSBOOK_FRONT_D" },
-			latestMomRes: {
-				type: DataTypes.INTEGER,
-				field: "TNRTP13_SELECTED_PC_LATEST_MOM_RESOLUTION_D",
-			},
-			businessPlan: {
-				type: DataTypes.INTEGER,
-				field: "TNRTP13_SELECTED_PC_BUSINESS_OR_ACTIVITY_PLAN_D",
-			},
 			remarks: { type: DataTypes.STRING, field: "TNRTP13_PC_FORMS_REMARKS" },
 			status: {
 				type: DataTypes.INTEGER,
@@ -42,24 +28,24 @@ module.exports = (sequelize, DataTypes) => {
 	);
 	pcFormUploadDocument.associate = function (models) {
 		pcFormUploadDocument.hasMany(models.selectedPcDoc, {
-			foreignKey: "TNRTP19_PC_FORMS_MASTER_D",
-			as: "regCertificateList",
+			foreignKey: "TNRTP19_PC_FORMS_UPLOAD_DOCUMENT_MASTER_D",
+			as: "regCertificate",
 		});
 		pcFormUploadDocument.hasMany(models.selectedPcDoc, {
-			foreignKey: "TNRTP19_PC_FORMS_MASTER_D",
-			as: "auditStatementList",
+			foreignKey: "TNRTP19_PC_FORMS_UPLOAD_DOCUMENT_MASTER_D",
+			as: "auditStatement",
 		});
 		pcFormUploadDocument.hasMany(models.selectedPcDoc, {
-			foreignKey: "TNRTP19_PC_FORMS_MASTER_D",
-			as: "bankPassBookList",
+			foreignKey: "TNRTP19_PC_FORMS_UPLOAD_DOCUMENT_MASTER_D",
+			as: "bankPassBook",
 		});
 		pcFormUploadDocument.hasMany(models.selectedPcDoc, {
-			foreignKey: "TNRTP19_PC_FORMS_MASTER_D",
-			as: "latestMomResList",
+			foreignKey: "TNRTP19_PC_FORMS_UPLOAD_DOCUMENT_MASTER_D",
+			as: "latestMomRes",
 		});
 		pcFormUploadDocument.hasMany(models.selectedPcDoc, {
-			foreignKey: "TNRTP19_PC_FORMS_MASTER_D",
-			as: "businessPlanList",
+			foreignKey: "TNRTP19_PC_FORMS_UPLOAD_DOCUMENT_MASTER_D",
+			as: "businessPlan",
 		});
 	};
 	pcFormUploadDocument.selectedFields = ["remarks"];

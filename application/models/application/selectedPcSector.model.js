@@ -7,8 +7,8 @@ module.exports = (sequelize, DataTypes) => {
 				primaryKey: true,
 				autoIncrement: true,
 			},
-			formId: { type: DataTypes.INTEGER, field: "TNRTP17_PC_FORMS_MASTER_D" },
-			typeSector: { type: DataTypes.INTEGER, field: "TNRTP17_TYPE_OF_SECTOR_MASTER_D" },
+			basicDetailsId: { type: DataTypes.INTEGER, field: "TNRTP17_PC_FORMS_DETAILS_MASTER_D" },
+			value: { type: DataTypes.INTEGER, field: "TNRTP17_TYPE_OF_SECTOR_MASTER_D" },
 			TNRTP17_STATUS_D: { type: DataTypes.INTEGER },
 			TNTRP17_CREATED_AT: { type: DataTypes.DATE },
 			TNTRP17_UPDATED_AT: { type: DataTypes.DATE },
@@ -24,6 +24,6 @@ module.exports = (sequelize, DataTypes) => {
 			as: "pcSectorTypesData",
 		});
 	};
-	selectedPcSector.selectedFields = ["formId"];
+	selectedPcSector.selectedFields = ["basicDetailsId"];
 	return selectedPcSector;
 };

@@ -183,9 +183,18 @@ PCFormController.prototype.startAssesment = async (req, res) => {
 };
 PCFormController.prototype.submitAssesment = async (req, res) => {
 	try {
-		let result = await service.submitAssesmentService({ ...req.query });
+		let result = await service.submitAssesmentService({ ...req.body });
 		res.status(result.code).json({ message: result.message, data: result.data });
 	} catch (err) {
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
+PCFormController.prototype.getAssesment = async (req, res) => {
+	try {
+		let result = await service.getAssesmentService({ ...req.query });
+		res.status(result.code).json({ message: result.message, data: result.data });
+	} catch (err) {
+		console.log(err);
 		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
 	}
 };
