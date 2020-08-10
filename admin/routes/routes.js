@@ -41,4 +41,5 @@ router.get("/admin/getBlockList", Auth.verifyToken, AdminController.getBlockList
 
 router.get("/admin/getPanchayatList", Auth.verifyToken, AdminController.getPanchayatList);
 
+router.get("/admin/getProfile", Auth.verifyToken, AdminController.getProfile);
 module.exports = router;

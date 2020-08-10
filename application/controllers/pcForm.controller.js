@@ -6,8 +6,7 @@ class PCFormController {}
 
 PCFormController.prototype.pcFormCreate = async (req, res) => {
 	try {
-		req.body.userId = req.user.userId;
-		let result = await service.pcFormCreateSerivce({ ...req.body });
+		let result = await service.pcFormCreateSerivce({ ...req.user });
 		res.status(result.code).json({ message: result.message, data: result.data });
 	} catch (err) {
 		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });

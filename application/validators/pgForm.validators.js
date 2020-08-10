@@ -3,14 +3,14 @@ const errorMessages = require("../configs/errorMsgs");
 const errorCodes = require("../configs/errorCodes");
 
 const schemas = {
-	pcFormSubmit: BaseJoi.object({
+	pgFormSubmit: BaseJoi.object({
 		basicDetails: BaseJoi.object({
 			formId: BaseJoi.number().required(),
 			districtId: BaseJoi.number().required(),
 			blockId: BaseJoi.number().required(),
 			panchayatId: BaseJoi.number().required(),
-			pcName: BaseJoi.string().required(),
-			pcAddress: BaseJoi.string().required(),
+			pgName: BaseJoi.string().required(),
+			pgAddress: BaseJoi.string().required(),
 			name: BaseJoi.string().required(),
 			mobileNumber: BaseJoi.string().required(),
 		}).required(),

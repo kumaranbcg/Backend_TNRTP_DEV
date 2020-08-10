@@ -4,7 +4,11 @@ const messages = require("./../configs/errorMsgs.js");
 const ErrorCodes = require("./../configs/errorCodes.js");
 const { verifyToken, docUpload, hasRole } = require("./../utils/index");
 const router = express.Router();
-const { PCFormController, userFormController } = require("./../controllers/controller");
+const {
+	PCFormController,
+	userFormController,
+	PGFormController,
+} = require("./../controllers/controller");
 const { pcFormSubmit } = require("../validators/pcForm.validator");
 router.use((req, res, next) => {
 	if (req.headers.authorization) {
@@ -45,7 +49,7 @@ router.post(
 router.get(
 	"/application/getPcForm",
 	verifyToken,
-	hasRole(STAFF_ROLE.PUBLIC),
+	// hasRole(STAFF_ROLE.PUBLIC),
 	PCFormController.getPcForm
 );
 
@@ -162,4 +166,24 @@ router.get(
 	userFormController.getUserApplications
 );
 
+router.get(
+	"/application/pgFormCreate",
+	verifyToken,
+	hasRole(STAFF_ROLE.PUBLIC),
+	PGFormController.pgFormCreate
+);
+
+router.post(
+	"/application/pgFormFill",
+	verifyToken,
+	hasRole(STAFF_ROLE.PUBLIC),
+	PGFormController.pgFormFill
+);
+
+router.get(
+	"/application/getPgForm",
+	verifyToken,
+	hasRole(STAFF_ROLE.PUBLIC),
+	PGFormController.getPgForm
+);
 module.exports = router;

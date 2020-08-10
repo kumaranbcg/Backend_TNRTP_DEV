@@ -34,4 +34,12 @@ AdminController.prototype.getPanchayatList = async (req, res) => {
 		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
 	}
 };
+AdminController.prototype.getProfile = async (req, res) => {
+	try {
+		let result = await service.getProfileSerivce({ ...req.user });
+		res.status(result.code).json({ message: result.message, data: result.data });
+	} catch (err) {
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
 module.exports = new AdminController();

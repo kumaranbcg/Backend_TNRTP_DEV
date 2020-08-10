@@ -38,5 +38,14 @@ module.exports = (sequelize, DataTypes) => {
 			as: "address",
 		});
 	};
+	staffMaster.selectedFields = [
+		["TNRTP06_STAFF_MASTER_D", "userId"],
+		["TNRTP06_USER_NAME_N", "userName"],
+		["TNRTP06_STATUS_D", "isActive"],
+		["TNRTP06_ROLE_D", "role"],
+		["TNRTP06_EMAIL_N", "emailId"],
+		["TNRTP06_MOBILE_NUMBER_R", "mobileNumber"],
+		["TNRTP06_IS_NEW_USER_D", "isNewUser"],
+	];
 	return staffMaster;
 };

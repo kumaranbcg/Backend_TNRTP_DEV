@@ -48,6 +48,8 @@ const {
 	DISBURSEMENT_STATE,
 } = require("../constants/index");
 const { Op } = require("sequelize");
+const Cryptr = require("cryptr");
+const cryptr = new Cryptr(process.env.AES_KEY);
 class PCApplicationService {}
 
 PCApplicationService.prototype.pcFormCreateSerivce = async (params) => {
@@ -291,11 +293,9 @@ PCApplicationService.prototype.pcFormUploadDocSerivce = async (params) => {
 PCApplicationService.prototype.getPcFormService = async (params) => {
 	try {
 		const { formId } = params;
-		// let data = await districtMaster.findAll();
-		// console.log(data);
 		let formData = await pcFormMaster.findOne({
 			where: { formId, TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED },
-			attributes: ["formId", "userId", "name"],
+			attributes: ["formId", "userId", "name", "status"],
 			include: [
 				{
 					model: pcFormBasicDetails,
@@ -603,54 +603,62 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 					],
 			  }
 			: {};
+		const assignedCount = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP12_PC_FORMS_PROPOSED_ACTIVITY",
+			{
+				attributes: [
+					[application.fn("SUM", application.col("TNRTP12_AMOUNT_REQUIRED_D")), "totalAmount"],
+				],
+				required: false,
+				where: {
+					TNRTP12_PC_FORMS_MASTER_D: {
+						[Op.eq]: application.col("TNRTP01_PC_FORMS_MASTER.TNRTP01_PC_FORMS_MASTER_D"),
+					},
+				},
+			}
+		).slice(0, -1);
 		let { rows, count } = await pcFormMaster.findAndCountAll({
-			where: { TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED, status, ...searchCondition },
+			where: {
+				TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED,
+				status,
+				...searchCondition,
+			},
 			attributes: [
 				"formId",
 				"userId",
-				"name",
-				"status",
-				["TNRTP01_CREATED_AT", "appDate"],
 				["TNRTP01_UPDATED_AT", "appSubmitDate"],
+				[application.literal("(" + assignedCount + ")"), "totalAmount"],
 			],
 			include: [
 				{
 					model: pcFormBasicDetails,
 					as: "basicDetails",
-					required: false,
+					required: true,
 					where: { TNRTP07_DELETED_F: DELETE_STATUS.NOT_DELETED, districtId },
-					attributes: pcFormBasicDetails.selectedFields,
+					attributes: ["name", "pcName", "blockId", "districtId"],
 				},
 				{
 					model: pcFormDetails,
 					as: "pcDetails",
-					required: false,
+					required: true,
 					where: { TNRTP08_DELETED_F: DELETE_STATUS.NOT_DELETED },
 					attributes: pcFormDetails.selectedFields,
 					include: [
 						{
 							model: selectedPcCommodity,
 							as: "pcCommodityTypes",
-							required: false,
+							required: true,
 							attributes: selectedPcCommodity.selectedFields,
 							include: [
 								{
 									model: pcCommodityTypes,
 									as: "pcCommodityTypesData",
-									required: false,
+									required: true,
 									attributes: pcCommodityTypes.selectedFields,
 								},
 							],
 						},
 					],
-				},
-				{
-					model: pcFormProposedActivity,
-					as: "pcFormProposedActivity",
-					required: false,
-					where: { TNRTP12_DELETED_F: DELETE_STATUS.NOT_DELETED },
-
-					attributes: pcFormProposedActivity.selectedFields,
 				},
 			],
 			raw: false,
@@ -663,21 +671,20 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 		});
 		let blockData = await blockMaster.findAll({
 			where: {
-				value: rows.map((x) => x.dataValues.basicDetails.dataValues.block),
+				value: rows.map((x) =>
+					x.dataValues.basicDetails ? x.dataValues.basicDetails.dataValues.blockId : ""
+				),
 			},
 			attributes: blockMaster.selectedFields,
 			raw: true,
 		});
 		rows.map((element) => {
 			let amount = 0;
-			element.dataValues.basicDetails.dataValues.block = blockData.find(
-				(x) => x.value == element.dataValues.basicDetails.dataValues.block
-			);
-			element.dataValues.pcFormProposedActivity.forEach((eachData) => {
-				amount = amount + eachData.amtReq;
-			});
-			element.dataValues.totalAmount = amount;
-			delete element.dataValues.pcFormProposedActivity;
+			if (element.dataValues.basicDetails)
+				element.dataValues.basicDetails.dataValues.block = blockData.find(
+					(x) => x.value == element.dataValues.basicDetails.dataValues.blockId
+				);
+			delete element.dataValues.basicDetails.dataValues.blockId;
 			return element;
 		});
 		let meta = {
@@ -1146,10 +1153,10 @@ PCApplicationService.prototype.pcCoverageAreaService = async (params) => {
 				});
 			});
 		}
-		if (coverageMembers) {
-			coverageMembers.formId = formId;
-			await pcCoverageMembers.create({ ...coverageMembers });
-		}
+		// if (coverageMembers) {
+		// 	coverageMembers.formId = formId;
+		// 	await pcCoverageMembers.create({ ...coverageMembers });
+		// }
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -1185,14 +1192,17 @@ PCApplicationService.prototype.getPcCoverageAreaService = async (params) => {
 				},
 			],
 		});
-		let coverageMembers = await pcCoverageMembers.findOne({
-			where: { formId },
-			attributes: pcCoverageMembers.selectedFields,
-		});
+		// let coverageMembers = await pcCoverageMembers.findOne({
+		// 	where: { formId },
+		// 	attributes: pcCoverageMembers.selectedFields,
+		// });
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
-			data: { coverageData, coverageMembers },
+			data: {
+				coverageData,
+				//  coverageMembers
+			},
 		};
 	} catch (err) {
 		console.log("getPcCoverageAreaService", err);

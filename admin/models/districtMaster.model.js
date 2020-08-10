@@ -13,5 +13,9 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: false,
 		}
 	);
+	districtMaster.selectedFields = [
+		["TNRTP07_DISTRICT_MASTER_D", "value"],
+		["TNRTP07_DISTRICT_NAME", "label"],
+	];
 	return districtMaster;
 };

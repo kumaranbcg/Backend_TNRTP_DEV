@@ -204,4 +204,64 @@ AdminService.prototype.gePanchayatSerivce = async (params) => {
 		};
 	}
 };
+AdminService.prototype.getProfileSerivce = async (params) => {
+	try {
+		const { userId } = params;
+		let userProfile = await staffMaster.findOne({
+			where: { TNRTP06_STAFF_MASTER_D: userId },
+			attributes: staffMaster.selectedFields,
+			include: [
+				{
+					model: staffMaster,
+					as: "createdBy",
+					attributes: [
+						["TNRTP06_STAFF_MASTER_D", "userId"],
+						["TNRTP06_USER_NAME_N", "userName"],
+						["TNRTP06_ROLE_D", "role"],
+					],
+				},
+				{
+					model: staffAddress,
+					as: "address",
+					required: false,
+					attributes: [["TNRTP12_STAFF_ADDRESS_D", "addressId"]],
+					include: [
+						{
+							model: districtMaster,
+							as: "district",
+							attributes: districtMaster.selectedFields,
+						},
+						{
+							model: blockMaster,
+							as: "block",
+							attributes: [
+								["TNRTP08_BLOCK_MASTER_D", "blockId"],
+								["TNRTP08_BLOCK_NAME", "blockName"],
+							],
+						},
+						{
+							model: panchayatMaster,
+							as: "panchayat",
+							attributes: [
+								["TNRTP09_PANCHAYAT_MASTER_D", "panchayatId"],
+								["TNRTP09_PANCHAYAT_NAME", "panchayatName"],
+							],
+						},
+					],
+				},
+			],
+		});
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.listSuccess,
+			data: userProfile,
+		};
+	} catch (err) {
+		console.log("getProfileSerivce", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: messages.technicalError,
+		};
+	}
+};
 module.exports = new AdminService();
