@@ -9,7 +9,7 @@ const {
 	userFormController,
 	PGFormController,
 } = require("./../controllers/controller");
-const { pcFormSubmit } = require("../validators/pcForm.validator");
+const { pcFormSubmit, pgFormSubmit } = require("../validators");
 router.use((req, res, next) => {
 	if (req.headers.authorization) {
 		let token = req.headers.authorization.replace("Bearer ", "");

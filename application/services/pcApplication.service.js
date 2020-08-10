@@ -304,7 +304,7 @@ PCApplicationService.prototype.getPcFormService = async (params) => {
 		const { formId } = params;
 		let formData = await pcFormMaster.findOne({
 			where: { formId, TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED },
-			attributes: ["formId", "userId", "name", "status"],
+			attributes: ["formId", "userId", "name", "status", ["TNRTP01_UPDATED_AT", "appSubmitDate"]],
 			include: [
 				{
 					model: pcFormBasicDetails,
