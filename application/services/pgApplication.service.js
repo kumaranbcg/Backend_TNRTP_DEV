@@ -35,6 +35,15 @@ PGApplicationService.prototype.pgFormCreateSerivce = async (params) => {
 			TNRTP36_CREATED_D: userId,
 			TNRTP36_UPDATED_D: userId,
 		};
+		let pendingForm = await pgFormMaster.findOne({
+			where: { status: [FORM_MASTER_STATUS.DRAFT, FORM_MASTER_STATUS.PENDING] },
+		});
+		if (pendingForm) {
+			return {
+				code: errorCodes.HTTP_CONFLICT,
+				message: messages.pgFormPending,
+			};
+		}
 		let formData = await pgFormMaster.create({ ...createMaster });
 		return {
 			code: errorCodes.HTTP_OK,

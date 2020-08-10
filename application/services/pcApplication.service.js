@@ -59,6 +59,15 @@ PCApplicationService.prototype.pcFormCreateSerivce = async (params) => {
 			userId,
 			status: FORM_MASTER_STATUS.DRAFT,
 		};
+		let pendingForm = await pcFormMaster.findOne({
+			where: { status: [FORM_MASTER_STATUS.DRAFT, FORM_MASTER_STATUS.PENDING] },
+		});
+		if (pendingForm) {
+			return {
+				code: errorCodes.HTTP_CONFLICT,
+				message: messages.pcFormPending,
+			};
+		}
 		let formData = await pcFormMaster.create({ ...createMaster });
 		return {
 			code: errorCodes.HTTP_OK,

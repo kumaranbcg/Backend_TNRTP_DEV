@@ -19,6 +19,8 @@ module.exports = {
 	passwordChanged: "Password changed successfully",
 	emailExist: "Email Id already exists ",
 	emailNotExist: "Email Id already exists ",
+	pcFormPending: "You have already raised Producer Collective form, which is in pending status",
+	pgFormPending: "You have already raised Producer Group form, which is in pending status",
 	userNameNotExist: "User Name does not exist",
 	staffExist: "Username or Email or Mobile number already exist",
 	updateStaffExist: "Username or Email already exist",
