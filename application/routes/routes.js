@@ -4,7 +4,7 @@ const messages = require("./../configs/errorMsgs.js");
 const ErrorCodes = require("./../configs/errorCodes.js");
 const { verifyToken, docUpload, hasRole } = require("./../utils/index");
 const router = express.Router();
-const { PCFormController } = require("./../controllers/controller");
+const { PCFormController, userFormController } = require("./../controllers/controller");
 const { pcFormSubmit } = require("../validators/pcForm.validator");
 router.use((req, res, next) => {
 	if (req.headers.authorization) {
@@ -153,6 +153,13 @@ router.get(
 	verifyToken,
 	hasRole(STAFF_ROLE.DPMU),
 	PCFormController.getPcCoverageArea
+);
+
+router.get(
+	"/application/getUserApplications",
+	verifyToken,
+	hasRole(STAFF_ROLE.PUBLIC),
+	userFormController.getUserApplications
 );
 
 module.exports = router;

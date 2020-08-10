@@ -49,9 +49,7 @@ const {
 } = require("../constants/index");
 const { Op } = require("sequelize");
 class PCApplicationService {}
-(async () => {
-	await pcAssessment.destroy({ where: { formId: 1 } });
-})();
+
 PCApplicationService.prototype.pcFormCreateSerivce = async (params) => {
 	try {
 		const { userId } = params;
@@ -449,6 +447,43 @@ PCApplicationService.prototype.getPcFormService = async (params) => {
 						},
 					],
 				},
+				{
+					model: pcApplicationStatus,
+					as: "pcApplicationStatus",
+					required: false,
+					attributes: ["dmpuVerifyDate", "applicationStatus", ["TNRTP20_UPDATED_D", "approvedBy"]],
+				},
+				{
+					model: pcDisbursment,
+					as: "firstTranche",
+					required: false,
+					where: { disbursmentType: DISBURSEMENT_STATE.FIRST_TRANCHE },
+					attributes: [
+						"isDisbursment",
+						"disbursmentDate",
+						"disbursmentAmount",
+						["TNRTP22_UPDATED_D", "disbursedBy"],
+					],
+				},
+				{
+					model: pcDisbursment,
+					as: "secondTranche",
+					required: false,
+					where: { disbursmentType: DISBURSEMENT_STATE.SECOND_TRANCHE },
+					attributes: [
+						"isDisbursment",
+						"disbursmentDate",
+						"disbursmentAmount",
+						["TNRTP22_UPDATED_D", "disbursedBy"],
+					],
+				},
+				{
+					model: pcDisbursment,
+					as: "secondTrancheUc",
+					required: false,
+					where: { disbursmentType: DISBURSEMENT_STATE.SECOND_TRANCHE_UC },
+					attributes: ["disbursmentSubmitDate", ["TNRTP22_UPDATED_D", "disbursedBy"]],
+				},
 			],
 			nested: true,
 		});
@@ -628,7 +663,7 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 		});
 		let blockData = await blockMaster.findAll({
 			where: {
-				blockId: rows.map((x) => x.dataValues.basicDetails.dataValues.block),
+				value: rows.map((x) => x.dataValues.basicDetails.dataValues.block),
 			},
 			attributes: blockMaster.selectedFields,
 			raw: true,
@@ -636,7 +671,7 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 		rows.map((element) => {
 			let amount = 0;
 			element.dataValues.basicDetails.dataValues.block = blockData.find(
-				(x) => x.blockId == element.dataValues.basicDetails.dataValues.block
+				(x) => x.value == element.dataValues.basicDetails.dataValues.block
 			);
 			element.dataValues.pcFormProposedActivity.forEach((eachData) => {
 				amount = amount + eachData.amtReq;
@@ -769,7 +804,6 @@ PCApplicationService.prototype.getPcApplicationStatusService = async (params) =>
 					required: false,
 					where: { disbursmentType: DISBURSEMENT_STATE.FIRST_TRANCHE },
 					attributes: [
-						"disbursmentType",
 						"isDisbursment",
 						"disbursmentDate",
 						"disbursmentAmount",
@@ -782,7 +816,6 @@ PCApplicationService.prototype.getPcApplicationStatusService = async (params) =>
 					required: false,
 					where: { disbursmentType: DISBURSEMENT_STATE.SECOND_TRANCHE },
 					attributes: [
-						"disbursmentType",
 						"isDisbursment",
 						"disbursmentDate",
 						"disbursmentSubmitDate",
@@ -811,7 +844,7 @@ PCApplicationService.prototype.getPcApplicationStatusService = async (params) =>
 					as: "secondTrancheUc",
 					required: false,
 					where: { disbursmentType: DISBURSEMENT_STATE.SECOND_TRANCHE_UC },
-					attributes: ["disbursmentSubmitDate"],
+					attributes: ["disbursmentSubmitDate", ["TNRTP22_UPDATED_D", "disbursedBy"]],
 					include: [
 						{
 							model: pcRequiredDoc,
