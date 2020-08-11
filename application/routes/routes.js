@@ -73,7 +73,7 @@ router.post(
 	"/application/submitPcForm",
 	verifyToken,
 	hasRole([STAFF_ROLE.PUBLIC]),
-	decryptData,
+	// decryptData,
 	pcFormSubmit,
 	PCFormController.submitPcForm
 );
