@@ -2,7 +2,7 @@ const express = require("express");
 const { STAFF_ROLE } = require("../constants/index");
 const messages = require("./../configs/errorMsgs.js");
 const ErrorCodes = require("./../configs/errorCodes.js");
-const { verifyToken, docUpload, hasRole } = require("./../utils/index");
+const { verifyToken, docUpload, hasRole, decryptData } = require("./../utils/index");
 const router = express.Router();
 const {
 	PCFormController,
@@ -35,28 +35,35 @@ router.use((err, req, res, next) => {
 router.get(
 	"/application/pcFormCreate",
 	verifyToken,
-	hasRole(STAFF_ROLE.PUBLIC),
+	hasRole([STAFF_ROLE.PUBLIC]),
 	PCFormController.pcFormCreate
 );
 
 router.post(
 	"/application/pcFormFill",
 	verifyToken,
-	hasRole(STAFF_ROLE.PUBLIC),
+	hasRole([STAFF_ROLE.PUBLIC]),
 	PCFormController.pcFormFill
 );
 
 router.get(
 	"/application/getPcForm",
 	verifyToken,
-	// hasRole(STAFF_ROLE.PUBLIC),
+	hasRole([
+		STAFF_ROLE.PUBLIC,
+		STAFF_ROLE.DPMU,
+		STAFF_ROLE.SPMU,
+		STAFF_ROLE.PLF,
+		STAFF_ROLE.BPMU,
+		STAFF_ROLE.VPRC,
+	]),
 	PCFormController.getPcForm
 );
 
 router.get(
 	"/application/getPCMasters",
 	verifyToken,
-	hasRole(STAFF_ROLE.PUBLIC),
+	hasRole([STAFF_ROLE.PUBLIC]),
 	PCFormController.getPCMasters
 );
 
@@ -65,7 +72,8 @@ router.post("/application/uploadDoc", verifyToken, docUpload, PCFormController.u
 router.post(
 	"/application/submitPcForm",
 	verifyToken,
-	hasRole(STAFF_ROLE.PUBLIC),
+	hasRole([STAFF_ROLE.PUBLIC]),
+	decryptData,
 	pcFormSubmit,
 	PCFormController.submitPcForm
 );
@@ -73,117 +81,117 @@ router.post(
 router.post(
 	"/application/getPcApplication",
 	verifyToken,
-	hasRole(STAFF_ROLE.DPMU),
+	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC]),
 	PCFormController.getPcApplication
 );
 
 router.post(
 	"/application/updateOpenApplication",
 	verifyToken,
-	hasRole(STAFF_ROLE.DPMU),
+	hasRole([STAFF_ROLE.DPMU]),
 	PCFormController.updateOpenApplication
 );
 
 router.get(
 	"/application/getPcApplicationStatus",
 	verifyToken,
-	hasRole(STAFF_ROLE.DPMU),
+	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC]),
 	PCFormController.getPcApplicationStatus
 );
 
 router.post(
 	"/application/updateFirstTranche",
 	verifyToken,
-	hasRole(STAFF_ROLE.DPMU),
+	hasRole([STAFF_ROLE.DPMU]),
 	PCFormController.updateFirstTranche
 );
 
 router.post(
 	"/application/updateSecondTranche",
 	verifyToken,
-	hasRole(STAFF_ROLE.DPMU),
+	hasRole([STAFF_ROLE.DPMU]),
 	PCFormController.updateSecondTranche
 );
 
 router.post(
 	"/application/updateSecondTrancheUc",
 	verifyToken,
-	hasRole(STAFF_ROLE.DPMU),
+	hasRole([STAFF_ROLE.DPMU]),
 	PCFormController.updateSecondTrancheUc
 );
 
 router.get(
 	"/application/startAssesment",
 	verifyToken,
-	hasRole(STAFF_ROLE.DPMU),
+	hasRole([STAFF_ROLE.DPMU]),
 	PCFormController.startAssesment
 );
 
 router.post(
 	"/application/submitAssesment",
 	verifyToken,
-	hasRole(STAFF_ROLE.DPMU),
+	hasRole([STAFF_ROLE.DPMU]),
 	PCFormController.submitAssesment
 );
 
 router.get(
 	"/application/getAssesment",
 	verifyToken,
-	hasRole(STAFF_ROLE.DPMU),
+	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC]),
 	PCFormController.getAssesment
 );
 
 router.post(
 	"/application/pcServiceArea",
 	verifyToken,
-	hasRole(STAFF_ROLE.DPMU),
+	hasRole([STAFF_ROLE.DPMU]),
 	PCFormController.pcServiceArea
 );
 router.get(
 	"/application/getPcServiceArea",
 	verifyToken,
-	hasRole(STAFF_ROLE.DPMU),
+	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC]),
 	PCFormController.getPcServiceArea
 );
 
 router.post(
 	"/application/pcCoverageArea",
 	verifyToken,
-	hasRole(STAFF_ROLE.DPMU),
+	hasRole([STAFF_ROLE.DPMU]),
 	PCFormController.pcCoverageArea
 );
 router.get(
 	"/application/getPcCoverageArea",
 	verifyToken,
-	hasRole(STAFF_ROLE.DPMU),
+	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC]),
 	PCFormController.getPcCoverageArea
 );
 
 router.get(
 	"/application/getUserApplications",
 	verifyToken,
-	hasRole(STAFF_ROLE.PUBLIC),
+	hasRole([STAFF_ROLE.PUBLIC]),
 	userFormController.getUserApplications
 );
 
 router.get(
 	"/application/pgFormCreate",
 	verifyToken,
-	hasRole(STAFF_ROLE.PUBLIC),
+	hasRole([STAFF_ROLE.PUBLIC]),
 	PGFormController.pgFormCreate
 );
 
 router.post(
 	"/application/pgFormFill",
 	verifyToken,
-	hasRole(STAFF_ROLE.PUBLIC),
+	hasRole([STAFF_ROLE.PUBLIC]),
 	PGFormController.pgFormFill
 );
 
 router.get(
 	"/application/getPgForm",
 	verifyToken,
-	hasRole(STAFF_ROLE.PUBLIC),
+	hasRole([STAFF_ROLE.PUBLIC]),
 	PGFormController.getPgForm
 );
 
@@ -191,7 +199,7 @@ router.post(
 	"/application/submitPgForm",
 	verifyToken,
 	pgFormSubmit,
-	hasRole(STAFF_ROLE.PUBLIC),
+	hasRole([STAFF_ROLE.PUBLIC]),
 	PGFormController.submitPgForm
 );
 module.exports = router;

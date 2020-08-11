@@ -1,6 +1,4 @@
 const { DELETE_STATUS, FORM_SECTION_STATUS } = require("../../constants/index");
-const Cryptr = require("cryptr");
-const cryptr = new Cryptr(process.env.AES_KEY);
 module.exports = (sequelize, DataTypes) => {
 	const pcFormBankDetails = sequelize.define(
 		"TNRTP11_PC_FORMS_BANK_DETAILS",

@@ -38,7 +38,7 @@ const schemas = {
 					value: BaseJoi.number().required(),
 				})
 				.required(),
-			othersName: BaseJoi.string().required(),
+			othersName: BaseJoi.optional(),
 		}).required(),
 		pcFormMembers: BaseJoi.object({
 			formId: BaseJoi.number().required(),
@@ -167,7 +167,7 @@ const schemas = {
 			promotingOrgName: BaseJoi.string().required(),
 			formSupportedBy: BaseJoi.number().required(),
 			noOfPG: BaseJoi.number().required(),
-			othersName: BaseJoi.string().required(),
+			othersName: BaseJoi.optional(),
 			pgTypes: BaseJoi.array()
 				.items({
 					value: BaseJoi.number().required(),

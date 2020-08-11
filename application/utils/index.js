@@ -1,6 +1,8 @@
 const bcrypt = require("bcrypt");
 const errorCodes = require("../configs/errorCodes");
 const errorMessages = require("../configs/errorMsgs");
+const Cryptr = require("cryptr");
+const cryptr = new Cryptr(process.env.AES_KEY);
 module.exports = {
 	errorHandler: require("./errorHandler"),
 	generateOtp: function (data) {
@@ -28,12 +30,19 @@ module.exports = {
 	verifyToken: require("./verifyToken"),
 	hasRole: function (role) {
 		return function (req, res, next) {
-			if (role !== req.user.role) {
+			if (!role.includes(req.user.role)) {
 				return res
 					.status(errorCodes.HTTP_UNAUTHORIZED)
 					.json({ errMessage: errorMessages[errorCodes.HTTP_UNAUTHORIZED] });
 			} else next();
 		};
+	},
+	decryptData: async (req, res, next) => {
+		if (req.body) req.body = JSON.parse(cryptr.decrypt(req.body));
+		next();
+	},
+	encryptData: function (data) {
+		return cryptr.encrypt(JSON.stringify(data));
 	},
 	docUpload: require("./docUpload"),
 };

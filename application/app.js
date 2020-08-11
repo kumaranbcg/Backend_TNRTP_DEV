@@ -12,6 +12,7 @@ const router = express.Router();
 app.use(helmet());
 app.use(cors());
 app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.text());
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use((req, res, next) => {
 	res.setHeader("Access-Control-Allow-Origin", "*");

@@ -635,6 +635,7 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 			attributes: [
 				"formId",
 				"userId",
+				"status",
 				["TNRTP01_UPDATED_AT", "appSubmitDate"],
 				[application.literal("(" + assignedCount + ")"), "totalAmount"],
 			],
@@ -649,7 +650,7 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 				{
 					model: pcFormDetails,
 					as: "pcDetails",
-					required: true,
+					required: false,
 					where: { TNRTP08_DELETED_F: DELETE_STATUS.NOT_DELETED },
 					attributes: pcFormDetails.selectedFields,
 					include: [
@@ -668,6 +669,33 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 							],
 						},
 					],
+				},
+				{
+					model: pcApplicationStatus,
+					as: "pcApplicationStatus",
+					required: false,
+					attributes: [["TNRTP20_UPDATED_D", "approvedBy"]],
+				},
+				{
+					model: pcDisbursment,
+					as: "firstTranche",
+					required: false,
+					where: { disbursmentType: DISBURSEMENT_STATE.FIRST_TRANCHE },
+					attributes: [["TNRTP22_UPDATED_D", "disbursedBy"]],
+				},
+				{
+					model: pcDisbursment,
+					as: "secondTranche",
+					required: false,
+					where: { disbursmentType: DISBURSEMENT_STATE.SECOND_TRANCHE },
+					attributes: [["TNRTP22_UPDATED_D", "disbursedBy"]],
+				},
+				{
+					model: pcDisbursment,
+					as: "secondTrancheUc",
+					required: false,
+					where: { disbursmentType: DISBURSEMENT_STATE.SECOND_TRANCHE_UC },
+					attributes: [["TNRTP22_UPDATED_D", "disbursedBy"]],
 				},
 			],
 			raw: false,
@@ -888,11 +916,17 @@ PCApplicationService.prototype.getPcApplicationStatusService = async (params) =>
 };
 PCApplicationService.prototype.updateFirstTrancheService = async (params) => {
 	try {
-		let { userData } = params;
+		let { userData, formId } = params;
 		params.TNRTP22_CREATED_D = userData.userId;
 		params.TNRTP22_UPDATED_D = userData.userId;
 		delete params.userData;
 		await pcDisbursment.create({ ...params });
+		await pcFormMaster.update(
+			{ status: FORM_MASTER_STATUS.SECOND_TRANCHE },
+			{
+				where: { formId },
+			}
+		);
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -907,7 +941,7 @@ PCApplicationService.prototype.updateFirstTrancheService = async (params) => {
 };
 PCApplicationService.prototype.updateSecondTrancheService = async (params) => {
 	try {
-		const { userData } = params;
+		const { userData, formId } = params;
 		if (params.firstUcCertificate && params.firstUcCertificate.length) {
 			params.firstUcCertificate.map((element) => {
 				element.docType = PC_STAFF_DOC.FIRST_TRANCHE;
@@ -934,6 +968,12 @@ PCApplicationService.prototype.updateSecondTrancheService = async (params) => {
 						as: "smpuTrancheApproval",
 					},
 				],
+			}
+		);
+		await pcFormMaster.update(
+			{ status: FORM_MASTER_STATUS.SECOND_TRANCHE_UC },
+			{
+				where: { formId },
 			}
 		);
 		return {
@@ -970,12 +1010,7 @@ PCApplicationService.prototype.updateSecondTrancheUcService = async (params) => 
 				],
 			}
 		);
-		await pcFormMaster.update(
-			{ status: params.applicationStatus },
-			{
-				where: { formId },
-			}
-		);
+		await pcFormMaster.update({ status: FORM_MASTER_STATUS.APPROVED }, { where: { formId } });
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
