@@ -65,4 +65,51 @@ PGFormController.prototype.getPgForm = async (req, res) => {
 		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
 	}
 };
+PGFormController.prototype.submitPgForm = async (req, res) => {
+	try {
+		let userData = {
+			userData: req.user,
+		};
+		let basicRes = await service.pgFormBasicDetailsSerivce({
+			...req.body.basicDetails,
+			...userData,
+		});
+		let detailsRes = await service.pgFormDetailsSerivce({ ...req.body.pgDetails, ...userData });
+		let membersRes = await service.pgFormMemberSerivce({ ...req.body.pgFormMembers, ...userData });
+		let amountRes = await service.pgFormAmountSerivce({
+			...req.body.pgFormAmountRecevied,
+			...userData,
+		});
+		let bankRes = await service.pgFormBankDetailsSerivce({
+			...req.body.pgFormBankDetails,
+			...userData,
+		});
+		let proposedRes = await service.pgFormProposedActivitySerivce([
+			...req.body.pgFormProposedActivity,
+		]);
+		let uploadRes = await service.pgFormUploadDocSerivce({ ...req.body.uploadDocuments });
+		if (
+			basicRes.code == errorCodes.HTTP_OK &&
+			detailsRes.code == errorCodes.HTTP_OK &&
+			membersRes.code == errorCodes.HTTP_OK &&
+			amountRes.code == errorCodes.HTTP_OK &&
+			bankRes.code == errorCodes.HTTP_OK &&
+			proposedRes.code == errorCodes.HTTP_OK &&
+			uploadRes.code == errorCodes.HTTP_OK
+		) {
+			let data = {
+				formId: req.body.basicDetails.formId,
+				status: FORM_MASTER_STATUS.OPEN_APPLICATION,
+			};
+			let result = await service.updatePgFormStatus({ ...data });
+			res.status(result.code).json({ message: result.message, data: result.data });
+		} else
+			res
+				.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR)
+				.json({ errMessage: errMessages.technicalError });
+	} catch (err) {
+		console.log(err);
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
 module.exports = new PGFormController();

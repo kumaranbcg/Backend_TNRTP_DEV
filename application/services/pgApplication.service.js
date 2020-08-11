@@ -272,7 +272,7 @@ PGApplicationService.prototype.getPgFormService = async (params) => {
 		const { formId } = params;
 		let formData = await pgFormMaster.findOne({
 			where: { formId, TNRTP36_DELETED_F: DELETE_STATUS.NOT_DELETED },
-			attributes: ["formId", "userId", "name", "status"],
+			attributes: ["formId", "userId", "name", "status", ["TNRTP36_UPDATED_AT", "appSubmitDate"]],
 			include: [
 				{
 					model: pgFormBasicDetails,
@@ -437,6 +437,27 @@ PGApplicationService.prototype.getPgFormService = async (params) => {
 		};
 	} catch (err) {
 		console.log("getPgFormService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+PGApplicationService.prototype.updatePgFormStatus = async (params) => {
+	try {
+		const { formId, status } = params;
+		await pgFormMaster.update(
+			{ status, TNRTP36_UPDATED_AT: new Date() },
+			{
+				where: { formId },
+			}
+		);
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+		};
+	} catch (err) {
+		console.log("updatePgFormStatus", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: err,

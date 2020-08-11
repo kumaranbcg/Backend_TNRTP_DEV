@@ -186,4 +186,12 @@ router.get(
 	hasRole(STAFF_ROLE.PUBLIC),
 	PGFormController.getPgForm
 );
+
+router.post(
+	"/application/submitPgForm",
+	verifyToken,
+	pgFormSubmit,
+	hasRole(STAFF_ROLE.PUBLIC),
+	PGFormController.submitPgForm
+);
 module.exports = router;
