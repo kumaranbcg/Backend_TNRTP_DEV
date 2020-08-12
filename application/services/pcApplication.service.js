@@ -626,6 +626,80 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 				},
 			}
 		).slice(0, -1);
+		const districtForms = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP07_PC_FORMS_BASIC_DETAILS",
+			{
+				where: { TNRTP07_US_DISTRICT_MASTER_D: districtId },
+				attributes: ["TNRTP07_PC_FORMS_MASTER_D"],
+			}
+		).slice(0, -1);
+		const totalApplication = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP01_PC_FORMS_MASTER",
+			{
+				attributes: [
+					[
+						application.fn("COUNT", application.col("TNRTP01_PC_FORMS_MASTER_D")),
+						"totalApplication",
+					],
+				],
+				required: true,
+				where: {
+					TNRTP01_PC_FORMS_MASTER_D: { [Op.in]: application.literal("(" + districtForms + ")") },
+					TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED,
+					TNRTP01_STATUS_D: { [Op.not]: FORM_MASTER_STATUS.DRAFT },
+				},
+			}
+		).slice(0, -1);
+		const approvedApplication = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP01_PC_FORMS_MASTER",
+			{
+				attributes: [
+					[
+						application.fn("COUNT", application.col("TNRTP01_PC_FORMS_MASTER_D")),
+						"approvedApplication",
+					],
+				],
+				required: true,
+				where: {
+					TNRTP01_PC_FORMS_MASTER_D: { [Op.in]: application.literal("(" + districtForms + ")") },
+					TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED,
+					TNRTP01_STATUS_D: {
+						[Op.in]: [
+							FORM_MASTER_STATUS.FIRST_TRANCHE,
+							FORM_MASTER_STATUS.SECOND_TRANCHE,
+							FORM_MASTER_STATUS.SECOND_TRANCHE_UC,
+							FORM_MASTER_STATUS.APPROVED,
+						],
+					},
+				},
+			}
+		).slice(0, -1);
+		const rejectedApplication = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP01_PC_FORMS_MASTER",
+			{
+				attributes: [
+					[
+						application.fn("COUNT", application.col("TNRTP01_PC_FORMS_MASTER_D")),
+						"rejectedApplication",
+					],
+				],
+				required: true,
+				where: {
+					TNRTP01_PC_FORMS_MASTER_D: { [Op.in]: application.literal("(" + districtForms + ")") },
+					TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED,
+					TNRTP01_STATUS_D: {
+						[Op.in]: [FORM_MASTER_STATUS.DECLINED],
+					},
+				},
+			}
+		).slice(0, -1);
+		let applicationCount = await pcFormMaster.findOne({
+			attributes: [
+				[application.literal("(" + totalApplication + ")"), "totalApplication"],
+				[application.literal("(" + approvedApplication + ")"), "approvedApplication"],
+				[application.literal("(" + rejectedApplication + ")"), "rejectedApplication"],
+			],
+		});
 		let { rows, count } = await pcFormMaster.findAndCountAll({
 			where: {
 				TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED,
@@ -737,6 +811,7 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 			message: messages.success,
 			data: {
 				list: rows,
+				applicationCount,
 				meta,
 			},
 		};
