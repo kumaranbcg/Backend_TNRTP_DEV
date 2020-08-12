@@ -1,7 +1,7 @@
 const service = require("./../services/pgApplication.service");
 const errorCodes = require("./../configs/errorCodes.js");
 const errMessages = require("./../configs/errorMsgs");
-const { PC_FORM_MASTER_STATUS, PG_FORM_STAGE } = require("./../constants/index");
+const { PG_FORM_MASTER_STATUS, PG_FORM_STAGE } = require("./../constants/index");
 class PGFormController {}
 
 PGFormController.prototype.pgFormCreate = async (req, res) => {
@@ -99,7 +99,7 @@ PGFormController.prototype.submitPgForm = async (req, res) => {
 		) {
 			let data = {
 				formId: req.body.basicDetails.formId,
-				status: PC_FORM_MASTER_STATUS.OPEN_APPLICATION,
+				status: PG_FORM_MASTER_STATUS.BMPU_OPEN_APPLICATION,
 			};
 			let result = await service.updatePgFormStatus({ ...data });
 			res.status(result.code).json({ message: result.message, data: result.data });
@@ -107,6 +107,83 @@ PGFormController.prototype.submitPgForm = async (req, res) => {
 			res
 				.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR)
 				.json({ errMessage: errMessages.technicalError });
+	} catch (err) {
+		console.log(err);
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
+PGFormController.prototype.getPgApplication = async (req, res) => {
+	try {
+		let result = await service.getPgApplicationService({ ...req.body });
+		res.status(result.code).json({ message: result.message, data: result.data });
+	} catch (err) {
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
+PGFormController.prototype.updateBmpuOpenApplication = async (req, res) => {
+	try {
+		req.body.userData = req.user;
+		let result = await service.updateBmpuOpenApplicationService({ ...req.body });
+		res.status(result.code).json({ message: result.message, data: result.data });
+	} catch (err) {
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
+PGFormController.prototype.getPgApplicationStatus = async (req, res) => {
+	try {
+		let result = await service.getPgApplicationStatusService({ ...req.query });
+		res.status(result.code).json({ message: result.message, data: result.data });
+	} catch (err) {
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
+PGFormController.prototype.updateDmpuOpenApplication = async (req, res) => {
+	try {
+		req.body.userData = req.user;
+		let result = await service.updateDmpuOpenApplicationService({ ...req.body });
+		res.status(result.code).json({ message: result.message, data: result.data });
+	} catch (err) {
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
+PGFormController.prototype.updateAmountDisbursment = async (req, res) => {
+	try {
+		req.body.userData = req.user;
+		let result = await service.updateAmountDisbursmentService({ ...req.body });
+		res.status(result.code).json({ message: result.message, data: result.data });
+	} catch (err) {
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
+PGFormController.prototype.updateDisbursmentUc = async (req, res) => {
+	try {
+		req.body.userData = req.user;
+		let result = await service.updateDisbursmentUcService({ ...req.body });
+		res.status(result.code).json({ message: result.message, data: result.data });
+	} catch (err) {
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
+PGFormController.prototype.startPgAssesment = async (req, res) => {
+	try {
+		let result = await service.startPgAssesmentService({ ...req.query });
+		res.status(result.code).json({ message: result.message, data: result.data });
+	} catch (err) {
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
+PGFormController.prototype.submitPgAssesment = async (req, res) => {
+	try {
+		let result = await service.submitPgAssesmentService({ ...req.body });
+		res.status(result.code).json({ message: result.message, data: result.data });
+	} catch (err) {
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
+PGFormController.prototype.getPgAssesment = async (req, res) => {
+	try {
+		let result = await service.getPgAssesmentService({ ...req.query });
+		res.status(result.code).json({ message: result.message, data: result.data });
 	} catch (err) {
 		console.log(err);
 		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });

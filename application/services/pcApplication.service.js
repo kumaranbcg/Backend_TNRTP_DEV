@@ -45,7 +45,7 @@ const {
 	PC_UPLOAD_DOC,
 	ORDERBY,
 	PC_STAFF_DOC,
-	DISBURSEMENT_STATE,
+	PC_DISBURSEMENT_STATE,
 } = require("../constants/index");
 const { Op } = require("sequelize");
 const Cryptr = require("cryptr");
@@ -466,7 +466,7 @@ PCApplicationService.prototype.getPcFormService = async (params) => {
 					model: pcDisbursment,
 					as: "firstTranche",
 					required: false,
-					where: { disbursmentType: DISBURSEMENT_STATE.FIRST_TRANCHE },
+					where: { disbursmentType: PC_DISBURSEMENT_STATE.FIRST_TRANCHE },
 					attributes: [
 						"isDisbursment",
 						"disbursmentDate",
@@ -478,7 +478,7 @@ PCApplicationService.prototype.getPcFormService = async (params) => {
 					model: pcDisbursment,
 					as: "secondTranche",
 					required: false,
-					where: { disbursmentType: DISBURSEMENT_STATE.SECOND_TRANCHE },
+					where: { disbursmentType: PC_DISBURSEMENT_STATE.SECOND_TRANCHE },
 					attributes: [
 						"isDisbursment",
 						"disbursmentDate",
@@ -490,7 +490,7 @@ PCApplicationService.prototype.getPcFormService = async (params) => {
 					model: pcDisbursment,
 					as: "secondTrancheUc",
 					required: false,
-					where: { disbursmentType: DISBURSEMENT_STATE.SECOND_TRANCHE_UC },
+					where: { disbursmentType: PC_DISBURSEMENT_STATE.SECOND_TRANCHE_UC },
 					attributes: ["disbursmentSubmitDate", ["TNRTP22_UPDATED_D", "disbursedBy"]],
 				},
 			],
@@ -914,7 +914,7 @@ PCApplicationService.prototype.getPcApplicationStatusService = async (params) =>
 					model: pcDisbursment,
 					as: "firstTranche",
 					required: false,
-					where: { disbursmentType: DISBURSEMENT_STATE.FIRST_TRANCHE },
+					where: { disbursmentType: PC_DISBURSEMENT_STATE.FIRST_TRANCHE },
 					attributes: [
 						"isDisbursment",
 						"disbursmentDate",
@@ -926,7 +926,7 @@ PCApplicationService.prototype.getPcApplicationStatusService = async (params) =>
 					model: pcDisbursment,
 					as: "secondTranche",
 					required: false,
-					where: { disbursmentType: DISBURSEMENT_STATE.SECOND_TRANCHE },
+					where: { disbursmentType: PC_DISBURSEMENT_STATE.SECOND_TRANCHE },
 					attributes: [
 						"isDisbursment",
 						"disbursmentDate",
@@ -955,7 +955,7 @@ PCApplicationService.prototype.getPcApplicationStatusService = async (params) =>
 					model: pcDisbursment,
 					as: "secondTrancheUc",
 					required: false,
-					where: { disbursmentType: DISBURSEMENT_STATE.SECOND_TRANCHE_UC },
+					where: { disbursmentType: PC_DISBURSEMENT_STATE.SECOND_TRANCHE_UC },
 					attributes: ["disbursmentSubmitDate", ["TNRTP22_UPDATED_D", "disbursedBy"]],
 					include: [
 						{
@@ -987,6 +987,7 @@ PCApplicationService.prototype.updateFirstTrancheService = async (params) => {
 		let { userData, formId } = params;
 		params.TNRTP22_CREATED_D = userData.userId;
 		params.TNRTP22_UPDATED_D = userData.userId;
+		params.disbursmentType = PC_DISBURSEMENT_STATE.FIRST_TRANCHE;
 		delete params.userData;
 		await pcDisbursment.create({ ...params });
 		await pcFormMaster.update(
@@ -1021,6 +1022,7 @@ PCApplicationService.prototype.updateSecondTrancheService = async (params) => {
 			});
 		}
 		delete params.userData;
+		params.disbursmentType = PC_DISBURSEMENT_STATE.SECOND_TRANCHE;
 		params.TNRTP22_CREATED_D = userData.userId;
 		params.TNRTP22_UPDATED_D = userData.userId;
 		await pcDisbursment.create(
@@ -1065,6 +1067,7 @@ PCApplicationService.prototype.updateSecondTrancheUcService = async (params) => 
 			});
 		}
 		delete params.userData;
+		params.disbursmentType = PC_DISBURSEMENT_STATE.SECOND_TRANCHE_UC;
 		params.TNRTP22_CREATED_D = userData.userId;
 		params.TNRTP22_UPDATED_D = userData.userId;
 		await pcDisbursment.create(
