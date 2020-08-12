@@ -59,7 +59,7 @@ module.exports = (sequelize, DataTypes) => {
         });
         symrEnterprise.belongsTo(models.pcCommodityTypes, {
 			foreignKey: "TNRTP18_TYPE_OF_COMMODITY_MASTER_D",
-			as: "courseCompletionTypeData",
+			as: "pcCommodityTypeData",
         });
         symrEnterprise.belongsTo(models.years, {
 			foreignKey: "TNRTP18_YEARS_MASTER_D",

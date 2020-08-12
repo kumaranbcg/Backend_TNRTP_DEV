@@ -29,26 +29,26 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	);
 	pgApplicationStatus.associate = function (models) {
-		pcApplicationStatus.hasMany(models.pgRequiredDoc, {
+		pgApplicationStatus.hasMany(models.pgRequiredDoc, {
 			foreignKey: "TNRTP49_PG_APPLICATION_STATUS_MASTER_D",
 			as: "signedAssesment",
 		});
-		pcApplicationStatus.hasMany(models.pgRequiredDoc, {
+		pgApplicationStatus.hasMany(models.pgRequiredDoc, {
 			foreignKey: "TNRTP49_PG_APPLICATION_STATUS_MASTER_D",
 			as: "blockLevelForm",
 		});
-		pcApplicationStatus.hasMany(models.pgRequiredDoc, {
+		pgApplicationStatus.hasMany(models.pgRequiredDoc, {
 			foreignKey: "TNRTP49_PG_APPLICATION_STATUS_MASTER_D",
 			as: "smpuApprovalLetter",
 		});
-		pcApplicationStatus.hasMany(models.pgRequiredDoc, {
+		pgApplicationStatus.hasMany(models.pgRequiredDoc, {
 			foreignKey: "TNRTP49_PG_APPLICATION_STATUS_MASTER_D",
 			as: "decmm",
 		});
-		pcApplicationStatus.hasMany(models.pgRequiredDoc, {
+		pgApplicationStatus.hasMany(models.pgRequiredDoc, {
 			foreignKey: "TNRTP49_PG_APPLICATION_STATUS_MASTER_D",
 			as: "firstTrancheUc",
 		});
 	};
-	return pcApplicationStatus;
+	return pgApplicationStatus;
 };

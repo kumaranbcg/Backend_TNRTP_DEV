@@ -1,5 +1,5 @@
 const { DELETE_STATUS, FORM_SECTION_STATUS } = require("../../constants/index");
-const db = require("../../models");
+const db = require("..");
 module.exports = (sequelize, DataTypes) => {
 	const symrBasicDetails = sequelize.define(
 		"TNRTP01_SYMR_FORMS_BASIC_DETAILS",

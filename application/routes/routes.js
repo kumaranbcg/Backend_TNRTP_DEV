@@ -8,6 +8,7 @@ const {
 	PCFormController,
 	userFormController,
 	PGFormController,
+	SYMRFormController,
 } = require("./../controllers/controller");
 const { pcFormSubmit, pgFormSubmit } = require("../validators");
 router.use((req, res, next) => {
@@ -201,5 +202,13 @@ router.post(
 	pgFormSubmit,
 	hasRole([STAFF_ROLE.PUBLIC]),
 	PGFormController.submitPgForm
+);
+
+// SYMR 
+router.get(
+	"/application/symrFormCreate",
+	verifyToken,
+	hasRole([STAFF_ROLE.PUBLIC]),
+	SYMRFormController.symrFormCreate
 );
 module.exports = router;
