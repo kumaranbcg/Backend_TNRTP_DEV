@@ -1,7 +1,7 @@
 const service = require("./../services/pcApplication.service");
 const errorCodes = require("./../configs/errorCodes.js");
 const errMessages = require("./../configs/errorMsgs");
-const { FORM_MASTER_STATUS, PC_FORM_STAGE } = require("./../constants/index");
+const { PC_FORM_MASTER_STATUS, PC_FORM_STAGE } = require("./../constants/index");
 class PCFormController {}
 
 PCFormController.prototype.pcFormCreate = async (req, res) => {
@@ -78,7 +78,7 @@ PCFormController.prototype.submitPcForm = async (req, res) => {
 		) {
 			let data = {
 				formId: req.body.basicDetails.formId,
-				status: FORM_MASTER_STATUS.OPEN_APPLICATION,
+				status: PC_FORM_MASTER_STATUS.OPEN_APPLICATION,
 			};
 			let result = await service.updatePcFormStatus({ ...data });
 			res.status(result.code).json({ message: result.message, data: result.data });

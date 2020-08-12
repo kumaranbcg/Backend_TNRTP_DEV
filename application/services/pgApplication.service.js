@@ -1,6 +1,6 @@
 const messages = require("./../configs/errorMsgs.js");
 const errorCodes = require("./../configs/errorCodes.js");
-const { FORM_MASTER_STATUS, PG_UPLOAD_DOC, DELETE_STATUS } = require("../constants/index");
+const { PC_FORM_MASTER_STATUS, PG_UPLOAD_DOC, DELETE_STATUS } = require("../constants/index");
 const { Op } = require("sequelize");
 const {
 	pgFormMaster,
@@ -31,19 +31,19 @@ PGApplicationService.prototype.pgFormCreateSerivce = async (params) => {
 		const { userId } = params;
 		const createMaster = {
 			userId,
-			status: FORM_MASTER_STATUS.DRAFT,
+			status: PC_FORM_MASTER_STATUS.DRAFT,
 			TNRTP36_CREATED_D: userId,
 			TNRTP36_UPDATED_D: userId,
 		};
 		let pendingForm = await pgFormMaster.findOne({
-			where: { status: [FORM_MASTER_STATUS.DRAFT, FORM_MASTER_STATUS.PENDING] },
+			where: { status: [PC_FORM_MASTER_STATUS.DRAFT, PC_FORM_MASTER_STATUS.PENDING] },
 		});
-		if (pendingForm) {
-			return {
-				code: errorCodes.HTTP_CONFLICT,
-				message: messages.pgFormPending,
-			};
-		}
+		// if (pendingForm) {
+		// 	return {
+		// 		code: errorCodes.HTTP_CONFLICT,
+		// 		message: messages.pgFormPending,
+		// 	};
+		// }
 		let formData = await pgFormMaster.create({ ...createMaster });
 		return {
 			code: errorCodes.HTTP_OK,
