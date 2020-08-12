@@ -1,7 +1,7 @@
 const service = require("./../services/userForm.service");
 const errorCodes = require("./../configs/errorCodes");
 const errMessages = require("./../configs/errorMsgs");
-const { FORM_MASTER_STATUS, PC_FORM_STAGE } = require("./../constants/index");
+const { PC_FORM_MASTER_STATUS, PC_FORM_STAGE } = require("./../constants/index");
 class UserFormController {}
 
 UserFormController.prototype.getUserApplications = async (req, res) => {

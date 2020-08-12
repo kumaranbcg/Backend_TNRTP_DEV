@@ -40,7 +40,7 @@ const {
 const messages = require("./../configs/errorMsgs.js");
 const errorCodes = require("./../configs/errorCodes.js");
 const {
-	FORM_MASTER_STATUS,
+	PC_FORM_MASTER_STATUS,
 	DELETE_STATUS,
 	PC_UPLOAD_DOC,
 	ORDERBY,
@@ -57,17 +57,17 @@ PCApplicationService.prototype.pcFormCreateSerivce = async (params) => {
 		const { userId } = params;
 		const createMaster = {
 			userId,
-			status: FORM_MASTER_STATUS.DRAFT,
+			status: PC_FORM_MASTER_STATUS.DRAFT,
 		};
 		let pendingForm = await pcFormMaster.findOne({
-			where: { status: [FORM_MASTER_STATUS.DRAFT, FORM_MASTER_STATUS.PENDING] },
+			where: { status: [PC_FORM_MASTER_STATUS.DRAFT, PC_FORM_MASTER_STATUS.PENDING] },
 		});
-		if (pendingForm) {
-			return {
-				code: errorCodes.HTTP_CONFLICT,
-				message: messages.pcFormPending,
-			};
-		}
+		// if (pendingForm) {
+		// 	return {
+		// 		code: errorCodes.HTTP_CONFLICT,
+		// 		message: messages.pcFormPending,
+		// 	};
+		// }
 		let formData = await pcFormMaster.create({ ...createMaster });
 		return {
 			code: errorCodes.HTTP_OK,
@@ -646,7 +646,7 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 				where: {
 					TNRTP01_PC_FORMS_MASTER_D: { [Op.in]: application.literal("(" + districtForms + ")") },
 					TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED,
-					TNRTP01_STATUS_D: { [Op.not]: FORM_MASTER_STATUS.DRAFT },
+					TNRTP01_STATUS_D: { [Op.not]: PC_FORM_MASTER_STATUS.DRAFT },
 				},
 			}
 		).slice(0, -1);
@@ -665,10 +665,10 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 					TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED,
 					TNRTP01_STATUS_D: {
 						[Op.in]: [
-							FORM_MASTER_STATUS.FIRST_TRANCHE,
-							FORM_MASTER_STATUS.SECOND_TRANCHE,
-							FORM_MASTER_STATUS.SECOND_TRANCHE_UC,
-							FORM_MASTER_STATUS.APPROVED,
+							PC_FORM_MASTER_STATUS.FIRST_TRANCHE,
+							PC_FORM_MASTER_STATUS.SECOND_TRANCHE,
+							PC_FORM_MASTER_STATUS.SECOND_TRANCHE_UC,
+							PC_FORM_MASTER_STATUS.APPROVED,
 						],
 					},
 				},
@@ -688,7 +688,7 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 					TNRTP01_PC_FORMS_MASTER_D: { [Op.in]: application.literal("(" + districtForms + ")") },
 					TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED,
 					TNRTP01_STATUS_D: {
-						[Op.in]: [FORM_MASTER_STATUS.DECLINED],
+						[Op.in]: [PC_FORM_MASTER_STATUS.DECLINED],
 					},
 				},
 			}
@@ -763,7 +763,6 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 			raw: true,
 		});
 		rows.map((element) => {
-			let amount = 0;
 			if (element.dataValues.basicDetails)
 				element.dataValues.basicDetails.dataValues.block = blockData.find(
 					(x) => x.value == element.dataValues.basicDetails.dataValues.blockId
@@ -991,7 +990,7 @@ PCApplicationService.prototype.updateFirstTrancheService = async (params) => {
 		delete params.userData;
 		await pcDisbursment.create({ ...params });
 		await pcFormMaster.update(
-			{ status: FORM_MASTER_STATUS.SECOND_TRANCHE },
+			{ status: PC_FORM_MASTER_STATUS.SECOND_TRANCHE },
 			{
 				where: { formId },
 			}
@@ -1040,7 +1039,7 @@ PCApplicationService.prototype.updateSecondTrancheService = async (params) => {
 			}
 		);
 		await pcFormMaster.update(
-			{ status: FORM_MASTER_STATUS.SECOND_TRANCHE_UC },
+			{ status: PC_FORM_MASTER_STATUS.SECOND_TRANCHE_UC },
 			{
 				where: { formId },
 			}
@@ -1079,7 +1078,7 @@ PCApplicationService.prototype.updateSecondTrancheUcService = async (params) => 
 				],
 			}
 		);
-		await pcFormMaster.update({ status: FORM_MASTER_STATUS.APPROVED }, { where: { formId } });
+		await pcFormMaster.update({ status: PC_FORM_MASTER_STATUS.APPROVED }, { where: { formId } });
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
