@@ -612,7 +612,7 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 					],
 			  }
 			: {};
-		const assignedCount = application.dialect.QueryGenerator.selectQuery(
+		const totalAmount = application.dialect.QueryGenerator.selectQuery(
 			"TNRTP12_PC_FORMS_PROPOSED_ACTIVITY",
 			{
 				attributes: [
@@ -711,7 +711,7 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 				"userId",
 				"status",
 				["TNRTP01_UPDATED_AT", "appSubmitDate"],
-				[application.literal("(" + assignedCount + ")"), "totalAmount"],
+				[application.literal("(" + totalAmount + ")"), "totalAmount"],
 			],
 			include: [
 				{
@@ -743,33 +743,6 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 							],
 						},
 					],
-				},
-				{
-					model: pcApplicationStatus,
-					as: "pcApplicationStatus",
-					required: false,
-					attributes: [["TNRTP20_UPDATED_D", "approvedBy"]],
-				},
-				{
-					model: pcDisbursment,
-					as: "firstTranche",
-					required: false,
-					where: { disbursmentType: DISBURSEMENT_STATE.FIRST_TRANCHE },
-					attributes: [["TNRTP22_UPDATED_D", "disbursedBy"]],
-				},
-				{
-					model: pcDisbursment,
-					as: "secondTranche",
-					required: false,
-					where: { disbursmentType: DISBURSEMENT_STATE.SECOND_TRANCHE },
-					attributes: [["TNRTP22_UPDATED_D", "disbursedBy"]],
-				},
-				{
-					model: pcDisbursment,
-					as: "secondTrancheUc",
-					required: false,
-					where: { disbursmentType: DISBURSEMENT_STATE.SECOND_TRANCHE_UC },
-					attributes: [["TNRTP22_UPDATED_D", "disbursedBy"]],
 				},
 			],
 			raw: false,
@@ -884,9 +857,30 @@ PCApplicationService.prototype.updateOpenApplicationService = async (params) => 
 PCApplicationService.prototype.getPcApplicationStatusService = async (params) => {
 	try {
 		const { formId } = params;
+		const totalAmount = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP12_PC_FORMS_PROPOSED_ACTIVITY",
+			{
+				attributes: [
+					[application.fn("SUM", application.col("TNRTP12_AMOUNT_REQUIRED_D")), "totalAmount"],
+				],
+				required: false,
+				where: {
+					TNRTP12_PC_FORMS_MASTER_D: {
+						[Op.eq]: application.col("TNRTP01_PC_FORMS_MASTER.TNRTP01_PC_FORMS_MASTER_D"),
+					},
+				},
+			}
+		).slice(0, -1);
 		let openApplicationDetails = await pcFormMaster.findOne({
 			where: { formId },
-			attributes: ["formId", "userId", "name", "status", ["TNRTP01_UPDATED_AT", "appRecievedDate"]],
+			attributes: [
+				"formId",
+				"userId",
+				"name",
+				"status",
+				["TNRTP01_UPDATED_AT", "appRecievedDate"],
+				[application.literal("(" + totalAmount + ")"), "totalAmount"],
+			],
 			include: [
 				{
 					model: pcApplicationStatus,
