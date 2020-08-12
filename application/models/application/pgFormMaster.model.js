@@ -53,6 +53,22 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: "formId",
 			as: "pgFormUploadDocument",
 		});
+		pgFormMaster.hasOne(models.pgApplicationStatus, {
+			foreignKey: "formId",
+			as: "pgBmpuApplicationStatus",
+		});
+		pgFormMaster.hasOne(models.pgApplicationStatus, {
+			foreignKey: "formId",
+			as: "pgDmpuApplicationStatus",
+		});
+		pgFormMaster.hasOne(models.pgDisbursment, {
+			foreignKey: "formId",
+			as: "amountDisbursment",
+		});
+		pgFormMaster.hasOne(models.pgDisbursment, {
+			foreignKey: "formId",
+			as: "disbursmentUc",
+		});
 	};
 	return pgFormMaster;
 };

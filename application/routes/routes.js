@@ -202,4 +202,67 @@ router.post(
 	hasRole([STAFF_ROLE.PUBLIC]),
 	PGFormController.submitPgForm
 );
+
+router.post(
+	"/application/getPgApplication",
+	verifyToken,
+	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC]),
+	PGFormController.getPgApplication
+);
+
+router.post(
+	"/application/updateBmpuOpenApplication",
+	verifyToken,
+	hasRole([STAFF_ROLE.BPMU]),
+	PGFormController.updateBmpuOpenApplication
+);
+
+router.get(
+	"/application/getPgApplicationStatus",
+	verifyToken,
+	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC]),
+	PGFormController.getPgApplicationStatus
+);
+
+router.post(
+	"/application/updateDmpuOpenApplication",
+	verifyToken,
+	hasRole([STAFF_ROLE.DPMU]),
+	PGFormController.updateDmpuOpenApplication
+);
+
+router.post(
+	"/application/updateAmountDisbursment",
+	verifyToken,
+	hasRole([STAFF_ROLE.DPMU]),
+	PGFormController.updateAmountDisbursment
+);
+
+router.post(
+	"/application/updateDisbursmentUc",
+	verifyToken,
+	hasRole([STAFF_ROLE.DPMU]),
+	PGFormController.updateDisbursmentUc
+);
+
+router.get(
+	"/application/startPgAssesment",
+	verifyToken,
+	hasRole([STAFF_ROLE.BPMU]),
+	PGFormController.startPgAssesment
+);
+
+router.post(
+	"/application/submitPgAssesment",
+	verifyToken,
+	hasRole([STAFF_ROLE.BPMU]),
+	PGFormController.submitPgAssesment
+);
+
+router.get(
+	"/application/getPgAssesment",
+	verifyToken,
+	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC]),
+	PGFormController.getPgAssesment
+);
 module.exports = router;
