@@ -156,14 +156,27 @@ SYMRApplicationService.prototype.symrSkillDetailService = async (params) => {
 SYMRApplicationService.prototype.symrEnterpriseDetailService = async (params) => {
 	try {
 		const { formId } = params;
-		let formData = await symrEnterprise.findOne({
-			where: { formId },
+		await symrEnterprise.destroy({ where: { formId } }).then(() => {
+			return symrEnterprise.create(
+				{ ...params },
+				{
+					include: [
+						{
+							model: selectedSymr,
+							as: "symrTypesData",
+						},
+						{
+							model: selectedSymrCommodity,
+							as: "symrCommodityTypesData",
+						},
+						{
+							model: selectedSymrSector,
+							as: "symrSectorTypesData",
+						},
+					],
+				}
+			);
 		});
-		if (formData) {
-			await formData.update({ ...params });
-		} else {
-			await symrEnterprise.create({ ...params });
-		}
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
