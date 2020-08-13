@@ -9,6 +9,8 @@ const {
 	pcTypes,
 	pcFormDetails,
 	selectedPc,
+	pcCommodityTypes,
+	pcSectorTypes,
 } = require("../models");
 const { DELETE_STATUS, FORM_TYPES } = require("./../constants/index");
 const { Op, Sequelize } = require("sequelize");
@@ -103,6 +105,64 @@ UserFormService.prototype.getUserApplicationsService = async (params) => {
 		};
 	} catch (err) {
 		console.log("pcFormCreateSerivce", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+UserFormService.prototype.getActivityTypesService = async (params) => {
+	try {
+		let activities = await pcTypes.findAll({
+			attributes: pcTypes.selectedFields,
+		});
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+			data: activities,
+		};
+	} catch (err) {
+		console.log("getActivityTypesService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+UserFormService.prototype.getSectorTypesService = async (params) => {
+	try {
+		const { activityId } = params;
+		let sectors = await pcSectorTypes.findAll({
+			where: { activityId },
+			attributes: pcSectorTypes.selectedFields,
+		});
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+			data: sectors,
+		};
+	} catch (err) {
+		console.log("getSectorTypesService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+UserFormService.prototype.getCommodityTypesService = async (params) => {
+	try {
+		const { sectorId } = params;
+		let sectors = await pcCommodityTypes.findAll({
+			where: { sectorId },
+			attributes: pcCommodityTypes.selectedFields,
+		});
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+			data: sectors,
+		};
+	} catch (err) {
+		console.log("getSectorTypesService", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: err,

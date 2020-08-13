@@ -896,22 +896,6 @@ PGApplicationService.prototype.getPgApplicationStatusService = async (params) =>
 						},
 					],
 				},
-				// {
-				// 	model: pcDisbursment,
-				// 	as: "secondTrancheUc",
-				// 	required: false,
-				// 	where: { disbursmentType: PC_DISBURSEMENT_STATE.SECOND_TRANCHE_UC },
-				// 	attributes: ["disbursmentSubmitDate", ["TNRTP22_UPDATED_D", "disbursedBy"]],
-				// 	include: [
-				// 		{
-				// 			model: pcRequiredDoc,
-				// 			as: "secondTrancheApproval",
-				// 			required: false,
-				// 			where: { docType: PC_STAFF_DOC.SECOND_TRANCHE },
-				// 			attributes: pcRequiredDoc.selectedFields,
-				// 		},
-				// 	],
-				// },
 			],
 		});
 		return {
