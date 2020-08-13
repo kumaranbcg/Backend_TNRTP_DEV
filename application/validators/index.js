@@ -280,6 +280,187 @@ const schemas = {
 			remarks: BaseJoi.string().required(),
 		}).required(),
 	}),
+	symrFormSubmit: BaseJoi.object({
+		basicDetails: BaseJoi.object({
+			formId: BaseJoi.number().required(),
+			sourceInfo: BaseJoi.number().required(),
+			name: BaseJoi.string().required(),
+			mobileNumber: BaseJoi.string().required(),
+			address: BaseJoi.string().required(),
+			fatherName: BaseJoi.string().required(),
+			dateOfBirth: BaseJoi.date().required(),
+			age: BaseJoi.number().required(),
+			gender: BaseJoi.number().required(),
+			religion: BaseJoi.number().required(),
+			community: BaseJoi.number().required(),
+			educationQualification: BaseJoi.number().required(),
+			proofType: BaseJoi.number().required(),
+			govtIdNumber: BaseJoi.number().required(),
+			natureOfMigration: BaseJoi.string().required(),
+			placeReturnFrom: BaseJoi.string().required(),
+			previousOccupation: BaseJoi.string().required(),
+			isWomeHeaded: BaseJoi.boolean().required(),
+			isVulnerableCategory: BaseJoi.boolean().required(),
+			districtId: BaseJoi.number().required(),
+			blockId: BaseJoi.number().required(),
+			panchayatId: BaseJoi.number().required()
+		}).required(),
+		symrShgDetails: BaseJoi.object({
+			formId: BaseJoi.number().required(),
+			shgMemberType: BaseJoi.number().required(),
+			relationshipType: BaseJoi.number().required(),
+			shgName: BaseJoi.string().required(),
+			eMathiCode: BaseJoi.string().required()
+		}).required(),
+		symrSkillTraining: BaseJoi.object({
+			formId: BaseJoi.number().required(),
+			isSkillTrained: BaseJoi.boolean().required(),
+			trainingInstitute: BaseJoi.when("isSkillTrained", {
+				is: true,
+				then: BaseJoi.string().required(),
+				otherwise: BaseJoi.optional(),
+			}),
+			skillTrainingScheme:BaseJoi.when("isSkillTrained", {
+				is: true,
+				then: BaseJoi.number().required(),
+				otherwise: BaseJoi.optional(),
+			}),
+			specifyOther:BaseJoi.when("isSkillTrained", {
+				is: true,
+				then: BaseJoi.string().required(),
+				otherwise: BaseJoi.optional(),
+			}),
+			courseName: BaseJoi.when("isSkillTrained", {
+				is: true,
+				then: BaseJoi.string().required(),
+				otherwise: BaseJoi.optional(),
+			}),
+			courseCompletionYear: BaseJoi.when("isSkillTrained", {
+				is: true,
+				then: BaseJoi.number().required(),
+				otherwise: BaseJoi.optional(),
+			}),
+			isCompletedEdpProgramme: BaseJoi.boolean().required(),
+			edpCompletedInstituteName: BaseJoi.when("isCompletedEdpProgramme", {
+				is: true,
+				then: BaseJoi.string().required(),
+				otherwise: BaseJoi.optional(),
+			}),
+			edpCompletedCourseName: BaseJoi.when("isCompletedEdpProgramme", {
+				is: true,
+				then: BaseJoi.string().required(),
+				otherwise: BaseJoi.optional(),
+			}),
+			edpScheme:BaseJoi.when("isCompletedEdpProgramme", {
+				is: true,
+				then: BaseJoi.number().required(),
+				otherwise: BaseJoi.optional(),
+			}),
+			isRegisteredEdpProgramme: BaseJoi.boolean().required(),
+			edpRegisteredInstituteName: BaseJoi.when("isRegisteredEdpProgramme", {
+				is: true,
+				then: BaseJoi.string().required(),
+				otherwise: BaseJoi.optional(),
+			}),
+			edpRegisteredCourseName: BaseJoi.when("isRegisteredEdpProgramme", {
+				is: true,
+				then: BaseJoi.string().required(),
+				otherwise: BaseJoi.optional(),
+			}),
+			registeredEdpScheme:BaseJoi.when("isRegisteredEdpProgramme", {
+				is: true,
+				then: BaseJoi.number().required(),
+				otherwise: BaseJoi.optional(),
+			}),
+		}).required(),
+		symrEnterprise: BaseJoi.object({
+			formId: BaseJoi.number().required(),
+			grantenterpriseName: BaseJoi.string().required(),
+			enterpriseType: BaseJoi.number().required(),
+			grantActivityName: BaseJoi.string().required(),
+			activityType: BaseJoi.number().required(),
+			sectorId: BaseJoi.number().required(),
+			commodityId: BaseJoi.number().required(),
+			summary: BaseJoi.string().required(),
+			noOfPersons: BaseJoi.number().required(),
+			isExperiencedEnterpreneur: BaseJoi.boolean().required(),
+			enterpreneurExpYears: BaseJoi.when("isExperiencedEnterpreneur", {
+				is: true,
+				then: BaseJoi.number().required(),
+				otherwise: BaseJoi.optional(),
+			}),
+			isEmployedInActivity: BaseJoi.boolean().required(),
+			activityExpYears: BaseJoi.when("isEmployedInActivity", {
+				is: true,
+				then: BaseJoi.number().required(),
+				otherwise: BaseJoi.optional(),
+			}),
+			designation: BaseJoi.string().required(),
+			location: BaseJoi.boolean().required(),
+			isLoanAppliedPreviously: BaseJoi.boolean().required(),
+			schemeAmount: BaseJoi.when("isLoanAppliedPreviously", {
+				is: true,
+				then: BaseJoi.number().required(),
+				otherwise: BaseJoi.optional(),
+			}),
+			schemeName: BaseJoi.when("isLoanAppliedPreviously", {
+				is: true,
+				then: BaseJoi.string().required(),
+				otherwise: BaseJoi.optional(),
+			}),
+		}).required(),
+		symrBankDetails: BaseJoi.object({
+			formId: BaseJoi.number().required(),
+			accNumber: BaseJoi.string().required(),
+			accName: BaseJoi.string().required(),
+			bnkName: BaseJoi.string().required(),
+			branchName: BaseJoi.string().required(),
+			ifscCode: BaseJoi.string().required(),
+		}).required(),
+		symrProposedActivity: BaseJoi.array()
+			.items({
+				formId: BaseJoi.number().required(),
+				activityName: BaseJoi.string().required(),
+				activityTimeLine: BaseJoi.number().required(),
+				activityTimeLineVal: BaseJoi.number().required(),
+				amtReq: BaseJoi.number().required(),
+			})
+			.required(),
+		uploadDocuments: BaseJoi.object({
+			formId: BaseJoi.number().required(),
+			regCertificate: BaseJoi.array()
+				.items({
+					docUrl: BaseJoi.string().required(),
+					docName: BaseJoi.string().required(),
+				})
+				.required(),
+			auditStatement: BaseJoi.array()
+				.items({
+					docUrl: BaseJoi.string().required(),
+					docName: BaseJoi.string().required(),
+				})
+				.required(),
+			bankPassBook: BaseJoi.array()
+				.items({
+					docUrl: BaseJoi.string().required(),
+					docName: BaseJoi.string().required(),
+				})
+				.required(),
+			latestMomRes: BaseJoi.array()
+				.items({
+					docUrl: BaseJoi.string().required(),
+					docName: BaseJoi.string().required(),
+				})
+				.required(),
+			businessPlan: BaseJoi.array()
+				.items({
+					docUrl: BaseJoi.string().required(),
+					docName: BaseJoi.string().required(),
+				})
+				.required(),
+			remarks: BaseJoi.string().required(),
+		}).required(),
+	})
 };
 
 const options = {
@@ -342,5 +523,28 @@ const pcFormSubmit = async (req, res, next) => {
 		});
 	}
 };
+const symrFormSubmit = async (req, res, next) => {
+	var schema = schemas.symrFormSubmit;
+	let option = options.basic;
+	try {
+		await schema.validateAsync({ ...req.body }, option);
+		next();
+	} catch (err) {
+		let error = err.details.reduce((prev, curr) => {
+			prev[curr.path[0]] = curr.message.replace(/"/g, "");
+			return prev;
+		}, {});
+		console.log(error);
+		let message = errorMessages[errorCodes.HTTP_UNPROCESSABLE_ENTITY];
+		let status = errorCodes.HTTP_UNPROCESSABLE_ENTITY;
+
+		return res.status(status).json({
+			status,
+			message,
+			error,
+		});
+	}
+};
 module.exports.pcFormSubmit = pcFormSubmit;
 module.exports.pgFormSubmit = pgFormSubmit;
+module.exports.symrFormSubmit = symrFormSubmit;
