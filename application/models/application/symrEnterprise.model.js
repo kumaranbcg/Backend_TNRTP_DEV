@@ -13,9 +13,9 @@ module.exports = (sequelize, DataTypes) => {
 			grantenterpriseName: { type: DataTypes.STRING, field: "TNRTP81_GRANT_ENTERPRISE_NAME_N" },
 		    enterpriseType: { type: DataTypes.INTEGER, field: "TNRTP81_ENTERPRISE_TYPE_MASTER_D" },
 			grantActivityName: { type: DataTypes.STRING, field: "TNRTP81_GRANT_ACTIVITY_NAME_N" },
-		    activityType: { type: DataTypes.INTEGER, field: "TNRTP81_ACTIVITY_TYPE_MASTER_D" },
-			sector: { type: DataTypes.INTEGER, field: "TNRTP81_TYPE_OF_SECTOR_MASTER_D" },
-            commodity: { type: DataTypes.INTEGER, field: "TNRTP81_TYPE_OF_COMMODITY_MASTER_D" },
+		    // activityType: { type: DataTypes.INTEGER, field: "TNRTP81_ACTIVITY_TYPE_MASTER_D" },
+			// sector: { type: DataTypes.INTEGER, field: "TNRTP81_TYPE_OF_SECTOR_MASTER_D" },
+            // commodity: { type: DataTypes.INTEGER, field: "TNRTP81_TYPE_OF_COMMODITY_MASTER_D" },
             summary: { type: DataTypes.STRING, field: "TNRTP81_SUMMARY_N" },
 			noOfPersons: { type: DataTypes.INTEGER, field: "TNRTP81_NO_OF_PERSONS_D" },
             isExperiencedEnterpreneur: { type: DataTypes.BOOLEAN, field: "TNRTP81_IS_EXPERIENCED_ENTERPRENEUR_D" },
@@ -49,18 +49,19 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: "TNRTP81_ENTERPRISE_TYPE_MASTER_D",
 			as: "enterpriseTypeData",
 		});
-		symrEnterprise.belongsTo(models.activityType, {
-			foreignKey: "TNRTP81_ACTIVITY_TYPE_MASTER_D",
-			as: "activityTypeData",
+		symrEnterprise.hasMany(models.selectedSymr, {
+			foreignKey: "TNRTP92_SYMR_FORMS_DETAILS_MASTER_D",
+			as: "symractivityTypes",
+		});
+		symrEnterprise.hasMany(models.selectedSymrSector, {
+			foreignKey: "TNRTP93_SYMR_FORMS_DETAILS_MASTER_D",
+			as: "symrSectorTypes",
+		});
+        symrEnterprise.hasMany(models.selectedSymrCommodity, {
+			foreignKey: "TNRTP91_SYMR_FORMS_DETAILS_MASTER_D",
+			as: "symrCommodityTypes",
         });
-        symrEnterprise.hasMany(models.pcSectorTypes, {
-			foreignKey: "TNRTP81_TYPE_OF_SECTOR_MASTER_D",
-			as: "sectorTypeData",
-        });
-        symrEnterprise.hasMany(models.pcCommodityTypes, {
-			foreignKey: "TNRTP81_TYPE_OF_COMMODITY_MASTER_D",
-			as: "commodityTypeData",
-        });
+       
         symrEnterprise.belongsTo(models.years, {
 			foreignKey: "TNRTP81_ENTERPRENEUR_EXP_YEARS_MASTER_D",
 			as: "enterpreneurExpYearsData",

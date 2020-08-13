@@ -378,9 +378,20 @@ const schemas = {
 			grantenterpriseName: BaseJoi.string().required(),
 			enterpriseType: BaseJoi.number().required(),
 			grantActivityName: BaseJoi.string().required(),
-			activityType: BaseJoi.number().required(),
-			sector: BaseJoi.number().required(),
-			commodity: BaseJoi.number().required(),
+			symractivityTypes:BaseJoi.array()
+			.items({
+				value: BaseJoi.number().required(),
+			}),
+			symrSectorTypes: BaseJoi.array()
+			.items({
+				value: BaseJoi.number().required(),
+			})
+			.required(),
+			symrCommodityTypes: BaseJoi.array()
+			.items({
+				value: BaseJoi.number().required(),
+			})
+			.required(),
 			summary: BaseJoi.string().required(),
 			noOfPersons: BaseJoi.number().required(),
 			isExperiencedEnterpreneur: BaseJoi.boolean().required(),

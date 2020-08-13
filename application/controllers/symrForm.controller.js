@@ -56,7 +56,6 @@ SYMRFormController.prototype.symrFormFill = async (req, res) => {
 		}
 		res.status(result.code).json({ message: result.message, data: result.data });
 	} catch (err) {
-		console.log(err);
 		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
 	}
 };
@@ -70,9 +69,9 @@ SYMRFormController.prototype.submitSymrForm = async (req, res) => {
 		let proposedRes = await service.symrProposedActivitySerivce([
 			...req.body.symrProposedActivity,
 		]);
-		let ExistingRes = await service.symrExistingLoanSerivce([
+		let ExistingRes = await service.symrExistingLoanSerivce({
 			...req.body.symrExistingLoan,
-		]);
+		});
 		let uploadRes = await service.symrUploadDocSerivce({ ...req.body.uploadDocuments });
 		if (
 			basicRes.code == errorCodes.HTTP_OK &&
@@ -81,21 +80,20 @@ SYMRFormController.prototype.submitSymrForm = async (req, res) => {
 			enterpriseRes.code == errorCodes.HTTP_OK &&
 			bankRes.code == errorCodes.HTTP_OK &&
 			proposedRes.code == errorCodes.HTTP_OK &&
-			ExistingRes == errorCodes.HTTP_OK &&
+			ExistingRes.code == errorCodes.HTTP_OK &&
 			uploadRes.code == errorCodes.HTTP_OK
 		) {
 			let data = {
 				formId: req.body.basicDetails.formId,
 				status: SYMR_FORM_MASTER_STATUS.OPEN_APPLICATION,
 			};
-			let result = await service.updatesymrFormStatus({ ...data });
+			let result = await service.updateSymrFormStatus({ ...data });
 			res.status(result.code).json({ message: result.message, data: result.data });
 		} else
 			res
 				.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR)
 				.json({ errMessage: errMessages.technicalError });
 	} catch (err) {
-		console.log(err);
 		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
 	}
 };

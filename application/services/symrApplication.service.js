@@ -50,6 +50,7 @@ const {
 const { Op } = require("sequelize");
 const Cryptr = require("cryptr");
 const existingLoanActivityModel = require("../models/application/existingLoanActivity.model");
+const { string } = require("joi");
 const cryptr = new Cryptr(process.env.AES_KEY);
 class SYMRApplicationService {}
 
@@ -220,10 +221,8 @@ SYMRApplicationService.prototype.symrProposedActivitySerivce = async (params) =>
 };
 SYMRApplicationService.prototype.symrExistingLoanSerivce = async (params) => {
 	try {
-		console.log("225",params)
 		if (params) {
 			const { formId } = params;
-			console.log(formId)
 			await symrExistingLoan.destroy({ where: { formId } }).then(() => {
 				return symrExistingLoan.create({...params}, {
 					include: [
