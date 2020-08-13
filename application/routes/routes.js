@@ -32,6 +32,7 @@ router.use((err, req, res, next) => {
 		next();
 	}
 });
+router.post("/application/insertActivity", PCFormController.insertActvityMaster);
 
 router.get(
 	"/application/pcFormCreate",
@@ -204,7 +205,7 @@ router.post(
 	PGFormController.submitPgForm
 );
 
-// SYMR 
+// SYMR
 router.get(
 	"/application/symrFormCreate",
 	verifyToken,
@@ -273,4 +274,11 @@ router.get(
 	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC]),
 	PGFormController.getPgAssesment
 );
+
+router.get("/application/getActivityTypes", verifyToken, userFormController.getActivityTypes);
+
+router.post("/application/getSectorTypes", verifyToken, userFormController.getSectorTypes);
+
+router.post("/application/getCommodityTypes", verifyToken, userFormController.getCommodityTypes);
+
 module.exports = router;

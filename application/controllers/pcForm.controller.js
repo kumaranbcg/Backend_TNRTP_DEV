@@ -236,4 +236,13 @@ PCFormController.prototype.getPcCoverageArea = async (req, res) => {
 		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
 	}
 };
+PCFormController.prototype.insertActvityMaster = async (req, res) => {
+	try {
+		let result = await service.insertActvityMasterService([...req.body]);
+		res.status(result.code).json({ message: result.message, data: result.data });
+	} catch (err) {
+		console.log(err);
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
 module.exports = new PCFormController();
