@@ -296,7 +296,7 @@ const schemas = {
 			educationQualification: BaseJoi.number().required(),
 			proofType: BaseJoi.number().required(),
 			govtIdNumber: BaseJoi.number().required(),
-			natureOfMigration: BaseJoi.string().required(),
+			natureOfMigration: BaseJoi.number().required(),
 			placeReturnFrom: BaseJoi.string().required(),
 			previousOccupation: BaseJoi.string().required(),
 			isWomeHeaded: BaseJoi.boolean().required(),
@@ -378,9 +378,20 @@ const schemas = {
 			grantenterpriseName: BaseJoi.string().required(),
 			enterpriseType: BaseJoi.number().required(),
 			grantActivityName: BaseJoi.string().required(),
-			activityType: BaseJoi.number().required(),
-			sectorId: BaseJoi.number().required(),
-			commodityId: BaseJoi.number().required(),
+			symractivityTypes:BaseJoi.array()
+			.items({
+				value: BaseJoi.number().required(),
+			}),
+			symrSectorTypes: BaseJoi.array()
+			.items({
+				value: BaseJoi.number().required(),
+			})
+			.required(),
+			symrCommodityTypes: BaseJoi.array()
+			.items({
+				value: BaseJoi.number().required(),
+			})
+			.required(),
 			summary: BaseJoi.string().required(),
 			noOfPersons: BaseJoi.number().required(),
 			isExperiencedEnterpreneur: BaseJoi.boolean().required(),
@@ -396,7 +407,7 @@ const schemas = {
 				otherwise: BaseJoi.optional(),
 			}),
 			designation: BaseJoi.string().required(),
-			location: BaseJoi.boolean().required(),
+			location: BaseJoi.string().required(),
 			isLoanAppliedPreviously: BaseJoi.boolean().required(),
 			schemeAmount: BaseJoi.when("isLoanAppliedPreviously", {
 				is: true,
@@ -426,15 +437,42 @@ const schemas = {
 				amtReq: BaseJoi.number().required(),
 			})
 			.required(),
+		symrExistingLoan: BaseJoi.object({
+			isExistingLoan: BaseJoi.boolean().required(),
+			formId: BaseJoi.number().required(),
+			loanDetails:  BaseJoi.when("isExistingLoan", {
+				is: true,
+				then: BaseJoi.array()
+				.items({
+					isExistingLoan: BaseJoi.boolean().required(),
+					loanSource: BaseJoi.string().required(),
+					loanReceivedDate: BaseJoi.date().required(),
+					loanAmount: BaseJoi.number().required(),
+					interestRate: BaseJoi.number().required(),
+					amountToBeRepaid: BaseJoi.number().required(),
+					amountRepaid: BaseJoi.number().required(),
+					balanceAmtToBeRepaid: BaseJoi.number().required(),
+					reason: BaseJoi.string().required()
+				}),
+				otherwise: BaseJoi.optional(),
+			})
+		})
+			.required(),
 		uploadDocuments: BaseJoi.object({
 			formId: BaseJoi.number().required(),
-			regCertificate: BaseJoi.array()
+			proofOfMigration: BaseJoi.array()
 				.items({
 					docUrl: BaseJoi.string().required(),
 					docName: BaseJoi.string().required(),
 				})
 				.required(),
-			auditStatement: BaseJoi.array()
+			applicationLetter: BaseJoi.array()
+				.items({
+					docUrl: BaseJoi.string().required(),
+					docName: BaseJoi.string().required(),
+				})
+				.required(),
+			idProofPhoto: BaseJoi.array()
 				.items({
 					docUrl: BaseJoi.string().required(),
 					docName: BaseJoi.string().required(),
@@ -446,7 +484,7 @@ const schemas = {
 					docName: BaseJoi.string().required(),
 				})
 				.required(),
-			latestMomRes: BaseJoi.array()
+			trainingCertificate: BaseJoi.array()
 				.items({
 					docUrl: BaseJoi.string().required(),
 					docName: BaseJoi.string().required(),
