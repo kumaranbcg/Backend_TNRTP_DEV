@@ -378,7 +378,7 @@ const schemas = {
 			grantenterpriseName: BaseJoi.string().required(),
 			enterpriseType: BaseJoi.number().required(),
 			grantActivityName: BaseJoi.string().required(),
-			symractivityTypes:BaseJoi.array()
+			symrTypes:BaseJoi.array()
 			.items({
 				value: BaseJoi.number().required(),
 			}),

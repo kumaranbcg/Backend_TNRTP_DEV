@@ -12,18 +12,24 @@ const {
 	selectedSymrDoc,
 	selectedSymr,
 	selectedSymrCommodity,
-	selectedSymrSector
-	// pcTypes,
-	// pcCommodityTypes,
-	// pcSectorTypes,
-	// registrationUnder,
-	// formedSupported,
-	// activityTimeline,
-	// districtMaster,
-	// blockMaster,
-	// panchayatMaster,
-	// selectedPcDoc,
-	// application,
+	selectedSymrSector,
+	sourceOfInfo,
+	gender,
+	religion,
+	community,
+	educQualification,
+	proofType,
+	natureOfMigration,
+	shgMemberType,
+	relationshipType,
+	pcTypes,
+	pcCommodityTypes,
+	pcSectorTypes,
+	enterpriseType,
+	years,
+	courseCompletionYear,
+	scheme,
+	activityTimeline,
 	// pcApplicationStatus,
 	// pcRequiredDoc,
 	// pcDisbursment,
@@ -46,6 +52,7 @@ const {
 	SYMR_FORM_MASTER_STATUS,
 	SYMR_UPLOAD_DOC,
 	DISBURSEMENT_STATE,
+	DELETE_STATUS
 } = require("../constants/index");
 const { Op } = require("sequelize");
 const Cryptr = require("cryptr");
@@ -163,7 +170,7 @@ SYMRApplicationService.prototype.symrEnterpriseDetailService = async (params) =>
 					include: [
 						{
 							model: selectedSymr,
-							as: "symractivityTypes",
+							as: "symrTypes",
 						},
 						{
 							model: selectedSymrCommodity,
@@ -337,233 +344,345 @@ SYMRApplicationService.prototype.symrUploadDocSerivce = async (params) => {
 		};
 	}
 };
-// SYMRApplicationService.prototype.getPcFormService = async (params) => {
-// 	try {
-// 		const { formId } = params;
-// 		let formData = await pcFormMaster.findOne({
-// 			where: { formId, TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED },
-// 			attributes: ["formId", "userId", "name", "status", ["TNRTP01_UPDATED_AT", "appSubmitDate"]],
-// 			include: [
-// 				{
-// 					model: pcFormBasicDetails,
-// 					as: "basicDetails",
-// 					where: { TNRTP07_DELETED_F: DELETE_STATUS.NOT_DELETED },
-// 					required: false,
-// 					attributes: pcFormBasicDetails.selectedFields,
-// 				},
-// 				{
-// 					model: pcFormDetails,
-// 					as: "pcDetails",
-// 					where: { TNRTP08_DELETED_F: DELETE_STATUS.NOT_DELETED },
-// 					required: false,
-// 					attributes: pcFormDetails.selectedFields,
-// 					include: [
-// 						{
-// 							model: selectedPc,
-// 							as: "pcTypes",
-// 							required: false,
-// 							attributes: selectedPc.selectedFields,
-// 							include: [
-// 								{
-// 									model: pcTypes,
-// 									as: "pcTypesData",
-// 									required: false,
-// 									attributes: pcTypes.selectedFields,
-// 								},
-// 							],
-// 						},
-// 						{
-// 							model: selectedPcCommodity,
-// 							as: "pcCommodityTypes",
-// 							required: false,
-// 							attributes: selectedPcCommodity.selectedFields,
-// 							include: [
-// 								{
-// 									model: pcCommodityTypes,
-// 									as: "pcCommodityTypesData",
-// 									required: false,
-// 									attributes: pcCommodityTypes.selectedFields,
-// 								},
-// 							],
-// 						},
-// 						{
-// 							model: selectedPcSector,
-// 							as: "pcSectorTypes",
-// 							required: false,
-// 							attributes: selectedPcSector.selectedFields,
-// 							include: [
-// 								{
-// 									model: pcSectorTypes,
-// 									as: "pcSectorTypesData",
-// 									required: false,
-// 									attributes: pcSectorTypes.selectedFields,
-// 								},
-// 							],
-// 						},
-// 						{
-// 							model: registrationUnder,
-// 							as: "registrationUnderData",
-// 							required: false,
-// 							attributes: registrationUnder.selectedFields,
-// 						},
-// 						{
-// 							model: formedSupported,
-// 							as: "formSupportedData",
-// 							required: false,
-// 							attributes: formedSupported.selectedFields,
-// 						},
-// 					],
-// 				},
-// 				{
-// 					model: pcFormMembers,
-// 					as: "pcFormMembers",
-// 					where: { TNRTP09_DELETED_F: DELETE_STATUS.NOT_DELETED },
-// 					required: false,
-// 					attributes: pcFormMembers.selectedFields,
-// 				},
-// 				{
-// 					model: pcFormAmountRecevied,
-// 					as: "pcFormAmountRecevied",
-// 					where: { TNRTP10_DELETED_F: DELETE_STATUS.NOT_DELETED },
-// 					required: false,
-// 					attributes: pcFormAmountRecevied.selectedFields,
-// 				},
-// 				{
-// 					model: pcFormBankDetails,
-// 					as: "pcFormBankDetails",
-// 					where: { TNRTP11_DELETED_F: DELETE_STATUS.NOT_DELETED },
-// 					required: false,
-// 					attributes: pcFormBankDetails.selectedFields,
-// 				},
-// 				{
-// 					model: pcFormProposedActivity,
-// 					as: "pcFormProposedActivity",
-// 					where: { TNRTP12_DELETED_F: DELETE_STATUS.NOT_DELETED },
-// 					required: false,
-// 					attributes: pcFormProposedActivity.selectedFields,
-// 					include: [
-// 						{
-// 							model: activityTimeline,
-// 							as: "activityTimelineData",
-// 							required: false,
-// 							attributes: activityTimeline.selectedFields,
-// 						},
-// 					],
-// 				},
-// 				{
-// 					model: pcFormUploadDocument,
-// 					as: "pcFormUploadDocument",
-// 					where: { TNRTP13_DELETED_F: DELETE_STATUS.NOT_DELETED },
-// 					required: false,
-// 					attributes: pcFormUploadDocument.selectedFields,
-// 					include: [
-// 						{
-// 							model: selectedPcDoc,
-// 							as: "regCertificate",
-// 							attributes: selectedPcDoc.selectedFields,
-// 							where: { docType: PC_UPLOAD_DOC.REG_CERTIFICATE },
-// 							required: false,
-// 						},
-// 						{
-// 							model: selectedPcDoc,
-// 							as: "auditStatement",
-// 							attributes: selectedPcDoc.selectedFields,
-// 							where: { docType: PC_UPLOAD_DOC.AUDIT_STATEMENT },
-// 							required: false,
-// 						},
-// 						{
-// 							model: selectedPcDoc,
-// 							as: "bankPassBook",
-// 							attributes: selectedPcDoc.selectedFields,
-// 							where: { docType: PC_UPLOAD_DOC.BANK_PASSBOOK },
-// 							required: false,
-// 						},
-// 						{
-// 							model: selectedPcDoc,
-// 							as: "latestMomRes",
-// 							attributes: selectedPcDoc.selectedFields,
-// 							where: { docType: PC_UPLOAD_DOC.LATEST_MOM },
-// 							required: false,
-// 						},
-// 						{
-// 							model: selectedPcDoc,
-// 							as: "businessPlan",
-// 							attributes: selectedPcDoc.selectedFields,
-// 							where: { docType: PC_UPLOAD_DOC.BUSSINESS_PLAN },
-// 							required: false,
-// 						},
-// 					],
-// 				},
-// 				{
-// 					model: pcApplicationStatus,
-// 					as: "pcApplicationStatus",
-// 					required: false,
-// 					attributes: ["dmpuVerifyDate", "applicationStatus", ["TNRTP20_UPDATED_D", "approvedBy"]],
-// 				},
-// 				{
-// 					model: pcDisbursment,
-// 					as: "firstTranche",
-// 					required: false,
-// 					where: { disbursmentType: DISBURSEMENT_STATE.FIRST_TRANCHE },
-// 					attributes: [
-// 						"isDisbursment",
-// 						"disbursmentDate",
-// 						"disbursmentAmount",
-// 						["TNRTP22_UPDATED_D", "disbursedBy"],
-// 					],
-// 				},
-// 				{
-// 					model: pcDisbursment,
-// 					as: "secondTranche",
-// 					required: false,
-// 					where: { disbursmentType: DISBURSEMENT_STATE.SECOND_TRANCHE },
-// 					attributes: [
-// 						"isDisbursment",
-// 						"disbursmentDate",
-// 						"disbursmentAmount",
-// 						["TNRTP22_UPDATED_D", "disbursedBy"],
-// 					],
-// 				},
-// 				{
-// 					model: pcDisbursment,
-// 					as: "secondTrancheUc",
-// 					required: false,
-// 					where: { disbursmentType: DISBURSEMENT_STATE.SECOND_TRANCHE_UC },
-// 					attributes: ["disbursmentSubmitDate", ["TNRTP22_UPDATED_D", "disbursedBy"]],
-// 				},
-// 			],
-// 			nested: true,
-// 		});
-// 		if (formData) {
-// 			formData = formData.get({ plain: true });
-// 			if (formData.basicDetails) {
-// 				formData.basicDetails.district = await districtMaster.findOne({
-// 					where: { value: formData.basicDetails.district },
-// 					attributes: districtMaster.selectedFields,
-// 				});
-// 				formData.basicDetails.block = await blockMaster.findOne({
-// 					where: { value: formData.basicDetails.block },
-// 					attributes: blockMaster.selectedFields,
-// 				});
-// 				formData.basicDetails.panchayat = await panchayatMaster.findOne({
-// 					where: { value: formData.basicDetails.panchayat },
-// 					attributes: panchayatMaster.selectedFields,
-// 				});
-// 			}
-// 		}
-// 		return {
-// 			code: errorCodes.HTTP_OK,
-// 			message: messages.success,
-// 			data: formData,
-// 		};
-// 	} catch (err) {
-// 		console.log("getPcFormService", err);
-// 		return {
-// 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-// 			message: err,
-// 		};
-// 	}
-// };
+SYMRApplicationService.prototype.getSymrFormService = async (params) => {
+	try {
+		const { formId } = params;
+		let formData = await symrFormMaster.findOne({
+			where: { formId, TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED },
+			attributes: ["formId", "userId", "name", "status", ["TNRTP01_UPDATED_AT", "appSubmitDate"]],
+			include: [
+				{
+					model: symrBasicDetails,
+					as: "basicDetails",
+					where: { TNRTP69_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
+					attributes: symrBasicDetails.selectedFields,
+					include: [
+						{
+							model: sourceOfInfo,
+							as: "sourceOfInfoData",
+							required: false,
+							attributes: sourceOfInfo.selectedFields
+						},
+						{
+							model: gender,
+							as: "genderData",
+							required: false,
+							attributes: gender.selectedFields
+						},
+						{
+							model: religion,
+							as: "religionData",
+							required: false,
+							attributes: religion.selectedFields
+						},
+						{
+							model: community,
+							as: "communityData",
+							required: false,
+							attributes: community.selectedFields
+						},
+						{
+							model: educQualification,
+							as: "educQualificationData",
+							required: false,
+							attributes: educQualification.selectedFields
+						},
+						{
+							model: proofType,
+							as: "proofTypeData",
+							required: false,
+							attributes: proofType.selectedFields
+						},
+						{
+							model: natureOfMigration,
+							as: "natureOfMigrationData",
+							required: false,
+							attributes: natureOfMigration.selectedFields
+						}
+					]
+				},
+				{
+					model: symrShgDetails,
+					as: "symrShgDetails",
+					where: { TNRTP77_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
+					attributes: symrShgDetails.selectedFields,
+					include: [
+						{
+							model: shgMemberType,
+							as: "shgMemberTypeData",
+							required: false,
+							attributes: shgMemberType.selectedFields
+						},
+						{
+							model: relationshipType,
+							as: "relationshipTypeData",
+							required: false,
+							attributes: relationshipType.selectedFields
+						}
+					]
+				},
+				{
+					model: symrEnterprise,
+					as: "symrEnterprise",
+					where: { TNRTP81_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
+					attributes: symrEnterprise.selectedFields,
+					include: [
+						{
+							model: selectedSymr,
+							as: "symrTypes",
+							required: false,
+							attributes: selectedSymr.selectedFields,
+							include: [
+								{
+									model: pcTypes,
+									as: "symrTypesData",
+									required: false,
+									attributes: pcTypes.selectedFields,
+								},
+							],
+						},
+						{
+							model: selectedSymrCommodity,
+							as: "symrCommodityTypes",
+							required: false,
+							attributes: selectedSymrCommodity.selectedFields,
+							include: [
+								{
+									model: pcCommodityTypes,
+									as: "symrCommodityTypesData",
+									required: false,
+									attributes: pcCommodityTypes.selectedFields,
+								},
+							],
+						},
+						{
+							model: selectedSymrSector,
+							as: "symrSectorTypes",
+							required: false,
+							attributes: selectedSymrSector.selectedFields,
+							include: [
+								{
+									model: pcSectorTypes,
+									as: "symrSectorTypesData",
+									required: false,
+									attributes: pcSectorTypes.selectedFields,
+								},
+							],
+						},
+						{
+							model: enterpriseType,
+							as: "enterpriseTypeData",
+							required: false,
+							attributes: enterpriseType.selectedFields,
+						},
+						{
+							model: years,
+							as: "enterpreneurExpYearsData",
+							required: false,
+							attributes: years.selectedFields,
+						},
+						{
+							model: years,
+							as: "activityExpYearsData",
+							required: false,
+							attributes: years.selectedFields,
+						},
+					],
+				},
+				{
+					model: symrSkillTraining,
+					as: "symrSkillTraining",
+					where: { TNRTP79_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
+					attributes: symrSkillTraining.selectedFields,
+					include: [
+						{
+							model: scheme,
+							as: "skilltrainingData",
+							required: false,
+							attributes: scheme.selectedFields
+						},
+						{
+							model: scheme,
+							as: "edpschemeData",
+							required: false,
+							attributes: scheme.selectedFields
+						},
+						{
+							model: scheme,
+							as: "registeredEdpSchemeData",
+							required: false,
+							attributes: scheme.selectedFields
+						},
+						{
+							model: courseCompletionYear,
+							as: "courseCompletionTypeData",
+							required: false,
+							attributes: courseCompletionYear.selectedFields
+						},
+					]
+				},
+				{
+					model: symrBankDetails,
+					as: "symrBankDetails",
+					where: { TNRTP82_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
+					attributes: symrBankDetails.selectedFields,
+				},
+				{
+					model: symrExistingLoan,
+					as: "symrExistingLoan",
+					where: { TNRTP84_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
+					attributes: symrExistingLoan.selectedFields,
+					include: [
+						{
+							model: existingLoanActivity,
+							as: "existingLoanList",
+							required: false,
+							attributes: existingLoanActivity.selectedFields,
+						},
+					],
+				},
+				{
+					model: symrProposedActivity,
+					as: "symrProposedActivity",
+					where: { TNRTP83_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
+					attributes: symrProposedActivity.selectedFields,
+					include: [
+						{
+							model: activityTimeline,
+							as: "activityTimelineData",
+							required: false,
+							attributes: activityTimeline.selectedFields,
+						},
+					],
+				},
+				{
+					model: symrUploadDocument,
+					as: "symrUploadDocument",
+					where: { TNRTP85_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
+					attributes: symrUploadDocument.selectedFields,
+					include: [
+						{
+							model: selectedSymrDoc,
+							as: "proofOfMigration",
+							attributes: selectedSymrDoc.selectedFields,
+							where: { docType: SYMR_UPLOAD_DOC.PROOF_OF_MIGRATION },
+							required: false,
+						},
+						{
+							model: selectedSymrDoc,
+							as: "applicationLetter",
+							attributes: selectedSymrDoc.selectedFields,
+							where: { docType: SYMR_UPLOAD_DOC.APPLICATION_LETTER },
+							required: false,
+						},
+						{
+							model: selectedSymrDoc,
+							as: "bankPassBook",
+							attributes: selectedSymrDoc.selectedFields,
+							where: { docType: SYMR_UPLOAD_DOC.BANK_PASSBOOK },
+							required: false,
+						},
+						{
+							model: selectedSymrDoc,
+							as: "idProofPhoto",
+							attributes: selectedSymrDoc.selectedFields,
+							where: { docType: SYMR_UPLOAD_DOC.ID_PROOF_PHOTO },
+							required: false,
+						},
+						{
+							model: selectedSymrDoc,
+							as: "businessPlan",
+							attributes: selectedSymrDoc.selectedFields,
+							where: { docType: SYMR_UPLOAD_DOC.BUSSINESS_PLAN },
+							required: false,
+						},
+						{
+							model: selectedSymrDoc,
+							as: "trainingCertificate",
+							attributes: selectedSymrDoc.selectedFields,
+							where: { docType: SYMR_UPLOAD_DOC.TRAINING_CERTIFICATE },
+							required: false,
+						},
+					],
+				},
+				// {
+				// 	model: pcApplicationStatus,
+				// 	as: "pcApplicationStatus",
+				// 	required: false,
+				// 	attributes: ["dmpuVerifyDate", "applicationStatus", ["TNRTP20_UPDATED_D", "approvedBy"]],
+				// },
+				// {
+				// 	model: pcDisbursment,
+				// 	as: "firstTranche",
+				// 	required: false,
+				// 	where: { disbursmentType: DISBURSEMENT_STATE.FIRST_TRANCHE },
+				// 	attributes: [
+				// 		"isDisbursment",
+				// 		"disbursmentDate",
+				// 		"disbursmentAmount",
+				// 		["TNRTP22_UPDATED_D", "disbursedBy"],
+				// 	],
+				// },
+				// {
+				// 	model: pcDisbursment,
+				// 	as: "secondTranche",
+				// 	required: false,
+				// 	where: { disbursmentType: DISBURSEMENT_STATE.SECOND_TRANCHE },
+				// 	attributes: [
+				// 		"isDisbursment",
+				// 		"disbursmentDate",
+				// 		"disbursmentAmount",
+				// 		["TNRTP22_UPDATED_D", "disbursedBy"],
+				// 	],
+				// },
+				// {
+				// 	model: pcDisbursment,
+				// 	as: "secondTrancheUc",
+				// 	required: false,
+				// 	where: { disbursmentType: DISBURSEMENT_STATE.SECOND_TRANCHE_UC },
+				// 	attributes: ["disbursmentSubmitDate", ["TNRTP22_UPDATED_D", "disbursedBy"]],
+				// },
+			],
+			nested: true,
+		});
+		if (formData) {
+			formData = formData.get({ plain: true });
+			if (formData.basicDetails) {
+				formData.basicDetails.district = await districtMaster.findOne({
+					where: { value: formData.basicDetails.district },
+					attributes: districtMaster.selectedFields,
+				});
+				formData.basicDetails.block = await blockMaster.findOne({
+					where: { value: formData.basicDetails.block },
+					attributes: blockMaster.selectedFields,
+				});
+				formData.basicDetails.panchayat = await panchayatMaster.findOne({
+					where: { value: formData.basicDetails.panchayat },
+					attributes: panchayatMaster.selectedFields,
+				});
+			}
+		}
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+			data: formData,
+		};
+	} catch (err) {
+		console.log("getSymrFormService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
 // SYMRApplicationService.prototype.getPcMasterService = async (params) => {
 // 	try {
 // 		let registrationUnderData = await registrationUnder.findAll({
