@@ -1,54 +1,56 @@
 const {
 	symrFormMaster,
-	pcFormBasicDetails,
-	pcFormDetails,
-	pcFormMembers,
-	pcFormAmountRecevied,
-	pcFormBankDetails,
-	pcFormProposedActivity,
-	pcFormUploadDocument,
-	selectedPcSector,
-	selectedPcCommodity,
-	selectedPc,
-	pcTypes,
-	pcCommodityTypes,
-	pcSectorTypes,
-	registrationUnder,
-	formedSupported,
-	activityTimeline,
-	districtMaster,
-	blockMaster,
-	panchayatMaster,
-	selectedPcDoc,
-	application,
-	pcApplicationStatus,
-	pcRequiredDoc,
-	pcDisbursment,
-	pcAssessmentDoc,
-	pcAssessment,
-	pcAuditYear,
-	pcConvergence,
-	pcLinkage,
-	pcPartnership,
-	pcAreaMember,
-	pcAreaMemberBlock,
-	pcCoverageArea,
-	pcCoverageBlock,
-	pcCoveragePanchayat,
-	pcCoverageMembers,
+	symrBasicDetails,
+	symrShgDetails,
+	symrSkillTraining,
+	symrEnterprise,
+	symrBankDetails,
+	symrProposedActivity,
+	symrExistingLoan,
+	existingLoanActivity,
+	symrUploadDocument,
+	selectedSymrDoc,
+	selectedSymr,
+	selectedSymrCommodity,
+	selectedSymrSector
+	// pcTypes,
+	// pcCommodityTypes,
+	// pcSectorTypes,
+	// registrationUnder,
+	// formedSupported,
+	// activityTimeline,
+	// districtMaster,
+	// blockMaster,
+	// panchayatMaster,
+	// selectedPcDoc,
+	// application,
+	// pcApplicationStatus,
+	// pcRequiredDoc,
+	// pcDisbursment,
+	// pcAssessmentDoc,
+	// pcAssessment,
+	// pcAuditYear,
+	// pcConvergence,
+	// pcLinkage,
+	// pcPartnership,
+	// pcAreaMember,
+	// pcAreaMemberBlock,
+	// pcCoverageArea,
+	// pcCoverageBlock,
+	// pcCoveragePanchayat,
+	// pcCoverageMembers,
 } = require("../models");
 const messages = require("./../configs/errorMsgs.js");
 const errorCodes = require("./../configs/errorCodes.js");
 const {
 	SYMR_FORM_MASTER_STATUS,
-	DELETE_STATUS,
-	PC_UPLOAD_DOC,
-	ORDERBY,
-	PC_STAFF_DOC,
+	SYMR_UPLOAD_DOC,
 	DISBURSEMENT_STATE,
 } = require("../constants/index");
 const { Op } = require("sequelize");
 const Cryptr = require("cryptr");
+const existingLoanActivityModel = require("../models/application/existingLoanActivity.model");
+const { string } = require("joi");
 const cryptr = new Cryptr(process.env.AES_KEY);
 class SYMRApplicationService {}
 
@@ -82,223 +84,259 @@ SYMRApplicationService.prototype.symrFormCreateSerivce = async (params) => {
 		};
 	}
 };
-// SYMRApplicationService.prototype.pcFormBasicDetailsSerivce = async (params) => {
-// 	try {
-// 		const { formId } = params;
-// 		let formData = await pcFormBasicDetails.findOne({
-// 			where: { formId },
-// 		});
-// 		if (formData) {
-// 			await formData.update({ ...params });
-// 		} else {
-// 			await pcFormBasicDetails.create({ ...params });
-// 		}
-// 		return {
-// 			code: errorCodes.HTTP_OK,
-// 			message: messages.success,
-// 		};
-// 	} catch (err) {
-// 		console.log("pcFormBasicDetailsSerivce", err);
-// 		return {
-// 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-// 			message: err,
-// 		};
-// 	}
-// };
-// SYMRApplicationService.prototype.pcFormDetailsSerivce = async (params) => {
-// 	try {
-// 		const { formId } = params;
-// 		await pcFormDetails.destroy({ where: { formId } }).then(() => {
-// 			return pcFormDetails.create(
-// 				{ ...params },
-// 				{
-// 					include: [
-// 						{
-// 							model: selectedPc,
-// 							as: "pcTypes",
-// 						},
-// 						{
-// 							model: selectedPcCommodity,
-// 							as: "pcCommodityTypes",
-// 						},
-// 						{
-// 							model: selectedPcSector,
-// 							as: "pcSectorTypes",
-// 						},
-// 					],
-// 				}
-// 			);
-// 		});
-// 		return {
-// 			code: errorCodes.HTTP_OK,
-// 			message: messages.success,
-// 		};
-// 	} catch (err) {
-// 		console.log("pcFormDetailsSerivce", err);
-// 		return {
-// 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-// 			message: err,
-// 		};
-// 	}
-// };
-// SYMRApplicationService.prototype.pcFormMemberSerivce = async (params) => {
-// 	try {
-// 		const { formId } = params;
-// 		let formData = await pcFormMembers.findOne({
-// 			where: { formId },
-// 		});
-// 		if (formData) {
-// 			await formData.update({ ...params });
-// 		} else {
-// 			await pcFormMembers.create({ ...params });
-// 		}
-// 		return {
-// 			code: errorCodes.HTTP_OK,
-// 			message: messages.success,
-// 		};
-// 	} catch (err) {
-// 		console.log("pcFormMemberSerivce", err);
-// 		return {
-// 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-// 			message: err,
-// 		};
-// 	}
-// };
-// SYMRApplicationService.prototype.pcFormAmountSerivce = async (params) => {
-// 	try {
-// 		const { formId } = params;
-// 		let formData = await pcFormAmountRecevied.findOne({
-// 			where: { formId },
-// 		});
-// 		if (formData) {
-// 			await formData.update({ ...params });
-// 		} else {
-// 			await pcFormAmountRecevied.create({ ...params });
-// 		}
-// 		return {
-// 			code: errorCodes.HTTP_OK,
-// 			message: messages.success,
-// 		};
-// 	} catch (err) {
-// 		console.log("pcFormAmountSerivce", err);
-// 		return {
-// 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-// 			message: err,
-// 		};
-// 	}
-// };
-// SYMRApplicationService.prototype.pcFormBankDetailsSerivce = async (params) => {
-// 	try {
-// 		const { formId } = params;
-// 		let formData = await pcFormBankDetails.findOne({
-// 			where: { formId },
-// 		});
-// 		if (formData) {
-// 			await formData.update({ ...params });
-// 		} else {
-// 			await pcFormBankDetails.create({ ...params });
-// 		}
-// 		return {
-// 			code: errorCodes.HTTP_OK,
-// 			message: messages.success,
-// 		};
-// 	} catch (err) {
-// 		console.log("pcFormBankDetailsSerivce", err);
-// 		return {
-// 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-// 			message: err,
-// 		};
-// 	}
-// };
-// SYMRApplicationService.prototype.pcFormProposedActivitySerivce = async (params) => {
-// 	try {
-// 		if (params && params.length) {
-// 			const { formId } = params[0];
-// 			await pcFormProposedActivity.destroy({ where: { formId } }).then(() => {
-// 				return pcFormProposedActivity.bulkCreate([...params]);
-// 			});
-// 		}
-// 		return {
-// 			code: errorCodes.HTTP_OK,
-// 			message: messages.success,
-// 		};
-// 	} catch (err) {
-// 		console.log("pcFormProposedActivitySerivce", err);
-// 		return {
-// 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-// 			message: err,
-// 		};
-// 	}
-// };
-// SYMRApplicationService.prototype.pcFormUploadDocSerivce = async (params) => {
-// 	try {
-// 		const { formId } = params;
-// 		if (params.regCertificate && params.regCertificate.length) {
-// 			params.regCertificate.map((element) => {
-// 				element.docType = PC_UPLOAD_DOC.REG_CERTIFICATE;
-// 			});
-// 		}
-// 		if (params.auditStatement && params.auditStatement.length) {
-// 			params.auditStatement.map((element) => {
-// 				element.docType = PC_UPLOAD_DOC.AUDIT_STATEMENT;
-// 			});
-// 		}
-// 		if (params.bankPassBook && params.bankPassBook.length) {
-// 			params.bankPassBook.map((element) => {
-// 				element.docType = PC_UPLOAD_DOC.BANK_PASSBOOK;
-// 			});
-// 		}
-// 		if (params.latestMomRes && params.latestMomRes.length) {
-// 			params.latestMomRes.map((element) => {
-// 				element.docType = PC_UPLOAD_DOC.LATEST_MOM;
-// 			});
-// 		}
-// 		if (params.businessPlan && params.businessPlan.length) {
-// 			params.businessPlan.map((element) => {
-// 				element.docType = PC_UPLOAD_DOC.BUSSINESS_PLAN;
-// 			});
-// 		}
-// 		await pcFormUploadDocument.destroy({ where: { formId } }).then(() => {
-// 			return pcFormUploadDocument.create(
-// 				{ ...params },
-// 				{
-// 					include: [
-// 						{
-// 							model: selectedPcDoc,
-// 							as: "regCertificate",
-// 						},
-// 						{
-// 							model: selectedPcDoc,
-// 							as: "auditStatement",
-// 						},
-// 						{
-// 							model: selectedPcDoc,
-// 							as: "bankPassBook",
-// 						},
-// 						{
-// 							model: selectedPcDoc,
-// 							as: "latestMomRes",
-// 						},
-// 						{
-// 							model: selectedPcDoc,
-// 							as: "businessPlan",
-// 						},
-// 					],
-// 				}
-// 			);
-// 		});
-// 		return {
-// 			code: errorCodes.HTTP_OK,
-// 			message: messages.success,
-// 		};
-// 	} catch (err) {
-// 		console.log("pcFormUploadDocSerivce", err);
-// 		return {
-// 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-// 			message: err,
-// 		};
-// 	}
-// };
+SYMRApplicationService.prototype.symrBasicDetailsSerivce = async (params) => {
+	try {
+		const { formId } = params;
+		let formData = await symrBasicDetails.findOne({
+			where: { formId },
+		});
+		if (formData) {
+			await formData.update({ ...params });
+		} else {
+			await symrBasicDetails.create({ ...params });
+		}
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+		};
+	} catch (err) {
+		console.log("symrBasicDetails", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+SYMRApplicationService.prototype.symrShgDetailService = async (params) => {
+	try {
+		const { formId } = params;
+		let formData = await symrShgDetails.findOne({
+			where: { formId },
+		});
+		if (formData) {
+			await formData.update({ ...params });
+		} else {
+			await symrShgDetails.create({ ...params });
+		}
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+		};
+	} catch (err) {
+		console.log("symrShgDetails", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+SYMRApplicationService.prototype.symrSkillDetailService = async (params) => {
+	try {
+		const { formId } = params;
+		let formData = await symrSkillTraining.findOne({
+			where: { formId },
+		});
+		if (formData) {
+			await formData.update({ ...params });
+		} else {
+			await symrSkillTraining.create({ ...params });
+		}
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+		};
+	} catch (err) {
+		console.log("symrSkillTraining", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+SYMRApplicationService.prototype.symrEnterpriseDetailService = async (params) => {
+	try {
+		const { formId } = params;
+		await symrEnterprise.destroy({ where: { formId } }).then(() => {
+			return symrEnterprise.create(
+				{ ...params },
+				{
+					include: [
+						{
+							model: selectedSymr,
+							as: "symractivityTypes",
+						},
+						{
+							model: selectedSymrCommodity,
+							as: "symrCommodityTypes",
+						},
+						{
+							model: selectedSymrSector,
+							as: "symrSectorTypes",
+						},
+					],
+				}
+			);
+		});
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+		};
+	} catch (err) {
+		console.log("symrEnterprise", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+SYMRApplicationService.prototype.symrBankDetailsSerivce = async (params) => {
+	try {
+		const { formId } = params;
+		let formData = await symrBankDetails.findOne({
+			where: { formId },
+		});
+		if (formData) {
+			await formData.update({ ...params });
+		} else {
+			await symrBankDetails.create({ ...params });
+		}
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+		};
+	} catch (err) {
+		console.log("symrBankDetails", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+SYMRApplicationService.prototype.symrProposedActivitySerivce = async (params) => {
+	try {
+		if (params && params.length) {
+			const { formId } = params[0];
+			await symrProposedActivity.destroy({ where: { formId } }).then(() => {
+				return symrProposedActivity.bulkCreate([...params]);
+			});
+		}
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+		};
+	} catch (err) {
+		console.log("symrProposedActivity", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+SYMRApplicationService.prototype.symrExistingLoanSerivce = async (params) => {
+	try {
+		if (params) {
+			const { formId } = params;
+			await symrExistingLoan.destroy({ where: { formId } }).then(() => {
+				return symrExistingLoan.create({...params}, {
+					include: [
+						{
+							model: existingLoanActivity,
+							as: "existingLoanList",
+						}
+					]
+				});
+			});
+		}
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+		};
+	} catch (err) {
+		console.log("symrExistingLoanSerivce", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+SYMRApplicationService.prototype.symrUploadDocSerivce = async (params) => {
+	try {
+		const { formId } = params;
+		if (params.proofOfMigration && params.proofOfMigration.length) {
+			params.proofOfMigration.map((element) => {
+				element.docType = SYMR_UPLOAD_DOC.PROOF_OF_MIGRATION;
+			});
+		}
+		if (params.applicationLetter && params.applicationLetter.length) {
+			params.applicationLetter.map((element) => {
+				element.docType = SYMR_UPLOAD_DOC.APPLICATION_LETTER;
+			});
+		}
+		if (params.bankPassBook && params.bankPassBook.length) {
+			params.bankPassBook.map((element) => {
+				element.docType = SYMR_UPLOAD_DOC.BANK_PASSBOOK;
+			});
+		}
+		if (params.idProofPhoto && params.idProofPhoto.length) {
+			params.idProofPhoto.map((element) => {
+				element.docType = SYMR_UPLOAD_DOC.ID_PROOF_PHOTO;
+			});
+		}
+		if (params.businessPlan && params.businessPlan.length) {
+			params.businessPlan.map((element) => {
+				element.docType = SYMR_UPLOAD_DOC.BUSSINESS_PLAN;
+			});
+		}
+		if (params.trainingCertificate && params.trainingCertificate.length) {
+			params.trainingCertificate.map((element) => {
+				element.docType = SYMR_UPLOAD_DOC.TRAINING_CERTIFICATE;
+			});
+		}
+		await symrUploadDocument.destroy({ where: { formId } }).then(() => {
+			return symrUploadDocument.create(
+				{ ...params },
+				{
+					include: [
+						{
+							model: selectedSymrDoc,
+							as: "proofOfMigration",
+						},
+						{
+							model: selectedSymrDoc,
+							as: "applicationLetter",
+						},
+						{
+							model: selectedSymrDoc,
+							as: "bankPassBook",
+						},
+						{
+							model: selectedSymrDoc,
+							as: "idProofPhoto",
+						},
+						{
+							model: selectedSymrDoc,
+							as: "businessPlan",
+						},
+						{
+							model: selectedSymrDoc,
+							as: "trainingCertificate",
+						},
+					],
+				}
+			);
+		});
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+		};
+	} catch (err) {
+		console.log("symrUploadDocSerivce", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
 // SYMRApplicationService.prototype.getPcFormService = async (params) => {
 // 	try {
 // 		const { formId } = params;
@@ -566,27 +604,27 @@ SYMRApplicationService.prototype.symrFormCreateSerivce = async (params) => {
 // 		};
 // 	}
 // };
-// SYMRApplicationService.prototype.updatePcFormStatus = async (params) => {
-// 	try {
-// 		const { formId, status } = params;
-// 		await pcFormMaster.update(
-// 			{ status, TNRTP01_UPDATED_AT: new Date() },
-// 			{
-// 				where: { formId },
-// 			}
-// 		);
-// 		return {
-// 			code: errorCodes.HTTP_OK,
-// 			message: messages.success,
-// 		};
-// 	} catch (err) {
-// 		console.log("updatePcFormStatus", err);
-// 		return {
-// 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-// 			message: err,
-// 		};
-// 	}
-// };
+SYMRApplicationService.prototype.updateSymrFormStatus = async (params) => {
+	try {
+		const { formId, status } = params;
+		await symrFormMaster.update(
+			{ status, TNRTP01_UPDATED_AT: new Date() },
+			{
+				where: { formId },
+			}
+		);
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+		};
+	} catch (err) {
+		console.log("updateSymrFormStatus", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
 
 // SYMRApplicationService.prototype.getSYMRApplicationService = async (params) => {
 // 	try {
@@ -1324,4 +1362,4 @@ SYMRApplicationService.prototype.symrFormCreateSerivce = async (params) => {
 // 		};
 // 	}
 // };
-// module.exports = new SYMRApplicationService();
+module.exports = new SYMRApplicationService();

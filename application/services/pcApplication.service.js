@@ -35,7 +35,6 @@ const {
 	pcCoverageArea,
 	pcCoverageBlock,
 	pcCoveragePanchayat,
-	pcCoverageMembers,
 } = require("../models");
 const messages = require("./../configs/errorMsgs.js");
 const errorCodes = require("./../configs/errorCodes.js");
@@ -51,7 +50,29 @@ const { Op } = require("sequelize");
 const Cryptr = require("cryptr");
 const cryptr = new Cryptr(process.env.AES_KEY);
 class PCApplicationService {}
-
+PCApplicationService.prototype.insertActvityMasterService = async (params) => {
+	await pcTypes.destroy({ where: {}, truncate: true });
+	await pcSectorTypes.destroy({ where: {}, truncate: true });
+	await pcCommodityTypes.destroy({ where: {}, truncate: true });
+	await pcTypes.bulkCreate([...params], {
+		include: [
+			{
+				model: pcSectorTypes,
+				as: "sectorTypes",
+				include: [
+					{
+						model: pcCommodityTypes,
+						as: "commodityTypes",
+					},
+				],
+			},
+		],
+	});
+	return {
+		code: errorCodes.HTTP_OK,
+		message: messages.success,
+	};
+};
 PCApplicationService.prototype.pcFormCreateSerivce = async (params) => {
 	try {
 		const { userId } = params;
@@ -528,34 +549,42 @@ PCApplicationService.prototype.getPcFormService = async (params) => {
 };
 PCApplicationService.prototype.getPcMasterService = async (params) => {
 	try {
-		let registrationUnderData = await registrationUnder.findAll({
-			attributes: registrationUnder.selectedFields,
-		});
-		let formedByData = await formedSupported.findAll({
-			attributes: formedSupported.selectedFields,
-		});
-		let typesOfPc = await pcTypes.findAll({
-			attributes: pcTypes.selectedFields,
-		});
-		let typesOfCommodity = await pcCommodityTypes.findAll({
-			attributes: pcCommodityTypes.selectedFields,
-		});
-		let typesOfSector = await pcSectorTypes.findAll({
-			attributes: pcSectorTypes.selectedFields,
-		});
-		let activityData = await activityTimeline.findAll({
-			attributes: activityTimeline.selectedFields,
-		});
+		const registerUnderTable = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP02_REGISTRATION_UNDER_MASTER",
+			{
+				attributes: [
+					["TNRTP02_REGISTRATION_UNDER_NAME_N", "label"],
+					["TNRTP02_REGISTRATION_UNDER_MASTER_D", "value"],
+				],
+			}
+		);
+		const formedByTable = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP03_FORMED_SUPPORTED_BY_MASTER",
+			{
+				attributes: [
+					["TNRTP03_FORMED_SUPPORTED_BY_NAME_N", "label"],
+					["TNRTP03_FORMED_SUPPORTED_BY_MASTER_D", "value"],
+				],
+			}
+		);
+		const activityTimelineTable = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP15_ACTIVITY_TIMELINE_MASTER",
+			{
+				attributes: [
+					["TNRTP15_ACTIVITY_TIMELINE_NAME_N", "label"],
+					["TNRTP15_ACTIVITY_TIMELINE_MASTER_D", "value"],
+				],
+			}
+		);
+		let concatQueries = [registerUnderTable, formedByTable, activityTimelineTable].join(" ");
+		let resultSet = await application.query(concatQueries);
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
 			data: {
-				registrationUnderData,
-				formedByData,
-				typesOfPc,
-				typesOfCommodity,
-				typesOfSector,
-				activityData,
+				registrationUnderData: resultSet[0][0],
+				formedByData: resultSet[0][1],
+				activityData: resultSet[0][2],
 			},
 		};
 	} catch (err) {
@@ -1109,22 +1138,56 @@ PCApplicationService.prototype.startAssesmentService = async (params) => {
 				},
 			],
 		});
-		let auditYearMaster = await pcAuditYear.findAll({
-			attributes: pcAuditYear.selectedFields,
-		});
-		let convergenceMaster = await pcConvergence.findAll({
-			attributes: pcConvergence.selectedFields,
-		});
-		let linkageMaster = await pcLinkage.findAll({
-			attributes: pcLinkage.selectedFields,
-		});
-		let partnershipMaster = await pcPartnership.findAll({
-			attributes: pcPartnership.selectedFields,
-		});
+		const auditYearMaster = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP28_PC_AUDIT_FINANCIAL_YEAR_MASTER",
+			{
+				attributes: [
+					["TNRTP28_PC_AUDIT_FINANCIAL_YEAR_MASTER_D", "label"],
+					["TNRTP28_PC_AUDIT_YEAR_D", "value"],
+				],
+			}
+		);
+		const convergenceMaster = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP32_PC_NO_OF_CONVERGENCE_MASTER",
+			{
+				attributes: [
+					["TNRTP32_PC_NO_OF_CONVERGENCE_D", "label"],
+					["TNRTP32_PC_NO_OF_CONVERGENCE_MASTER_D", "value"],
+				],
+			}
+		);
+		const linkageMaster = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP26_PC_ASSESSMENT_LINKAGE_MASTER",
+			{
+				attributes: [
+					["TNRTP26_PC_LINKAGE_D", "label"],
+					["TNRTP26_PC_ASSESSMENT_LINKAGE_MASTER_D", "value"],
+				],
+			}
+		);
+		const partnershipMaster = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP33_PC_NO_OF_PARTNERSHIP_MASTER",
+			{
+				attributes: [
+					["TNRTP33_PC_NO_OF_PARTNERSHIP_D", "label"],
+					["TNRTP33_PC_NO_OF_PARTNERSHIP_MASTER_D", "value"],
+				],
+			}
+		);
+		let concatQueries = [auditYearMaster, convergenceMaster, linkageMaster, partnershipMaster].join(
+			" "
+		);
+		let resultSet = await application.query(concatQueries);
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
-			data: { membersData, auditYearMaster, convergenceMaster, linkageMaster, partnershipMaster },
+			data: {
+				membersData,
+				auditYearMaster: resultSet[0][0],
+				convergenceMaster: resultSet[0][1],
+				linkageMaster: resultSet[0][2],
+				partnershipMaster: resultSet[0][3],
+			},
 		};
 	} catch (err) {
 		console.log("startAssesmentService", err);
@@ -1140,13 +1203,15 @@ PCApplicationService.prototype.submitAssesmentService = async (params) => {
 		params.assessments.map((element) => {
 			element.formId = formId;
 		});
-		await pcAssessment.bulkCreate([...params.assessments], {
-			include: [
-				{
-					model: pcAssessmentDoc,
-					as: "documents",
-				},
-			],
+		await pcAssessment.destroy({ where: { formId } }).then(() => {
+			return pcAssessment.bulkCreate([...params.assessments], {
+				include: [
+					{
+						model: pcAssessmentDoc,
+						as: "documents",
+					},
+				],
+			});
 		});
 		return {
 			code: errorCodes.HTTP_OK,
@@ -1196,13 +1261,15 @@ PCApplicationService.prototype.pcServiceAreaService = async (params) => {
 				element.formId = formId;
 			});
 		}
-		await pcAreaMember.bulkCreate([...areaMembers], {
-			include: [
-				{
-					model: pcAreaMemberBlock,
-					as: "areaMembersBlock",
-				},
-			],
+		await pcAreaMember.destroy({ where: { formId } }).then(() => {
+			return pcAreaMember.bulkCreate([...areaMembers], {
+				include: [
+					{
+						model: pcAreaMemberBlock,
+						as: "areaMembersBlock",
+					},
+				],
+			});
 		});
 		return {
 			code: errorCodes.HTTP_OK,

@@ -1,22 +1,22 @@
 const { DELETE_STATUS } = require("../../constants/index");
 module.exports = (sequelize, DataTypes) => {
 	const symrFormMaster = sequelize.define(
-		"TNRTP20_SYMR_FORMS_MASTER",
+		"TNRTP68_SYMR_FORMS_MASTER",
 		{
 			formId: {
 				type: DataTypes.INTEGER,
 				primaryKey: true,
 				autoIncrement: true,
-				field: "TNRTP20_SYMR_FORMS_MASTER_D",
+				field: "TNRTP68_SYMR_FORMS_MASTER_D",
 			},
-			userId: { type: DataTypes.INTEGER, field: "TNRTP20_US_USER_MASTER_D" },
-			name: { type: DataTypes.STRING, field: "TNRTP20_NAME_N" },
-			status: { type: DataTypes.INTEGER, field: "TNRTP20_STATUS_D" },
-			TNRTP20_DELETED_F: { type: DataTypes.BOOLEAN, defaultValue: DELETE_STATUS.NOT_DELETED },
-			TNRTP20_CREATED_AT: { type: DataTypes.DATE },
-			TNRTP20_UPDATED_AT: { type: DataTypes.DATE },
-			TNRTP20_CREATED_D: { type: DataTypes.INTEGER },
-			TNRTP20_UPDATED_D: { type: DataTypes.INTEGER },
+			userId: { type: DataTypes.INTEGER, field: "TNRTP68_US_USER_MASTER_D" },
+			name: { type: DataTypes.STRING, field: "TNRTP68_NAME_N" },
+			status: { type: DataTypes.INTEGER, field: "TNRTP68_STATUS_D" },
+			TNRTP68_DELETED_F: { type: DataTypes.BOOLEAN, defaultValue: DELETE_STATUS.NOT_DELETED },
+			TNRTP68_CREATED_AT: { type: DataTypes.DATE },
+			TNRTP68_UPDATED_AT: { type: DataTypes.DATE },
+			TNRTP68_CREATED_D: { type: DataTypes.INTEGER },
+			TNRTP68_UPDATED_D: { type: DataTypes.INTEGER },
 		},
 		{
 			freezeTableName: true,
@@ -44,14 +44,18 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: "formId",
 			as: "symrBankDetails",
 		});
-		// symrFormMaster.hasMany(models.symrProposedActivity, {
-		// 	foreignKey: "formId",
-		// 	as: "symrProposedActivity",
-		// });
-		// symrFormMaster.hasOne(models.symrFormUploadDocument, {
-		// 	foreignKey: "formId",
-		// 	as: "symrFormUploadDocument",
-		// });
+		symrFormMaster.hasMany(models.symrProposedActivity, {
+			foreignKey: "formId",
+			as: "symrProposedActivity",
+		});
+		symrFormMaster.hasOne(models.symrExistingLoan, {
+			foreignKey: "formId",
+			as: "symrExistingLoan",
+		});
+		symrFormMaster.hasOne(models.symrUploadDocument, {
+			foreignKey: "formId",
+			as: "symrUploadDocument",
+		});
 		// symrFormMaster.hasOne(models.symrApplicationStatus, {
 		// 	foreignKey: "formId",
 		// 	as: "symrApplicationStatus",

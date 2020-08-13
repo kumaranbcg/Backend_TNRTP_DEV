@@ -2,42 +2,42 @@ const { DELETE_STATUS, FORM_SECTION_STATUS } = require("../../constants/index");
 const db = require("../../models");
 module.exports = (sequelize, DataTypes) => {
 	const symrEnterprise = sequelize.define(
-		"TNRTP18_SYMR_ENTERPRISE",
+		"TNRTP81_SYMR_ENTERPRISE",
 		{
-			TNRTP18_SYMR_ENTERPRISE_D: {
+			TNRTP81_SYMR_ENTERPRISE_D: {
 				type: DataTypes.INTEGER,
 				primaryKey: true,
 				autoIncrement: true,
 			},
-            formId: { type: DataTypes.INTEGER, field: "TNRTP18_SYMR_FORMS_MASTER_D" },
-			grantenterpriseName: { type: DataTypes.STRING, field: "TNRTP18_SYMR_GRANT_ENTERPRISE_NAME_N" },
-		    enterpriseTypeId: { type: DataTypes.INTEGER, field: "TNRTP18_ENTERPRISE_TYPE_MASTER_D" },
-			grantActivityName: { type: DataTypes.STRING, field: "TNRTP18_SYMR_GRANT_ACTIVITY_NAME_N" },
-		    activityTypeId: { type: DataTypes.INTEGER, field: "TNRTP18_SYMR_ACTIVITY_TYPE_MASTER_D" },
-			sectorId: { type: DataTypes.INTEGER, field: "TNRTP18_SYMR_TYPE_OF_SECTOR_MASTER_D" },
-            commodityId: { type: DataTypes.INTEGER, field: "TNRTP18_SYMR_TYPE_OF_COMMODITY_MASTER_D" },
-            summary: { type: DataTypes.STRING, field: "TNRTP18_SYMR_SUMMARY_N" },
-			noOfPersons: { type: DataTypes.INTEGER, field: "TNRTP18_SYMR_NO_OF_PERSONS_D" },
-            isExperiencedEnterpreneur: { type: DataTypes.BOOLEAN, field: "TNRTP18_SYMR_IS_EXPERIENCED_ENTERPRENEUR_N" },
-            yearId: { type: DataTypes.INTEGER, field: "TNRTP18_SYMR_YEAR_MASTER_N" },
-            isEmployedInActivity: { type: DataTypes.BOOLEAN, field: "TNRTP18_SYMR_EMPLOYED_IN_ACTIVITY_N" },
-            yearId: { type: DataTypes.INTEGER, field: "TNRTP18_SYMR_YEAR_MASTER_N" },
-            designation: { type: DataTypes.STRING, field: "TNRTP18_DESIGNATION_N" },
-            location: { type: DataTypes.STRING, field: "TNRTP18_SYMR_LOCATION_N" },
-            isLoanAppliedPreviously: { type: DataTypes.BOOLEAN, field: "TNRTP18_SYMR_LOAN_APPLIED_PREVIOUSLY_N" },
-            schemeAmount: { type: DataTypes.INTEGER, field: "TNRTP18_SYMR_SCHEME_AMOUNT_N" },
-            schemeName: { type: DataTypes.STRING, field: "TNRTP18_SYMR_SCHEME_NAME_N" },
+            formId: { type: DataTypes.INTEGER, field: "TNRTP81_SYMR_FORMS_MASTER_D" },
+			grantenterpriseName: { type: DataTypes.STRING, field: "TNRTP81_GRANT_ENTERPRISE_NAME_N" },
+		    enterpriseType: { type: DataTypes.INTEGER, field: "TNRTP81_ENTERPRISE_TYPE_MASTER_D" },
+			grantActivityName: { type: DataTypes.STRING, field: "TNRTP81_GRANT_ACTIVITY_NAME_N" },
+		    // activityType: { type: DataTypes.INTEGER, field: "TNRTP81_ACTIVITY_TYPE_MASTER_D" },
+			// sector: { type: DataTypes.INTEGER, field: "TNRTP81_TYPE_OF_SECTOR_MASTER_D" },
+            // commodity: { type: DataTypes.INTEGER, field: "TNRTP81_TYPE_OF_COMMODITY_MASTER_D" },
+            summary: { type: DataTypes.STRING, field: "TNRTP81_SUMMARY_N" },
+			noOfPersons: { type: DataTypes.INTEGER, field: "TNRTP81_NO_OF_PERSONS_D" },
+            isExperiencedEnterpreneur: { type: DataTypes.BOOLEAN, field: "TNRTP81_IS_EXPERIENCED_ENTERPRENEUR_D" },
+            enterpreneurExpYears: { type: DataTypes.INTEGER, field: "TNRTP81_ENTERPRENEUR_EXP_YEARS_MASTER_D" },
+            isEmployedInActivity: { type: DataTypes.BOOLEAN, field: "TNRTP81_IS_EMPLOYED_IN_ACTIVITY_D" },
+        	activityExpYears: { type: DataTypes.INTEGER, field: "TNRTP81_ACTIVITY_EXP_YEARS_MASTER_D" },
+            designation: { type: DataTypes.STRING, field: "TNRTP81_DESIGNATION_N" },
+            location: { type: DataTypes.STRING, field: "TNRTP81_LOCATION_N" },
+            isLoanAppliedPreviously: { type: DataTypes.BOOLEAN, field: "TNRTP81_IS_LOAN_APPLIED_PREVIOUSLY_D" },
+            schemeAmount: { type: DataTypes.INTEGER, field: "TNRTP81_SCHEME_AMOUNT_N" },
+            schemeName: { type: DataTypes.STRING, field: "TNRTP81_SCHEME_NAME_N" },
 
 			status: {
 				type: DataTypes.INTEGER,
 				defaultValue: FORM_SECTION_STATUS.FILLED,
-				field: "TNRTP18_STATUS_D",
+				field: "TNRTP81_STATUS_D",
 			},
-			TNRTP18_DELETED_F: { type: DataTypes.BOOLEAN, defaultValue: DELETE_STATUS.NOT_DELETED },
-			TNRTP18_CREATED_AT: { type: DataTypes.DATE },
-			TNRTP18_UPDATED_AT: { type: DataTypes.DATE },
-			TNRTP18_CREATED_D: { type: DataTypes.INTEGER },
-			TNRTP18_UPDATED_D: { type: DataTypes.INTEGER },
+			TNRTP81_DELETED_F: { type: DataTypes.BOOLEAN, defaultValue: DELETE_STATUS.NOT_DELETED },
+			TNRTP81_CREATED_AT: { type: DataTypes.DATE },
+			TNRTP81_UPDATED_AT: { type: DataTypes.DATE },
+			TNRTP81_CREATED_D: { type: DataTypes.INTEGER },
+			TNRTP81_UPDATED_D: { type: DataTypes.INTEGER },
 		},
 		{
 			freezeTableName: true,
@@ -46,24 +46,29 @@ module.exports = (sequelize, DataTypes) => {
     );
     symrEnterprise.associate = function (models) {
 		symrEnterprise.belongsTo(models.enterpriseType, {
-			foreignKey: "TNRTP18_ENTERPRISE_TYPE_MASTER_D",
+			foreignKey: "TNRTP81_ENTERPRISE_TYPE_MASTER_D",
 			as: "enterpriseTypeData",
 		});
-		symrEnterprise.belongsTo(models.activityType, {
-			foreignKey: "TNRTP18_ACTIVITY_TYPE_MASTER_D",
-			as: "activityTypeData",
+		symrEnterprise.hasMany(models.selectedSymr, {
+			foreignKey: "TNRTP92_SYMR_FORMS_DETAILS_MASTER_D",
+			as: "symractivityTypes",
+		});
+		symrEnterprise.hasMany(models.selectedSymrSector, {
+			foreignKey: "TNRTP93_SYMR_FORMS_DETAILS_MASTER_D",
+			as: "symrSectorTypes",
+		});
+        symrEnterprise.hasMany(models.selectedSymrCommodity, {
+			foreignKey: "TNRTP91_SYMR_FORMS_DETAILS_MASTER_D",
+			as: "symrCommodityTypes",
         });
-        symrEnterprise.belongsTo(models.pcSectorTypes, {
-			foreignKey: "TNRTP18_COURSE_TYPE_OF_SECTOR_MASTER_D",
-			as: "courseCompletionTypeData",
-        });
-        symrEnterprise.belongsTo(models.pcCommodityTypes, {
-			foreignKey: "TNRTP18_TYPE_OF_COMMODITY_MASTER_D",
-			as: "pcCommodityTypeData",
-        });
+       
         symrEnterprise.belongsTo(models.years, {
-			foreignKey: "TNRTP18_YEARS_MASTER_D",
-			as: "yearsData",
+			foreignKey: "TNRTP81_ENTERPRENEUR_EXP_YEARS_MASTER_D",
+			as: "enterpreneurExpYearsData",
+		});
+		symrEnterprise.belongsTo(models.years, {
+			foreignKey: "TNRTP81_ACTIVITY_EXP_YEARS_MASTER_D",
+			as: "activityExpYearsData",
 		});
 	};
 	symrEnterprise.selectedFields = [

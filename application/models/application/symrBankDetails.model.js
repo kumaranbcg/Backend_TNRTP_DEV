@@ -3,33 +3,33 @@ const Cryptr = require("cryptr");
 const cryptr = new Cryptr(process.env.AES_KEY);
 module.exports = (sequelize, DataTypes) => {
 	const symrBankDetails = sequelize.define(
-		"TNRTP19_SYMR_BANK_DETAILS",
+		"TNRTP82_SYMR_FORMS_BANK_DETAILS",
 		{
-			TNRTP19_PG_FORMS_BANK_DETAILS_D: {
+			TNRTP82_SYMR_FORMS_BANK_DETAILS_D: {
 				type: DataTypes.INTEGER,
 				primaryKey: true,
 				autoIncrement: true,
 			},
-			formId: { type: DataTypes.INTEGER, field: "TNRTP19_SYMR_FORMS_MASTER_D" },
-			accNumber: { type: DataTypes.STRING, field: "TNRTP19_ACCOUNT_NUMBER_N" },
-			accName: { type: DataTypes.STRING, field: "TNRTP19_ACCOUNT_NAME_N" },
-			bnkName: { type: DataTypes.STRING, field: "TNRTP19_BANK_NAME_N" },
-			branchName: { type: DataTypes.STRING, field: "TNRTP19_BRANCH_NAME_N" },
-			ifscCode: { type: DataTypes.STRING, field: "TNRTP19_IFSC_CODE_N" },
-			noOfLastTransaction: {
-				type: DataTypes.STRING,
-				field: "TNRTP19_NO_OF_TRANSACTION_LAST_SIX_D",
+			formId: { type: DataTypes.INTEGER, field: "TNRTP82_SYMR_FORMS_MASTER_D" },
+			accNumber: { type: DataTypes.STRING, field: "TNRTP82_ACCOUNT_NUMBER_N" },
+			accName: { type: DataTypes.STRING, field: "TNRTP82_ACCOUNT_NAME_N" },
+			bnkName: { type: DataTypes.STRING, field: "TNRTP82_BANK_NAME_N" },
+			branchName: { type: DataTypes.STRING, field: "TNRTP82_BRANCH_NAME_N" },
+			ifscCode: { type: DataTypes.STRING, field: "TNRTP82_IFSC_CODE_N" },
+			isAccLinkAadhar: {
+				type: DataTypes.BOOLEAN,
+				field: "TNRTP82_IS_ACCOUNT_LINKED_WITH_AADHAR_D",
 			},
 			status: {
 				type: DataTypes.INTEGER,
 				defaultValue: FORM_SECTION_STATUS.FILLED,
-				field: "TNRTP19_STATUS_D",
+				field: "TNRTP82_STATUS_D",
 			},
-			TNRTP19_DELETED_F: { type: DataTypes.BOOLEAN, defaultValue: DELETE_STATUS.NOT_DELETED },
-			TNRTP19_CREATED_AT: { type: DataTypes.DATE },
-			TNRTP19_UPDATED_AT: { type: DataTypes.DATE },
-			TNRTP19_CREATED_D: { type: DataTypes.INTEGER },
-			TNRTP19_UPDATED_D: { type: DataTypes.INTEGER },
+			TNRTP82_DELETED_F: { type: DataTypes.BOOLEAN, defaultValue: DELETE_STATUS.NOT_DELETED },
+			TNRTP82_CREATED_AT: { type: DataTypes.DATE },
+			TNRTP82_UPDATED_AT: { type: DataTypes.DATE },
+			TNRTP82_CREATED_D: { type: DataTypes.INTEGER },
+			TNRTP82_UPDATED_D: { type: DataTypes.INTEGER },
 		},
 		{
 			getterMethods: {
@@ -47,13 +47,7 @@ module.exports = (sequelize, DataTypes) => {
 				},
 				ifscCode: function () {
 					return this.getDataValue("ifscCode") && cryptr.decrypt(this.getDataValue("ifscCode"));
-				},
-				noOfLastTransaction: function () {
-					return (
-						this.getDataValue("noOfLastTransaction") &&
-						cryptr.decrypt(this.getDataValue("noOfLastTransaction"))
-					);
-				},
+				}
 			},
 			setterMethods: {
 				accNumber: function (value) {
@@ -71,9 +65,6 @@ module.exports = (sequelize, DataTypes) => {
 				ifscCode: function (value) {
 					this.setDataValue("ifscCode", value && cryptr.encrypt(value));
 				},
-				noOfLastTransaction: function (value) {
-					this.setDataValue("noOfLastTransaction", value && cryptr.encrypt(value));
-				},
 			},
 			freezeTableName: true,
 			timestamps: false,
@@ -85,7 +76,7 @@ module.exports = (sequelize, DataTypes) => {
 		"bnkName",
 		"branchName",
 		"ifscCode",
-		"noOfLastTransaction",
+		"isAccLinkAadhar",
 	];
 	return symrBankDetails;
 };

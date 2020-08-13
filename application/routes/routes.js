@@ -11,8 +11,12 @@ const {
 	SYMRFormController,
 	EGFormController
 } = require("./../controllers/controller");
+<<<<<<< HEAD
 
 const { pcFormSubmit, pgFormSubmit, egFormSubmit} = require("../validators");
+=======
+const { pcFormSubmit, pgFormSubmit, symrFormSubmit } = require("../validators");
+>>>>>>> 6b05ad1a7294118fd92025caafc963449670cd5e
 router.use((req, res, next) => {
 	if (req.headers.authorization) {
 		let token = req.headers.authorization.replace("Bearer ", "");
@@ -34,6 +38,7 @@ router.use((err, req, res, next) => {
 		next();
 	}
 });
+router.post("/application/insertActivity", PCFormController.insertActvityMaster);
 
 router.get(
 	"/application/pcFormCreate",
@@ -206,13 +211,14 @@ router.post(
 	PGFormController.submitPgForm
 );
 
-// SYMR 
+// SYMR
 router.get(
 	"/application/symrFormCreate",
 	verifyToken,
 	hasRole([STAFF_ROLE.PUBLIC]),
 	SYMRFormController.symrFormCreate
 );
+
 router.post(
 	"/application/getPgApplication",
 	verifyToken,
@@ -276,6 +282,7 @@ router.get(
 	PGFormController.getPgAssesment
 );
 
+<<<<<<< HEAD
 //----------- EG FORM -------------
 router.get(
 	"/application/egFormCreate",
@@ -314,4 +321,35 @@ router.post(
 );
 
 
+=======
+router.get("/application/getActivityTypes", verifyToken, userFormController.getActivityTypes);
+
+router.post("/application/getSectorTypes", verifyToken, userFormController.getSectorTypes);
+
+router.post("/application/getCommodityTypes", verifyToken, userFormController.getCommodityTypes);
+
+// SYMR
+router.get(
+	"/application/symrFormCreate",
+	verifyToken,
+	hasRole([STAFF_ROLE.PUBLIC]),
+	SYMRFormController.symrFormCreate
+);
+
+router.post(
+	"/application/symrFormFill",
+	verifyToken,
+	hasRole([STAFF_ROLE.PUBLIC]),
+	SYMRFormController.symrFormFill
+);
+router.post("/application/uploadDoc", verifyToken, docUpload, SYMRFormController.uploadDoc);
+
+router.post(
+	"/application/submitSymrForm",
+	verifyToken,
+	hasRole([STAFF_ROLE.PUBLIC]),
+	symrFormSubmit,
+	SYMRFormController.submitSymrForm
+);
+>>>>>>> 6b05ad1a7294118fd92025caafc963449670cd5e
 module.exports = router;
