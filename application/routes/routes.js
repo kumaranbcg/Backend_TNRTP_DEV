@@ -10,7 +10,7 @@ const {
 	PGFormController,
 	SYMRFormController,
 } = require("./../controllers/controller");
-const { pcFormSubmit, pgFormSubmit } = require("../validators");
+const { pcFormSubmit, pgFormSubmit, symrFormSubmit } = require("../validators");
 router.use((req, res, next) => {
 	if (req.headers.authorization) {
 		let token = req.headers.authorization.replace("Bearer ", "");
@@ -196,6 +196,7 @@ router.get(
 	PGFormController.getPgForm
 );
 
+
 router.post(
 	"/application/submitPgForm",
 	verifyToken,
@@ -204,13 +205,7 @@ router.post(
 	PGFormController.submitPgForm
 );
 
-// SYMR 
-router.get(
-	"/application/symrFormCreate",
-	verifyToken,
-	hasRole([STAFF_ROLE.PUBLIC]),
-	SYMRFormController.symrFormCreate
-);
+
 router.post(
 	"/application/getPgApplication",
 	verifyToken,
@@ -272,5 +267,29 @@ router.get(
 	verifyToken,
 	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC]),
 	PGFormController.getPgAssesment
+);
+
+// SYMR 
+router.get(
+	"/application/symrFormCreate",
+	verifyToken,
+	hasRole([STAFF_ROLE.PUBLIC]),
+	SYMRFormController.symrFormCreate
+);
+
+router.post(
+	"/application/symrFormFill",
+	verifyToken,
+	hasRole([STAFF_ROLE.PUBLIC]),
+	SYMRFormController.symrFormFill
+);
+router.post("/application/uploadDoc", verifyToken, docUpload, SYMRFormController.uploadDoc);
+
+router.post(
+	"/application/submitSymrForm",
+	verifyToken,
+	hasRole([STAFF_ROLE.PUBLIC]),
+	symrFormSubmit,
+	SYMRFormController.submitSymrForm
 );
 module.exports = router;
