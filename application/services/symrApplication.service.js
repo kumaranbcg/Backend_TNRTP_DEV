@@ -7,7 +7,9 @@ const {
 	symrBankDetails,
 	symrProposedActivity,
 	symrExistingLoan,
+	existingLoanActivity,
 	symrUploadDocument,
+	selectedSymrDoc,
 	// selectedPcSector,
 	// selectedPcCommodity,
 	// selectedPc,
@@ -42,14 +44,12 @@ const messages = require("./../configs/errorMsgs.js");
 const errorCodes = require("./../configs/errorCodes.js");
 const {
 	SYMR_FORM_MASTER_STATUS,
-	DELETE_STATUS,
-	PC_UPLOAD_DOC,
-	ORDERBY,
-	PC_STAFF_DOC,
+	SYMR_UPLOAD_DOC,
 	DISBURSEMENT_STATE,
 } = require("../constants/index");
 const { Op } = require("sequelize");
 const Cryptr = require("cryptr");
+const existingLoanActivityModel = require("../models/application/existingLoanActivity.model");
 const cryptr = new Cryptr(process.env.AES_KEY);
 class SYMRApplicationService {}
 
@@ -220,10 +220,19 @@ SYMRApplicationService.prototype.symrProposedActivitySerivce = async (params) =>
 };
 SYMRApplicationService.prototype.symrExistingLoanSerivce = async (params) => {
 	try {
-		if (params && params.length) {
-			const { formId } = params[0];
+		console.log("225",params)
+		if (params) {
+			const { formId } = params;
+			console.log(formId)
 			await symrExistingLoan.destroy({ where: { formId } }).then(() => {
-				return symrExistingLoan.bulkCreate([...params]);
+				return symrExistingLoan.create({...params}, {
+					include: [
+						{
+							model: existingLoanActivity,
+							as: "existingLoanList",
+						}
+					]
+				});
 			});
 		}
 		return {
@@ -243,22 +252,22 @@ SYMRApplicationService.prototype.symrUploadDocSerivce = async (params) => {
 		const { formId } = params;
 		if (params.proofOfMigration && params.proofOfMigration.length) {
 			params.proofOfMigration.map((element) => {
-				element.docType = PC_UPLOAD_DOC.PROOF_OF_MIGRATION;
+				element.docType = SYMR_UPLOAD_DOC.PROOF_OF_MIGRATION;
 			});
 		}
 		if (params.applicationLetter && params.applicationLetter.length) {
 			params.applicationLetter.map((element) => {
-				element.docType = PC_UPLOAD_DOC.APPLICATION_LETTER;
+				element.docType = SYMR_UPLOAD_DOC.APPLICATION_LETTER;
 			});
 		}
 		if (params.bankPassBook && params.bankPassBook.length) {
 			params.bankPassBook.map((element) => {
-				element.docType = PC_UPLOAD_DOC.BANK_PASSBOOK;
+				element.docType = SYMR_UPLOAD_DOC.BANK_PASSBOOK;
 			});
 		}
 		if (params.idProofPhoto && params.idProofPhoto.length) {
 			params.idProofPhoto.map((element) => {
-				element.docType = PC_UPLOAD_DOC.ID_PROOF_PHOTO;
+				element.docType = SYMR_UPLOAD_DOC.ID_PROOF_PHOTO;
 			});
 		}
 		if (params.businessPlan && params.businessPlan.length) {

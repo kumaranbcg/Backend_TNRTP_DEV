@@ -42,8 +42,8 @@ SYMRFormController.prototype.symrFormFill = async (req, res) => {
 				result = await service.symrProposedActivitySerivce([...req.body]);
 				break;
 			}
-			case SYMR_FORM_STAGE.EXISTING_ACTIVITY: {
-				result = await service.symrExistingLoanSerivce([...req.body]);
+			case SYMR_FORM_STAGE.EXISTING_LOAN: {
+				result = await service.symrExistingLoanSerivce({...req.body});
 				break;
 			}
 			case SYMR_FORM_STAGE.UPLOAD_DOCUMENTS: {

@@ -426,6 +426,27 @@ const schemas = {
 				amtReq: BaseJoi.number().required(),
 			})
 			.required(),
+		symrExistingLoan: BaseJoi.object({
+			isExistingLoan: BaseJoi.boolean().required(),
+			formId: BaseJoi.number().required(),
+			loanDetails:  BaseJoi.when("isExistingLoan", {
+				is: true,
+				then: BaseJoi.array()
+				.items({
+					isExistingLoan: BaseJoi.boolean().required(),
+					loanSource: BaseJoi.string().required(),
+					loanReceivedDate: BaseJoi.date().required(),
+					loanAmount: BaseJoi.number().required(),
+					interestRate: BaseJoi.number().required(),
+					amountToBeRepaid: BaseJoi.number().required(),
+					amountRepaid: BaseJoi.number().required(),
+					balanceAmtToBeRepaid: BaseJoi.number().required(),
+					reason: BaseJoi.string().required()
+				}),
+				otherwise: BaseJoi.optional(),
+			})
+		})
+			.required(),
 		uploadDocuments: BaseJoi.object({
 			formId: BaseJoi.number().required(),
 			regCertificate: BaseJoi.array()
