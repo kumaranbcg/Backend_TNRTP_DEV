@@ -1101,13 +1101,15 @@ PGApplicationService.prototype.submitPgAssesmentService = async (params) => {
 		params.assessments.map((element) => {
 			element.formId = formId;
 		});
-		await pgAssessment.bulkCreate([...params.assessments], {
-			include: [
-				{
-					model: pgAssessmentDoc,
-					as: "documents",
-				},
-			],
+		await pgAssessment.destroy({ where: { formId } }).then(() => {
+			return pgAssessment.bulkCreate([...params.assessments], {
+				include: [
+					{
+						model: pgAssessmentDoc,
+						as: "documents",
+					},
+				],
+			});
 		});
 		return {
 			code: errorCodes.HTTP_OK,
