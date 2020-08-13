@@ -424,6 +424,45 @@ PGApplicationService.prototype.getPgFormService = async (params) => {
 						},
 					],
 				},
+				{
+					model: pgApplicationStatus,
+					as: "pgBmpuApplicationStatus",
+					required: false,
+					where: { TNRTP48_TYPE_D: PG_APPLICATION_STATUS_TYPE.BMPU_OPEN_APPLICATION },
+					attributes: [
+						["TNRTP48_UPDATED_AT", "recommendedDate"],
+						["TNRTP48_UPDATED_D", "recommendedBy"],
+					],
+				},
+				{
+					model: pgApplicationStatus,
+					as: "pgDmpuApplicationStatus",
+					required: false,
+					where: { TNRTP48_TYPE_D: PG_APPLICATION_STATUS_TYPE.DMPU_OPEN_APPLICATION },
+					attributes: [
+						"decMeetingDate",
+						["TNRTP48_UPDATED_AT", "approvedDate"],
+						["TNRTP48_UPDATED_D", "approvedBy"],
+					],
+				},
+				{
+					model: pgDisbursment,
+					as: "amountDisbursment",
+					required: false,
+					where: { disbursmentType: PG_DISBURSEMENT_STATE.AMOUNT_DISBURSMENT },
+					attributes: [
+						"disbursmentDate",
+						"firstTrancheSubmitDate",
+						["TNRTP50_UPDATED_D", "disbursedBy"],
+					],
+				},
+				{
+					model: pgDisbursment,
+					as: "disbursmentUc",
+					required: false,
+					where: { disbursmentType: PG_DISBURSEMENT_STATE.SUBMIT_UC_DISBURSMENT },
+					attributes: ["disbursmentSubmitDate", ["TNRTP50_UPDATED_D", "disbursedBy"]],
+				},
 			],
 			nested: true,
 		});

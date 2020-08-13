@@ -16,6 +16,9 @@ dbList.forEach((database) => {
 			acquire: database.pool.acquire,
 			idle: database.pool.idle,
 		},
+		dialectOptions: {
+			multipleStatements: true,
+		},
 	});
 
 	fs.readdirSync(__dirname + "/" + database.models)
