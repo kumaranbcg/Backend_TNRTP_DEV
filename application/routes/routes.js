@@ -344,4 +344,10 @@ router.post(
 	symrFormSubmit,
 	SYMRFormController.submitSymrForm
 );
+router.get(
+	"/application/getSymrForm",
+	verifyToken,
+	hasRole([STAFF_ROLE.PUBLIC]),
+	SYMRFormController.getSymrForm
+);
 module.exports = router;

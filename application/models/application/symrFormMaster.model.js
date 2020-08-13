@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
 		});
 		symrFormMaster.hasOne(models.symrShgDetails, {
 			foreignKey: "formId",
-			as: "symrshgDetails",
+			as: "symrShgDetails",
 		});
 		symrFormMaster.hasOne(models.symrSkillTraining, {
 			foreignKey: "formId",
@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
 		});
 		symrFormMaster.hasOne(models.symrEnterprise, {
 			foreignKey: "formId",
-			as: "symrEnterprisedetail",
+			as: "symrEnterprise",
 		});
 		symrFormMaster.hasOne(models.symrBankDetails, {
 			foreignKey: "formId",

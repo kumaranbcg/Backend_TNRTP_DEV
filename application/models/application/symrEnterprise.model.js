@@ -51,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
 		});
 		symrEnterprise.hasMany(models.selectedSymr, {
 			foreignKey: "TNRTP92_SYMR_FORMS_DETAILS_MASTER_D",
-			as: "symractivityTypes",
+			as: "symrTypes",
 		});
 		symrEnterprise.hasMany(models.selectedSymrSector, {
 			foreignKey: "TNRTP93_SYMR_FORMS_DETAILS_MASTER_D",
