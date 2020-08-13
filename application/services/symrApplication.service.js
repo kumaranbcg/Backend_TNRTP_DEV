@@ -10,9 +10,9 @@ const {
 	existingLoanActivity,
 	symrUploadDocument,
 	selectedSymrDoc,
-	// selectedPcSector,
-	// selectedPcCommodity,
-	// selectedPc,
+	selectedSymr,
+	selectedSymrCommodity,
+	selectedSymrSector
 	// pcTypes,
 	// pcCommodityTypes,
 	// pcSectorTypes,
@@ -163,15 +163,15 @@ SYMRApplicationService.prototype.symrEnterpriseDetailService = async (params) =>
 					include: [
 						{
 							model: selectedSymr,
-							as: "symrTypesData",
+							as: "symractivityTypes",
 						},
 						{
 							model: selectedSymrCommodity,
-							as: "symrCommodityTypesData",
+							as: "symrCommodityTypes",
 						},
 						{
 							model: selectedSymrSector,
-							as: "symrSectorTypesData",
+							as: "symrSectorTypes",
 						},
 					],
 				}
