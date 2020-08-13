@@ -9,8 +9,10 @@ const {
 	userFormController,
 	PGFormController,
 	SYMRFormController,
+	EGFormController,
 } = require("./../controllers/controller");
-const { pcFormSubmit, pgFormSubmit, symrFormSubmit } = require("../validators");
+
+const { pcFormSubmit, pgFormSubmit, egFormSubmit, symrFormSubmit } = require("../validators");
 router.use((req, res, next) => {
 	if (req.headers.authorization) {
 		let token = req.headers.authorization.replace("Bearer ", "");
@@ -274,6 +276,43 @@ router.get(
 	verifyToken,
 	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC]),
 	PGFormController.getPgAssesment
+);
+
+//----------- EG FORM -------------
+router.get(
+	"/application/egFormCreate",
+	verifyToken,
+	hasRole([STAFF_ROLE.PUBLIC]),
+	EGFormController.egFormCreate
+);
+
+router.post(
+	"/application/egFormFill",
+	verifyToken,
+	hasRole([STAFF_ROLE.PUBLIC]),
+	EGFormController.egFormFill
+);
+
+router.get(
+	"/application/getEgForm",
+	verifyToken,
+	hasRole([STAFF_ROLE.PUBLIC]),
+	EGFormController.getEgForm
+);
+
+router.get(
+	"/application/getEGMasters",
+	verifyToken,
+	hasRole([STAFF_ROLE.PUBLIC]),
+	EGFormController.getEGMasters
+);
+
+router.post(
+	"/application/submitEgForm",
+	verifyToken,
+	egFormSubmit,
+	hasRole([STAFF_ROLE.PUBLIC]),
+	EGFormController.submitEgForm
 );
 
 router.get("/application/getActivityTypes", verifyToken, userFormController.getActivityTypes);
