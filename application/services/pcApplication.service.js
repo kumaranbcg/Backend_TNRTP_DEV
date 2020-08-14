@@ -1187,8 +1187,8 @@ PCApplicationService.prototype.startAssesmentService = async (params) => {
 			"TNRTP28_PC_AUDIT_FINANCIAL_YEAR_MASTER",
 			{
 				attributes: [
-					["TNRTP28_PC_AUDIT_FINANCIAL_YEAR_MASTER_N", "label"],
-					["TNRTP28_PC_AUDIT_YEAR_D", "value"],
+					["TNRTP28_PC_AUDIT_YEAR_N", "label"],
+					["TNRTP28_PC_AUDIT_FINANCIAL_YEAR_MASTER_D", "value"],
 				],
 			}
 		);
