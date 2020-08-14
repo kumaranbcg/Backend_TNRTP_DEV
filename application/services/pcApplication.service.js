@@ -1187,8 +1187,17 @@ PCApplicationService.prototype.startAssesmentService = async (params) => {
 			"TNRTP28_PC_AUDIT_FINANCIAL_YEAR_MASTER",
 			{
 				attributes: [
-					["TNRTP28_PC_AUDIT_FINANCIAL_YEAR_MASTER_D", "label"],
+					["TNRTP28_PC_AUDIT_FINANCIAL_YEAR_MASTER_N", "label"],
 					["TNRTP28_PC_AUDIT_YEAR_D", "value"],
+				],
+			}
+		);
+		const linkageMaster = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP26_PC_ASSESSMENT_LINKAGE_MASTER",
+			{
+				attributes: [
+					["TNRTP26_PC_LINKAGE_N", "label"],
+					["TNRTP26_PC_ASSESSMENT_LINKAGE_MASTER_D", "value"],
 				],
 			}
 		);
@@ -1198,15 +1207,6 @@ PCApplicationService.prototype.startAssesmentService = async (params) => {
 				attributes: [
 					["TNRTP32_PC_NO_OF_CONVERGENCE_D", "label"],
 					["TNRTP32_PC_NO_OF_CONVERGENCE_MASTER_D", "value"],
-				],
-			}
-		);
-		const linkageMaster = application.dialect.QueryGenerator.selectQuery(
-			"TNRTP26_PC_ASSESSMENT_LINKAGE_MASTER",
-			{
-				attributes: [
-					["TNRTP26_PC_LINKAGE_D", "label"],
-					["TNRTP26_PC_ASSESSMENT_LINKAGE_MASTER_D", "value"],
 				],
 			}
 		);
