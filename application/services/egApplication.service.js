@@ -78,6 +78,7 @@ EGApplicationService.prototype.egFormCreateSerivce = async (params) => {
 };
 EGApplicationService.prototype.egFormBasicDetailsSerivce = async (params) => {
 	try {
+		console.log('Eg form service')
 		const { formId } = params;
 		params.TNRTP54_CREATED_D = params.userData.userId;
 		params.TNRTP54_UPDATED_D = params.userData.userId;
@@ -106,6 +107,8 @@ EGApplicationService.prototype.egFormDetailsSerivce = async (params) => {
 		const { formId } = params;
 		params.TNRTP55_CREATED_D = params.userData.userId;
 		params.TNRTP55_UPDATED_D = params.userData.userId;
+
+
 		await egFormDetails.destroy({ where: { formId } }).then(() => {
 			return egFormDetails.create(
 				{ ...params },
@@ -237,6 +240,7 @@ EGApplicationService.prototype.egFormProposedActivitySerivce = async (params) =>
 EGApplicationService.prototype.egFormUploadDocSerivce = async (params) => {
 	try {
 		const { formId } = params;
+		
 		if (params.minOfEGRefund && params.minOfEGRefund.length) {
 			params.minOfEGRefund.map((element) => {
 				element.docType = EG_UPLOAD_DOC.MIN_OF_EG;
@@ -252,6 +256,7 @@ EGApplicationService.prototype.egFormUploadDocSerivce = async (params) => {
 				element.docType = EG_UPLOAD_DOC.BUSSINESS_PLAN;
 			});
 		}
+
 		await egFormUploadDocument.destroy({ where: { formId } }).then(() => {
 			return egFormUploadDocument.create(
 				{ ...params },

@@ -26,15 +26,12 @@ const {
 	pcDisbursment,
 	pcAssessmentDoc,
 	pcAssessment,
-	pcAuditYear,
-	pcConvergence,
-	pcLinkage,
-	pcPartnership,
 	pcAreaMember,
 	pcAreaMemberBlock,
 	pcCoverageArea,
 	pcCoverageBlock,
 	pcCoveragePanchayat,
+	mainDashboard,
 } = require("../models");
 const messages = require("./../configs/errorMsgs.js");
 const errorCodes = require("./../configs/errorCodes.js");
@@ -45,6 +42,8 @@ const {
 	ORDERBY,
 	PC_STAFF_DOC,
 	PC_DISBURSEMENT_STATE,
+	FORM_TYPES,
+	DASHBOARD_FORM_STATUS,
 } = require("../constants/index");
 const { Op } = require("sequelize");
 const Cryptr = require("cryptr");
@@ -90,6 +89,10 @@ PCApplicationService.prototype.pcFormCreateSerivce = async (params) => {
 		// 	};
 		// }
 		let formData = await pcFormMaster.create({ ...createMaster });
+		await mainDashboard.create({
+			formId: formData.formId,
+			formTypeId: FORM_TYPES.PC_FORM,
+		});
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.formCreated,
@@ -114,6 +117,12 @@ PCApplicationService.prototype.pcFormBasicDetailsSerivce = async (params) => {
 		} else {
 			await pcFormBasicDetails.create({ ...params });
 		}
+		await mainDashboard.update(
+			{ ...params },
+			{
+				where: { formId, formTypeId: FORM_TYPES.PC_FORM },
+			}
+		);
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -173,6 +182,12 @@ PCApplicationService.prototype.pcFormMemberSerivce = async (params) => {
 		} else {
 			await pcFormMembers.create({ ...params });
 		}
+		await mainDashboard.update(
+			{ ...params },
+			{
+				where: { formId, formTypeId: FORM_TYPES.PC_FORM },
+			}
+		);
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -870,6 +885,26 @@ PCApplicationService.prototype.updateOpenApplicationService = async (params) => 
 				where: { formId },
 			}
 		);
+		let dashBoardFormStatus;
+		switch (params.applicationStatus) {
+			case PC_FORM_MASTER_STATUS.FIRST_TRANCHE: {
+				dashBoardFormStatus = DASHBOARD_FORM_STATUS.APPROVED;
+			}
+			case PC_FORM_MASTER_STATUS.PENDING: {
+				dashBoardFormStatus = DASHBOARD_FORM_STATUS.PENDING;
+			}
+			case PC_FORM_MASTER_STATUS.DECLINED: {
+				dashBoardFormStatus = DASHBOARD_FORM_STATUS.REJECTED;
+			}
+		}
+		if (dashBoardFormStatus) {
+			await mainDashboard.update(
+				{ applicationStatus: dashBoardFormStatus },
+				{
+					where: { formId, formTypeId: FORM_TYPES.PC_FORM },
+				}
+			);
+		}
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -1025,6 +1060,11 @@ PCApplicationService.prototype.updateFirstTrancheService = async (params) => {
 				where: { formId },
 			}
 		);
+		let dashBoardData = await mainDashboard.findOne({
+			where: { formId, formTypeId: FORM_TYPES.PC_FORM },
+		});
+		dashBoardData.totalDisburement = dashBoardData.totalDisburement + params.disbursmentAmount;
+		dashBoardData.save();
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -1075,6 +1115,11 @@ PCApplicationService.prototype.updateSecondTrancheService = async (params) => {
 				where: { formId },
 			}
 		);
+		let dashBoardData = await mainDashboard.findOne({
+			where: { formId, formTypeId: FORM_TYPES.PC_FORM },
+		});
+		dashBoardData.totalDisburement = dashBoardData.totalDisburement + params.disbursmentAmount;
+		dashBoardData.save();
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -1142,8 +1187,17 @@ PCApplicationService.prototype.startAssesmentService = async (params) => {
 			"TNRTP28_PC_AUDIT_FINANCIAL_YEAR_MASTER",
 			{
 				attributes: [
-					["TNRTP28_PC_AUDIT_FINANCIAL_YEAR_MASTER_D", "label"],
-					["TNRTP28_PC_AUDIT_YEAR_D", "value"],
+					["TNRTP28_PC_AUDIT_YEAR_N", "label"],
+					["TNRTP28_PC_AUDIT_FINANCIAL_YEAR_MASTER_D", "value"],
+				],
+			}
+		);
+		const linkageMaster = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP26_PC_ASSESSMENT_LINKAGE_MASTER",
+			{
+				attributes: [
+					["TNRTP26_PC_LINKAGE_N", "label"],
+					["TNRTP26_PC_ASSESSMENT_LINKAGE_MASTER_D", "value"],
 				],
 			}
 		);
@@ -1153,15 +1207,6 @@ PCApplicationService.prototype.startAssesmentService = async (params) => {
 				attributes: [
 					["TNRTP32_PC_NO_OF_CONVERGENCE_D", "label"],
 					["TNRTP32_PC_NO_OF_CONVERGENCE_MASTER_D", "value"],
-				],
-			}
-		);
-		const linkageMaster = application.dialect.QueryGenerator.selectQuery(
-			"TNRTP26_PC_ASSESSMENT_LINKAGE_MASTER",
-			{
-				attributes: [
-					["TNRTP26_PC_LINKAGE_D", "label"],
-					["TNRTP26_PC_ASSESSMENT_LINKAGE_MASTER_D", "value"],
 				],
 			}
 		);

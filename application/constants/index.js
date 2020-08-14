@@ -12,6 +12,12 @@ const ORDERBY = {
 	ASC: 0,
 	DESC: 1,
 };
+
+const DASHBOARD_FORM_STATUS = {
+	APPROVED: 1,
+	PENDING: 2,
+	REJECTED: 3,
+};
 const STAFF_STATUS = {
 	INACTIVE: 0,
 	ACTIVE: 1,
@@ -123,7 +129,7 @@ const PG_FORM_STAGE = {
 };
 const EG_FORM_STAGE = {
 	BASIC_DETAILS: "1",
-	PC_DETAILS: "2",
+	EG_DETAILS: "2",
 	MEMBERS: "3",
 	AMOUNT_RECEVIED: "4",
 	BANK_DETAILS: "5",
@@ -146,7 +152,7 @@ const PG_UPLOAD_DOC = {
 };
 
 const EG_UPLOAD_DOC = {
-	MIN_OF_PG: 1,
+	MIN_OF_EG: 1,
 	BANK_PASSBOOK: 2,
 	BUSSINESS_PLAN: 3,
 };
@@ -185,7 +191,7 @@ const PG_DISBURSEMENT_STATE = {
 };
 
 //EG CONSTANTS
-
+module.exports.DASHBOARD_FORM_STATUS = DASHBOARD_FORM_STATUS;
 module.exports.STAFF_ROLE = STAFF_ROLE;
 module.exports.ORDERBY = ORDERBY;
 module.exports.STAFF_STATUS = STAFF_STATUS;
@@ -209,7 +215,7 @@ module.exports.PG_APPLICATION_STATUS_TYPE = PG_APPLICATION_STATUS_TYPE;
 // EG
 module.exports.EG_FORM_MASTER_STATUS = EG_FORM_MASTER_STATUS;
 module.exports.EG_FORM_STAGE = EG_FORM_STAGE;
-module.exports.PG_UPLOAD_DOC = PG_UPLOAD_DOC;
+module.exports.EG_UPLOAD_DOC = EG_UPLOAD_DOC;
 module.exports.SYMR_UPLOAD_DOC = SYMR_UPLOAD_DOC;
 
 // SYMR 

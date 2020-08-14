@@ -8,6 +8,8 @@ const {
 	ORDERBY,
 	PG_APPLICATION_STATUS_TYPE,
 	PG_DISBURSEMENT_STATE,
+	FORM_TYPES,
+	DASHBOARD_FORM_STATUS,
 } = require("../constants/index");
 const { Op } = require("sequelize");
 const {
@@ -38,6 +40,7 @@ const {
 	pgDisbursment,
 	pgAssessment,
 	pgAssessmentDoc,
+	mainDashboard,
 } = require("../models");
 class PGApplicationService {}
 PGApplicationService.prototype.pgFormCreateSerivce = async (params) => {
@@ -59,6 +62,10 @@ PGApplicationService.prototype.pgFormCreateSerivce = async (params) => {
 		// 	};
 		// }
 		let formData = await pgFormMaster.create({ ...createMaster });
+		await mainDashboard.create({
+			formId: formData.formId,
+			formTypeId: FORM_TYPES.PG_FORM,
+		});
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.formCreated,
@@ -85,6 +92,12 @@ PGApplicationService.prototype.pgFormBasicDetailsSerivce = async (params) => {
 		} else {
 			await pgFormBasicDetails.create({ ...params });
 		}
+		await mainDashboard.update(
+			{ ...params },
+			{
+				where: { formId, formTypeId: FORM_TYPES.PG_FORM },
+			}
+		);
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -148,6 +161,12 @@ PGApplicationService.prototype.pgFormMemberSerivce = async (params) => {
 		} else {
 			await pgFormMembers.create({ ...params });
 		}
+		await mainDashboard.update(
+			{ ...params },
+			{
+				where: { formId, formTypeId: FORM_TYPES.PG_FORM },
+			}
+		);
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -809,6 +828,18 @@ PGApplicationService.prototype.updateBmpuOpenApplicationService = async (params)
 				where: { formId },
 			}
 		);
+		let dashBoardFormStatus;
+		if (params.applicationStatus == PG_FORM_MASTER_STATUS.DECLINED) {
+			dashBoardFormStatus = DASHBOARD_FORM_STATUS.REJECTED;
+		}
+		if (dashBoardFormStatus) {
+			await mainDashboard.update(
+				{ applicationStatus: dashBoardFormStatus },
+				{
+					where: { formId, formTypeId: FORM_TYPES.PG_FORM },
+				}
+			);
+		}
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -988,6 +1019,26 @@ PGApplicationService.prototype.updateDmpuOpenApplicationService = async (params)
 				where: { formId },
 			}
 		);
+		let dashBoardFormStatus;
+		switch (params.applicationStatus) {
+			case PG_FORM_MASTER_STATUS.AMOUNT_DISBURSMENT: {
+				dashBoardFormStatus = DASHBOARD_FORM_STATUS.APPROVED;
+			}
+			case PG_FORM_MASTER_STATUS.PENDING: {
+				dashBoardFormStatus = DASHBOARD_FORM_STATUS.PENDING;
+			}
+			case PG_FORM_MASTER_STATUS.DECLINED: {
+				dashBoardFormStatus = DASHBOARD_FORM_STATUS.REJECTED;
+			}
+		}
+		if (dashBoardFormStatus) {
+			await mainDashboard.update(
+				{ applicationStatus: dashBoardFormStatus },
+				{
+					where: { formId, formTypeId: FORM_TYPES.PG_FORM },
+				}
+			);
+		}
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
