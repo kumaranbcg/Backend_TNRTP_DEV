@@ -400,7 +400,7 @@ router.get(
 	SYMRFormController.getSymrAssesment
 );
 
-
+router.get(
   "/application/dashboard/statistics",
   verifyToken,
   hasRole([STAFF_ROLE.ADMIN]),
