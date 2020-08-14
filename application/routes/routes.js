@@ -10,6 +10,7 @@ const {
 	PGFormController,
 	SYMRFormController,
 	EGFormController,
+	DashboardController,
 } = require("./../controllers/controller");
 
 const { pcFormSubmit, pgFormSubmit, egFormSubmit, symrFormSubmit } = require("../validators");
@@ -362,4 +363,12 @@ router.post(
 	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC]),
 	SYMRFormController.getSymrApplication
 );
+
+router.post(
+  "/application/dashboard/statistics",
+  verifyToken,
+  hasRole([STAFF_ROLE.ADMIN]),
+  DashboardController.dashboardStatistics
+);
+
 module.exports = router;
