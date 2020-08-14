@@ -3,4 +3,5 @@ module.exports = {
 	userFormController: require("./userForm.controller"),
 	PGFormController: require("./pgForm.controller"),
 	SYMRFormController: require("./symrForm.controller"),
+	DashboardController: require("./dashboard.controller"),
 };

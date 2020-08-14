@@ -9,6 +9,7 @@ const {
 	userFormController,
 	PGFormController,
 	SYMRFormController,
+	DashboardController,
 } = require("./../controllers/controller");
 const { pcFormSubmit, pgFormSubmit, symrFormSubmit } = require("../validators");
 router.use((req, res, next) => {
@@ -305,4 +306,12 @@ router.post(
 	symrFormSubmit,
 	SYMRFormController.submitSymrForm
 );
+
+router.post(
+  "/application/dashboard/statistics",
+  verifyToken,
+  hasRole([STAFF_ROLE.ADMIN]),
+  DashboardController.dashboardStatistics
+);
+
 module.exports = router;
