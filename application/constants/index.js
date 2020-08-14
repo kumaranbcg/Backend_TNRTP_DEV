@@ -144,7 +144,7 @@ const PG_UPLOAD_DOC = {
 };
 
 const EG_UPLOAD_DOC = {
-	MIN_OF_PG: 1,
+	MIN_OF_EG: 1,
 	BANK_PASSBOOK: 2,
 	BUSSINESS_PLAN: 3,
 };

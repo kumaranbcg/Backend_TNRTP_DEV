@@ -240,6 +240,7 @@ EGApplicationService.prototype.egFormProposedActivitySerivce = async (params) =>
 EGApplicationService.prototype.egFormUploadDocSerivce = async (params) => {
 	try {
 		const { formId } = params;
+		
 		if (params.minOfEGRefund && params.minOfEGRefund.length) {
 			params.minOfEGRefund.map((element) => {
 				element.docType = EG_UPLOAD_DOC.MIN_OF_EG;
@@ -255,6 +256,7 @@ EGApplicationService.prototype.egFormUploadDocSerivce = async (params) => {
 				element.docType = EG_UPLOAD_DOC.BUSSINESS_PLAN;
 			});
 		}
+
 		await egFormUploadDocument.destroy({ where: { formId } }).then(() => {
 			return egFormUploadDocument.create(
 				{ ...params },
