@@ -1187,7 +1187,7 @@ PCApplicationService.prototype.startAssesmentService = async (params) => {
 			"TNRTP28_PC_AUDIT_FINANCIAL_YEAR_MASTER",
 			{
 				attributes: [
-					["TNRTP28_PC_AUDIT_FINANCIAL_YEAR_MASTER_D", "text"],
+					["TNRTP28_PC_AUDIT_FINANCIAL_YEAR_MASTER_D", "label"],
 					["TNRTP28_PC_AUDIT_YEAR_D", "value"],
 				],
 			}
@@ -1196,7 +1196,7 @@ PCApplicationService.prototype.startAssesmentService = async (params) => {
 			"TNRTP32_PC_NO_OF_CONVERGENCE_MASTER",
 			{
 				attributes: [
-					["TNRTP32_PC_NO_OF_CONVERGENCE_D", "text"],
+					["TNRTP32_PC_NO_OF_CONVERGENCE_D", "label"],
 					["TNRTP32_PC_NO_OF_CONVERGENCE_MASTER_D", "value"],
 				],
 			}
@@ -1205,7 +1205,7 @@ PCApplicationService.prototype.startAssesmentService = async (params) => {
 			"TNRTP26_PC_ASSESSMENT_LINKAGE_MASTER",
 			{
 				attributes: [
-					["TNRTP26_PC_LINKAGE_D", "text"],
+					["TNRTP26_PC_LINKAGE_D", "label"],
 					["TNRTP26_PC_ASSESSMENT_LINKAGE_MASTER_D", "value"],
 				],
 			}
@@ -1214,7 +1214,7 @@ PCApplicationService.prototype.startAssesmentService = async (params) => {
 			"TNRTP33_PC_NO_OF_PARTNERSHIP_MASTER",
 			{
 				attributes: [
-					["TNRTP33_PC_NO_OF_PARTNERSHIP_D", "text"],
+					["TNRTP33_PC_NO_OF_PARTNERSHIP_D", "label"],
 					["TNRTP33_PC_NO_OF_PARTNERSHIP_MASTER_D", "value"],
 				],
 			}
