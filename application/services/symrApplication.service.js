@@ -32,12 +32,16 @@ const {
 	activityTimeline,
 	districtMaster,
 	blockMaster,
-	panchayatMaster
-	// pcApplicationStatus,
-	// pcRequiredDoc,
+	panchayatMaster,
+	application,
+	symrApplicationStatus,
+	symrRequiredDoc,
+	symrRepayOfExistingLoan,
+	symrProposedEnterpriseLocation,
+	symrExperience,
 	// pcDisbursment,
 	// pcAssessmentDoc,
-	// pcAssessment,
+	symrAssessment,
 	// pcAuditYear,
 	// pcConvergence,
 	// pcLinkage,
@@ -55,7 +59,9 @@ const {
 	SYMR_FORM_MASTER_STATUS,
 	SYMR_UPLOAD_DOC,
 	DISBURSEMENT_STATE,
-	DELETE_STATUS
+	DELETE_STATUS,
+	ORDERBY,
+	SYMR_STAFF_DOC
 } = require("../constants/index");
 const { Op } = require("sequelize");
 const Cryptr = require("cryptr");
@@ -796,7 +802,7 @@ SYMRApplicationService.prototype.updateSymrFormStatus = async (params) => {
 	}
 };
 
-SYMRApplicationService.prototype.getSYMRApplicationService = async (params) => {
+SYMRApplicationService.prototype.getSymrApplicationService = async (params) => {
 	try {
 		const { status, search, sortBy, page, limit, districtId } = params;
 		const searchCondition = !!search
@@ -828,7 +834,7 @@ SYMRApplicationService.prototype.getSYMRApplicationService = async (params) => {
 				],
 				required: false,
 				where: {
-					TNRTP68_SYMR_FORMS_MASTER_D: {
+					TNRTP83_SYMR_FORMS_MASTER_D: {
 						[Op.eq]: application.col("TNRTP68_SYMR_FORMS_MASTER.TNRTP68_SYMR_FORMS_MASTER_D"),
 					},
 				},
@@ -837,7 +843,7 @@ SYMRApplicationService.prototype.getSYMRApplicationService = async (params) => {
 		const districtForms = application.dialect.QueryGenerator.selectQuery(
 			"TNRTP69_SYMR_BASIC_DETAILS",
 			{
-				where: { TNRTP07_US_DISTRICT_MASTER_D: districtId },
+				where: { TNRTP69_US_DISTRICT_MASTER_D: districtId },
 				attributes: ["TNRTP68_SYMR_FORMS_MASTER_D"],
 			}
 		).slice(0, -1);
@@ -927,31 +933,213 @@ SYMRApplicationService.prototype.getSYMRApplicationService = async (params) => {
 					as: "basicDetails",
 					required: true,
 					where: { TNRTP69_DELETED_F: DELETE_STATUS.NOT_DELETED, districtId },
-					attributes: ["name", "address", "blockId", "districtId"],
+					attributes: symrBasicDetails.selectedFields,
+					include: [
+						{
+							model: sourceOfInfo,
+							as: "sourceOfInfoData",
+							required: false,
+							attributes: sourceOfInfo.selectedFields
+						},
+						{
+							model: gender,
+							as: "genderData",
+							required: false,
+							attributes: gender.selectedFields
+						},
+						{
+							model: religion,
+							as: "religionData",
+							required: false,
+							attributes: religion.selectedFields
+						},
+						{
+							model: community,
+							as: "communityData",
+							required: false,
+							attributes: community.selectedFields
+						},
+						{
+							model: educQualification,
+							as: "educQualificationData",
+							required: false,
+							attributes: educQualification.selectedFields
+						},
+						{
+							model: proofType,
+							as: "proofTypeData",
+							required: false,
+							attributes: proofType.selectedFields
+						},
+						{
+							model: natureOfMigration,
+							as: "natureOfMigrationData",
+							required: false,
+							attributes: natureOfMigration.selectedFields
+						}
+					]
 				},
-				// {
-				// 	model: pcFormDetails,
-				// 	as: "pcDetails",
-				// 	required: false,
-				// 	where: { TNRTP08_DELETED_F: DELETE_STATUS.NOT_DELETED },
-				// 	attributes: pcFormDetails.selectedFields,
-				// 	include: [
-				// 		{
-				// 			model: selectedPcCommodity,
-				// 			as: "pcCommodityTypes",
-				// 			required: true,
-				// 			attributes: selectedPcCommodity.selectedFields,
-				// 			include: [
-				// 				{
-				// 					model: pcCommodityTypes,
-				// 					as: "pcCommodityTypesData",
-				// 					required: true,
-				// 					attributes: pcCommodityTypes.selectedFields,
-				// 				},
-				// 			],
-				// 		},
-				// 	],
-				// },
+				{
+					model: symrShgDetails,
+					as: "symrShgDetails",
+					where: { TNRTP77_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
+					attributes: symrShgDetails.selectedFields,
+					include: [
+						{
+							model: shgMemberType,
+							as: "shgMemberTypeData",
+							required: false,
+							attributes: shgMemberType.selectedFields
+						},
+						{
+							model: relationshipType,
+							as: "relationshipTypeData",
+							required: false,
+							attributes: relationshipType.selectedFields
+						}
+					]
+				},
+				{
+					model: symrEnterprise,
+					as: "symrEnterprise",
+					where: { TNRTP81_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
+					attributes: symrEnterprise.selectedFields,
+					include: [
+						{
+							model: selectedSymr,
+							as: "symrTypes",
+							required: false,
+							attributes: selectedSymr.selectedFields,
+							include: [
+								{
+									model: pcTypes,
+									as: "symrTypesData",
+									required: false,
+									attributes: pcTypes.selectedFields,
+								},
+							],
+						},
+						{
+							model: selectedSymrCommodity,
+							as: "symrCommodityTypes",
+							required: false,
+							attributes: selectedSymrCommodity.selectedFields,
+							include: [
+								{
+									model: pcCommodityTypes,
+									as: "symrCommodityTypesData",
+									required: false,
+									attributes: pcCommodityTypes.selectedFields,
+								},
+							],
+						},
+						{
+							model: selectedSymrSector,
+							as: "symrSectorTypes",
+							required: false,
+							attributes: selectedSymrSector.selectedFields,
+							include: [
+								{
+									model: pcSectorTypes,
+									as: "symrSectorTypesData",
+									required: false,
+									attributes: pcSectorTypes.selectedFields,
+								},
+							],
+						},
+						{
+							model: enterpriseType,
+							as: "enterpriseTypeData",
+							required: false,
+							attributes: enterpriseType.selectedFields,
+						},
+						{
+							model: years,
+							as: "enterpreneurExpYearsData",
+							required: false,
+							attributes: years.selectedFields,
+						},
+						{
+							model: years,
+							as: "activityExpYearsData",
+							required: false,
+							attributes: years.selectedFields,
+						},
+					],
+				},
+				{
+					model: symrSkillTraining,
+					as: "symrSkillTraining",
+					where: { TNRTP79_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
+					attributes: symrSkillTraining.selectedFields,
+					include: [
+						{
+							model: scheme,
+							as: "skilltrainingData",
+							required: false,
+							attributes: scheme.selectedFields
+						},
+						{
+							model: scheme,
+							as: "edpschemeData",
+							required: false,
+							attributes: scheme.selectedFields
+						},
+						{
+							model: scheme,
+							as: "registeredEdpSchemeData",
+							required: false,
+							attributes: scheme.selectedFields
+						},
+						{
+							model: courseCompletionYear,
+							as: "courseCompletionTypeData",
+							required: false,
+							attributes: courseCompletionYear.selectedFields
+						},
+					]
+				},
+				{
+					model: symrBankDetails,
+					as: "symrBankDetails",
+					where: { TNRTP82_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
+					attributes: symrBankDetails.selectedFields,
+				},
+				{
+					model: symrExistingLoan,
+					as: "symrExistingLoan",
+					where: { TNRTP84_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
+					attributes: symrExistingLoan.selectedFields,
+					include: [
+						{
+							model: existingLoanActivity,
+							as: "existingLoanList",
+							required: false,
+							attributes: existingLoanActivity.selectedFields,
+						},
+					],
+				},
+				{
+					model: symrProposedActivity,
+					as: "symrProposedActivity",
+					where: { TNRTP83_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
+					attributes: symrProposedActivity.selectedFields,
+					include: [
+						{
+							model: activityTimeline,
+							as: "activityTimelineData",
+							required: false,
+							attributes: activityTimeline.selectedFields,
+						},
+					],
+				}
+				
 			],
 			raw: false,
 			nested: true,
@@ -1003,193 +1191,175 @@ SYMRApplicationService.prototype.getSYMRApplicationService = async (params) => {
 		};
 	}
 };
-// SYMRApplicationService.prototype.updateOpenApplicationService = async (params) => {
-// 	try {
-// 		const { formId, userData } = params;
-// 		if (params.smpuApprovalLetter && params.smpuApprovalLetter.length) {
-// 			params.smpuApprovalLetter.map((element) => {
-// 				element.docType = PC_STAFF_DOC.SMPU_APPROVAL;
-// 			});
-// 		}
-// 		if (params.decMom && params.decMom.length) {
-// 			params.decMom.map((element) => {
-// 				element.docType = PC_STAFF_DOC.DECMM;
-// 			});
-// 		}
-// 		if (params.signedAssesment && params.signedAssesment.length) {
-// 			params.signedAssesment.map((element) => {
-// 				element.docType = PC_STAFF_DOC.SIGNED_ASSESMENT;
-// 			});
-// 		}
-// 		delete params.userData;
-// 		params.TNRTP20_CREATED_D = userData.userId;
-// 		params.TNRTP20_UPDATED_D = userData.userId;
-// 		await pcApplicationStatus.create(
-// 			{ ...params },
-// 			{
-// 				include: [
-// 					{
-// 						model: pcRequiredDoc,
-// 						as: "smpuApprovalLetter",
-// 					},
-// 					{
-// 						model: pcRequiredDoc,
-// 						as: "decMom",
-// 					},
-// 					{
-// 						model: pcRequiredDoc,
-// 						as: "signedAssesment",
-// 					},
-// 				],
-// 			}
-// 		);
-// 		await pcFormMaster.update(
-// 			{ status: params.applicationStatus },
-// 			{
-// 				where: { formId },
-// 			}
-// 		);
-// 		return {
-// 			code: errorCodes.HTTP_OK,
-// 			message: messages.success,
-// 		};
-// 	} catch (err) {
-// 		console.log("updateOpenApplicationService", err);
-// 		return {
-// 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-// 			message: err,
-// 		};
-// 	}
-// };
-// SYMRApplicationService.prototype.getPcApplicationStatusService = async (params) => {
-// 	try {
-// 		const { formId } = params;
-// 		const totalAmount = application.dialect.QueryGenerator.selectQuery(
-// 			"TNRTP12_PC_FORMS_PROPOSED_ACTIVITY",
-// 			{
-// 				attributes: [
-// 					[application.fn("SUM", application.col("TNRTP12_AMOUNT_REQUIRED_D")), "totalAmount"],
-// 				],
-// 				required: false,
-// 				where: {
-// 					TNRTP12_PC_FORMS_MASTER_D: {
-// 						[Op.eq]: application.col("TNRTP01_PC_FORMS_MASTER.TNRTP01_PC_FORMS_MASTER_D"),
-// 					},
-// 				},
-// 			}
-// 		).slice(0, -1);
-// 		let openApplicationDetails = await pcFormMaster.findOne({
-// 			where: { formId },
-// 			attributes: [
-// 				"formId",
-// 				"userId",
-// 				"name",
-// 				"status",
-// 				["TNRTP01_UPDATED_AT", "appRecievedDate"],
-// 				[application.literal("(" + totalAmount + ")"), "totalAmount"],
-// 			],
-// 			include: [
-// 				{
-// 					model: pcApplicationStatus,
-// 					as: "pcApplicationStatus",
-// 					required: false,
-// 					attributes: pcApplicationStatus.selectedFields,
-// 					include: [
-// 						{
-// 							model: pcRequiredDoc,
-// 							as: "smpuApprovalLetter",
-// 							required: false,
-// 							where: { docType: PC_STAFF_DOC.SMPU_APPROVAL },
-// 							attributes: pcRequiredDoc.selectedFields,
-// 						},
-// 						{
-// 							model: pcRequiredDoc,
-// 							as: "decMom",
-// 							required: false,
-// 							where: { docType: PC_STAFF_DOC.DECMM },
-// 							attributes: pcRequiredDoc.selectedFields,
-// 						},
-// 						{
-// 							model: pcRequiredDoc,
-// 							as: "signedAssesment",
-// 							required: false,
-// 							where: { docType: PC_STAFF_DOC.SIGNED_ASSESMENT },
-// 							attributes: pcRequiredDoc.selectedFields,
-// 						},
-// 					],
-// 				},
-// 				{
-// 					model: pcDisbursment,
-// 					as: "firstTranche",
-// 					required: false,
-// 					where: { disbursmentType: DISBURSEMENT_STATE.FIRST_TRANCHE },
-// 					attributes: [
-// 						"isDisbursment",
-// 						"disbursmentDate",
-// 						"disbursmentAmount",
-// 						["TNRTP22_UPDATED_D", "disbursedBy"],
-// 					],
-// 				},
-// 				{
-// 					model: pcDisbursment,
-// 					as: "secondTranche",
-// 					required: false,
-// 					where: { disbursmentType: DISBURSEMENT_STATE.SECOND_TRANCHE },
-// 					attributes: [
-// 						"isDisbursment",
-// 						"disbursmentDate",
-// 						"disbursmentSubmitDate",
-// 						"disbursmentAmount",
-// 						["TNRTP22_UPDATED_D", "disbursedBy"],
-// 					],
-// 					include: [
-// 						{
-// 							model: pcRequiredDoc,
-// 							as: "firstUcCertificate",
-// 							required: false,
-// 							where: { docType: PC_STAFF_DOC.FIRST_TRANCHE },
-// 							attributes: pcRequiredDoc.selectedFields,
-// 						},
-// 						{
-// 							model: pcRequiredDoc,
-// 							as: "smpuTrancheApproval",
-// 							required: false,
-// 							where: { docType: PC_STAFF_DOC.SMPU_TRANCHE_APPROVAL },
-// 							attributes: pcRequiredDoc.selectedFields,
-// 						},
-// 					],
-// 				},
-// 				{
-// 					model: pcDisbursment,
-// 					as: "secondTrancheUc",
-// 					required: false,
-// 					where: { disbursmentType: DISBURSEMENT_STATE.SECOND_TRANCHE_UC },
-// 					attributes: ["disbursmentSubmitDate", ["TNRTP22_UPDATED_D", "disbursedBy"]],
-// 					include: [
-// 						{
-// 							model: pcRequiredDoc,
-// 							as: "secondTrancheApproval",
-// 							required: false,
-// 							where: { docType: PC_STAFF_DOC.SECOND_TRANCHE },
-// 							attributes: pcRequiredDoc.selectedFields,
-// 						},
-// 					],
-// 				},
-// 			],
-// 		});
-// 		return {
-// 			code: errorCodes.HTTP_OK,
-// 			message: messages.success,
-// 			data: openApplicationDetails,
-// 		};
-// 	} catch (err) {
-// 		console.log("getPcApplicationStatusService", err);
-// 		return {
-// 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-// 			message: err,
-// 		};
-// 	}
-// };
+SYMRApplicationService.prototype.updateOpenApplicationService = async (params) => {
+	try {
+		const { formId, userData } = params;
+		if (params.vprcCommitteeMom && params.vprcCommitteeMom.length) {
+			params.vprcCommitteeMom.map((element) => {
+				element.docType = SYMR_STAFF_DOC.VPRC_COMMITTEE_MOM;
+			});
+		}
+		delete params.userData;
+		params.TNRTP96_CREATED_D = userData.userId;
+		params.TNRTP96_UPDATED_D = userData.userId;
+		await symrApplicationStatus.create(
+			{ ...params },
+			{
+				include: [
+					{
+						model: symrRequiredDoc,
+						as: "vprcCommitteeMom",
+					}
+				],
+			}
+		);
+		await symrFormMaster.update(
+			{ status: params.applicationStatus },
+			{
+				where: { formId },
+			}
+		);
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+		};
+	} catch (err) {
+		console.log("updateOpenApplicationService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+SYMRApplicationService.prototype.getSymrApplicationStatusService = async (params) => {
+	try {
+		const { formId } = params;
+		const totalAmount = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP83_SYMR_PROPOSED_ACTIVITY",
+			{
+				attributes: [
+					[application.fn("SUM", application.col("TNRTP83_AMOUNT_REQUIRED_D")), "totalAmount"],
+				],
+				required: false,
+				where: {
+					TNRTP68_SYMR_FORMS_MASTER_D: {
+						[Op.eq]: application.col("TNRTP68_SYMR_FORMS_MASTER.TNRTP68_SYMR_FORMS_MASTER_D"),
+					},
+				},
+			}
+		).slice(0, -1);
+		let openApplicationDetails = await symrFormMaster.findOne({
+			where: { formId },
+			attributes: [
+				"formId",
+				"userId",
+				"name",
+				"status",
+				["TNRTP68_UPDATED_AT", "appRecievedDate"],
+				[application.literal("(" + totalAmount + ")"), "totalAmount"],
+			],
+			include: [
+				{
+					model: pcApplicationStatus,
+					as: "pcApplicationStatus",
+					required: false,
+					attributes: pcApplicationStatus.selectedFields,
+					include: [
+						{
+							model: pcRequiredDoc,
+							as: "smpuApprovalLetter",
+							required: false,
+							where: { docType: PC_STAFF_DOC.SMPU_APPROVAL },
+							attributes: pcRequiredDoc.selectedFields,
+						},
+						{
+							model: pcRequiredDoc,
+							as: "decMom",
+							required: false,
+							where: { docType: PC_STAFF_DOC.DECMM },
+							attributes: pcRequiredDoc.selectedFields,
+						},
+						{
+							model: pcRequiredDoc,
+							as: "signedAssesment",
+							required: false,
+							where: { docType: PC_STAFF_DOC.SIGNED_ASSESMENT },
+							attributes: pcRequiredDoc.selectedFields,
+						},
+					],
+				},
+				{
+					model: pcDisbursment,
+					as: "firstTranche",
+					required: false,
+					where: { disbursmentType: DISBURSEMENT_STATE.FIRST_TRANCHE },
+					attributes: [
+						"isDisbursment",
+						"disbursmentDate",
+						"disbursmentAmount",
+						["TNRTP22_UPDATED_D", "disbursedBy"],
+					],
+				},
+				{
+					model: pcDisbursment,
+					as: "secondTranche",
+					required: false,
+					where: { disbursmentType: DISBURSEMENT_STATE.SECOND_TRANCHE },
+					attributes: [
+						"isDisbursment",
+						"disbursmentDate",
+						"disbursmentSubmitDate",
+						"disbursmentAmount",
+						["TNRTP22_UPDATED_D", "disbursedBy"],
+					],
+					include: [
+						{
+							model: pcRequiredDoc,
+							as: "firstUcCertificate",
+							required: false,
+							where: { docType: PC_STAFF_DOC.FIRST_TRANCHE },
+							attributes: pcRequiredDoc.selectedFields,
+						},
+						{
+							model: pcRequiredDoc,
+							as: "smpuTrancheApproval",
+							required: false,
+							where: { docType: PC_STAFF_DOC.SMPU_TRANCHE_APPROVAL },
+							attributes: pcRequiredDoc.selectedFields,
+						},
+					],
+				},
+				{
+					model: pcDisbursment,
+					as: "secondTrancheUc",
+					required: false,
+					where: { disbursmentType: DISBURSEMENT_STATE.SECOND_TRANCHE_UC },
+					attributes: ["disbursmentSubmitDate", ["TNRTP22_UPDATED_D", "disbursedBy"]],
+					include: [
+						{
+							model: pcRequiredDoc,
+							as: "secondTrancheApproval",
+							required: false,
+							where: { docType: PC_STAFF_DOC.SECOND_TRANCHE },
+							attributes: pcRequiredDoc.selectedFields,
+						},
+					],
+				},
+			],
+		});
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+			data: openApplicationDetails,
+		};
+	} catch (err) {
+		console.log("getSymrApplicationStatusService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
 // SYMRApplicationService.prototype.updateFirstTrancheService = async (params) => {
 // 	try {
 // 		let { userData, formId } = params;
@@ -1299,100 +1469,100 @@ SYMRApplicationService.prototype.getSYMRApplicationService = async (params) => {
 // 		};
 // 	}
 // };
-// SYMRApplicationService.prototype.startAssesmentService = async (params) => {
-// 	try {
-// 		const { formId } = params;
-// 		let membersData = await pcFormMaster.findOne({
-// 			where: { formId, TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED },
-// 			attributes: ["formId", "userId", "name"],
-// 			include: [
-// 				{
-// 					model: pcFormMembers,
-// 					as: "pcFormMembers",
-// 					where: { TNRTP09_DELETED_F: DELETE_STATUS.NOT_DELETED },
-// 					attributes: pcFormMembers.selectedFields,
-// 				},
-// 			],
-// 		});
-// 		let auditYearMaster = await pcAuditYear.findAll({
-// 			attributes: pcAuditYear.selectedFields,
-// 		});
-// 		let convergenceMaster = await pcConvergence.findAll({
-// 			attributes: pcConvergence.selectedFields,
-// 		});
-// 		let linkageMaster = await pcLinkage.findAll({
-// 			attributes: pcLinkage.selectedFields,
-// 		});
-// 		let partnershipMaster = await pcPartnership.findAll({
-// 			attributes: pcPartnership.selectedFields,
-// 		});
-// 		return {
-// 			code: errorCodes.HTTP_OK,
-// 			message: messages.success,
-// 			data: { membersData, auditYearMaster, convergenceMaster, linkageMaster, partnershipMaster },
-// 		};
-// 	} catch (err) {
-// 		console.log("startAssesmentService", err);
-// 		return {
-// 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-// 			message: err,
-// 		};
-// 	}
-// };
-// SYMRApplicationService.prototype.submitAssesmentService = async (params) => {
-// 	try {
-// 		const { formId } = params;
-// 		params.assessments.map((element) => {
-// 			element.formId = formId;
-// 		});
-// 		await pcAssessment.bulkCreate([...params.assessments], {
-// 			include: [
-// 				{
-// 					model: pcAssessmentDoc,
-// 					as: "documents",
-// 				},
-// 			],
-// 		});
-// 		return {
-// 			code: errorCodes.HTTP_OK,
-// 			message: messages.success,
-// 		};
-// 	} catch (err) {
-// 		console.log("submitAssesmentService", err);
-// 		return {
-// 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-// 			message: err,
-// 		};
-// 	}
-// };
-// SYMRApplicationService.prototype.getAssesmentService = async (params) => {
-// 	try {
-// 		const { formId } = params;
-// 		let assessmentData = await pcAssessment.findAll({
-// 			where: { formId },
-// 			attributes: pcAssessment.selectedFields,
-// 			include: [
-// 				{
-// 					model: pcAssessmentDoc,
-// 					as: "documents",
-// 					required: false,
-// 					attributes: pcAssessmentDoc.selectedFields,
-// 				},
-// 			],
-// 		});
-// 		return {
-// 			code: errorCodes.HTTP_OK,
-// 			message: messages.success,
-// 			data: assessmentData,
-// 		};
-// 	} catch (err) {
-// 		console.log("getAssesmentService", err);
-// 		return {
-// 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-// 			message: err,
-// 		};
-// 	}
-// };
+SYMRApplicationService.prototype.startSymrAssesmentService = async (params) => {
+	try {
+		const { formId } = params;
+		let membersData = await symrFormMaster.findOne({
+			where: { formId, TNRTP68_DELETED_F: DELETE_STATUS.NOT_DELETED },
+			attributes: ["formId", "userId"],
+			include: [
+				{
+					model: symrBasicDetails,
+					as: "basicDetails",
+					where: { TNRTP69_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					attributes: symrBasicDetails.selectedFields,
+				},
+			],
+		});
+		let shgMemberTypeMaster = await shgMemberType.findAll({
+			attributes: shgMemberType.selectedFields,
+		});
+		let symrRepayOfExistingLoanMaster = await symrRepayOfExistingLoan.findAll({
+			attributes: symrRepayOfExistingLoan.selectedFields,
+		});
+		let symrProposedEnterpriseLocationMaster = await symrProposedEnterpriseLocation.findAll({
+			attributes: symrProposedEnterpriseLocation.selectedFields,
+		});
+		let symrExperienceMaster = await symrExperience.findAll({
+			attributes: symrExperience.selectedFields,
+		});
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+			data: { membersData, shgMemberTypeMaster, symrRepayOfExistingLoanMaster, symrProposedEnterpriseLocationMaster, symrExperienceMaster },
+		};
+	} catch (err) {
+		console.log("startAssesmentService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+SYMRApplicationService.prototype.submitSymrAssesmentService = async (params) => {
+	try {
+		const { formId } = params;
+		params.assessments.map((element) => {
+			element.formId = formId;
+		});
+		await symrAssessment.bulkCreate([...params.assessments], {
+			include: [
+				{
+					model: symrAssessmentDoc,
+					as: "documents",
+				},
+			],
+		});
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+		};
+	} catch (err) {
+		console.log("submitSymrAssesmentService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+SYMRApplicationService.prototype.getSymrAssesmentService = async (params) => {
+	try {
+		const { formId } = params;
+		let assessmentData = await symrAssessment.findAll({
+			where: { formId },
+			attributes: symrAssessment.selectedFields,
+			include: [
+				{
+					model: symrAssessmentDoc,
+					as: "documents",
+					required: false,
+					attributes: symrAssessmentDoc.selectedFields,
+				},
+			],
+		});
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+			data: assessmentData,
+		};
+	} catch (err) {
+		console.log("getSymrAssesmentService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
 // SYMRApplicationService.prototype.pcServiceAreaService = async (params) => {
 // 	try {
 // 		let { formId, areaMembers } = params;

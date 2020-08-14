@@ -56,10 +56,10 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: "formId",
 			as: "symrUploadDocument",
 		});
-		// symrFormMaster.hasOne(models.symrApplicationStatus, {
-		// 	foreignKey: "formId",
-		// 	as: "symrApplicationStatus",
-		// });
+		symrFormMaster.hasOne(models.symrApplicationStatus, {
+			foreignKey: "formId",
+			as: "symrApplicationStatus",
+		});
 		// symrFormMaster.hasOne(models.symrDisbursment, {
 		// 	foreignKey: "formId",
 		// 	as: "firstTranche",

@@ -362,4 +362,40 @@ router.post(
 	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC]),
 	SYMRFormController.getSymrApplication
 );
+
+router.post(
+	"/application/symrUpdateOpenApplication",
+	verifyToken,
+	hasRole([STAFF_ROLE.VPRC]),
+	SYMRFormController.symrUpdateOpenApplication
+);
+
+router.get(
+	"/application/getSymrApplicationStatus",
+	verifyToken,
+	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC]),
+	SYMRFormController.getSymrApplicationStatus
+);
+router.get(
+	"/application/startSymrAssesment",
+	verifyToken,
+	hasRole([STAFF_ROLE.VPRC]),
+	SYMRFormController.startSymrAssesment
+);
+
+router.post(
+	"/application/submitSymrAssesment",
+	verifyToken,
+	hasRole([STAFF_ROLE.VPRC]),
+	SYMRFormController.submitSymrAssesment
+);
+
+router.get(
+	"/application/getSymrAssesment",
+	verifyToken,
+	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC]),
+	SYMRFormController.getSymrAssesment
+);
+
+
 module.exports = router;

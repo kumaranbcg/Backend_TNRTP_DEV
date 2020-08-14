@@ -132,28 +132,30 @@ SYMRFormController.prototype.uploadDoc = async (req, res) => {
 SYMRFormController.prototype.getSymrApplication = async (req, res) => {
 	try {
 		let result = await service.getSymrApplicationService({ ...req.body });
+		console.log(result)
+		res.status(result.code).json({ message: result.message, data: result.data });
+	} catch (err) {
+		console.log(err)
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
+SYMRFormController.prototype.symrUpdateOpenApplication = async (req, res) => {
+	try {
+		req.body.userData = req.user;
+		let result = await service.updateOpenApplicationService({ ...req.body });
 		res.status(result.code).json({ message: result.message, data: result.data });
 	} catch (err) {
 		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
 	}
 };
-// SYMRFormController.prototype.updateOpenApplication = async (req, res) => {
-// 	try {
-// 		req.body.userData = req.user;
-// 		let result = await service.updateOpenApplicationService({ ...req.body });
-// 		res.status(result.code).json({ message: result.message, data: result.data });
-// 	} catch (err) {
-// 		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
-// 	}
-// };
-// SYMRFormController.prototype.getPcApplicationStatus = async (req, res) => {
-// 	try {
-// 		let result = await service.getPcApplicationStatusService({ ...req.query });
-// 		res.status(result.code).json({ message: result.message, data: result.data });
-// 	} catch (err) {
-// 		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
-// 	}
-// };
+SYMRFormController.prototype.getSymrApplicationStatus = async (req, res) => {
+	try {
+		let result = await service.getSymrApplicationStatusService({ ...req.query });
+		res.status(result.code).json({ message: result.message, data: result.data });
+	} catch (err) {
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
 // SYMRFormController.prototype.updateFirstTranche = async (req, res) => {
 // 	try {
 // 		req.body.userData = req.user;
@@ -181,31 +183,31 @@ SYMRFormController.prototype.getSymrApplication = async (req, res) => {
 // 		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
 // 	}
 // };
-// SYMRFormController.prototype.startAssesment = async (req, res) => {
-// 	try {
-// 		let result = await service.startAssesmentService({ ...req.query });
-// 		res.status(result.code).json({ message: result.message, data: result.data });
-// 	} catch (err) {
-// 		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
-// 	}
-// };
-// SYMRFormController.prototype.submitAssesment = async (req, res) => {
-// 	try {
-// 		let result = await service.submitAssesmentService({ ...req.body });
-// 		res.status(result.code).json({ message: result.message, data: result.data });
-// 	} catch (err) {
-// 		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
-// 	}
-// };
-// SYMRFormController.prototype.getAssesment = async (req, res) => {
-// 	try {
-// 		let result = await service.getAssesmentService({ ...req.query });
-// 		res.status(result.code).json({ message: result.message, data: result.data });
-// 	} catch (err) {
-// 		console.log(err);
-// 		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
-// 	}
-// };
+SYMRFormController.prototype.startSymrAssesment = async (req, res) => {
+	try {
+		let result = await service.startSymrAssesmentService({ ...req.query });
+		res.status(result.code).json({ message: result.message, data: result.data });
+	} catch (err) {
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
+SYMRFormController.prototype.submitSymrAssesment = async (req, res) => {
+	try {
+		let result = await service.submitSymrAssesmentService({ ...req.body });
+		res.status(result.code).json({ message: result.message, data: result.data });
+	} catch (err) {
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
+SYMRFormController.prototype.getSymrAssesment = async (req, res) => {
+	try {
+		let result = await service.getSymrAssesmentService({ ...req.query });
+		res.status(result.code).json({ message: result.message, data: result.data });
+	} catch (err) {
+		console.log(err);
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
 // SYMRFormController.prototype.pcServiceArea = async (req, res) => {
 // 	try {
 // 		let result = await service.pcServiceAreaService({ ...req.body });
