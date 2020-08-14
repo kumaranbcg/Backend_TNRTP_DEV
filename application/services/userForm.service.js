@@ -11,6 +11,10 @@ const {
 	selectedPc,
 	pcCommodityTypes,
 	pcSectorTypes,
+	pgFormBankDetails,
+	pgFormBasicDetails,
+	pgFormDetails,
+	selectedPg,
 } = require("../models");
 const { DELETE_STATUS, FORM_TYPES } = require("./../constants/index");
 const { Op, Sequelize } = require("sequelize");
@@ -28,6 +32,19 @@ UserFormService.prototype.getUserApplicationsService = async (params) => {
 				where: {
 					TNRTP12_PC_FORMS_MASTER_D: {
 						[Op.eq]: application.col("TNRTP01_PC_FORMS_MASTER.TNRTP01_PC_FORMS_MASTER_D"),
+					},
+				},
+			}
+		).slice(0, -1);
+		const pgFormAmt = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP42_PG_FORMS_PROPOSED_ACTIVITY",
+			{
+				attributes: [
+					[application.fn("SUM", application.col("TNRTP42_AMOUNT_REQUIRED_D")), "totalAmount"],
+				],
+				where: {
+					TNRTP42_PG_FORMS_MASTER_D: {
+						[Op.eq]: application.col("TNRTP36_PG_FORMS_MASTER.TNRTP36_PG_FORMS_MASTER_D"),
 					},
 				},
 			}
@@ -81,12 +98,51 @@ UserFormService.prototype.getUserApplicationsService = async (params) => {
 			],
 		});
 		let pgForms = await pgFormMaster.findAll({
-			where: { TNRTP36_DELETED_F: DELETE_STATUS.NOT_DELETED, userId },
+			where: { TNRTP36_DELETED_F: DELETE_STATUS.NOT_DELETED },
 			attributes: [
 				"formId",
 				"status",
 				["TNRTP36_UPDATED_AT", "appSubmitDate"],
-				// [application.literal("(" + assignedCount + ")"), "totalAmount"],
+				[application.literal("(" + pgFormAmt + ")"), "totalAmount"],
+			],
+			include: [
+				{
+					model: pgFormBasicDetails,
+					as: "basicDetails",
+					where: { TNRTP37_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
+					attributes: ["mobileNumber", "name", "pgName"],
+				},
+				{
+					model: pgFormDetails,
+					as: "pgDetails",
+					where: { TNRTP38_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
+					attributes: ["dateFormation"],
+					include: [
+						{
+							model: selectedPg,
+							as: "pgTypes",
+							required: false,
+							attributes: selectedPg.selectedFields,
+							include: [
+								{
+									model: pcTypes,
+									as: "pgTypesData",
+									required: false,
+									attributes: pcTypes.selectedFields,
+								},
+							],
+						},
+					],
+				},
+				{
+					model: pgFormBankDetails,
+					as: "pgFormBankDetails",
+					where: { TNRTP41_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
+					attributes: ["bnkName"],
+				},
 			],
 		});
 		pcForms.map((element) => {
