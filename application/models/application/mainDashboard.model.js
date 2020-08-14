@@ -1,7 +1,7 @@
 const { FORM_SECTION_STATUS } = require("../../constants/index");
 module.exports = (sequelize, DataTypes) => {
 	const mainDashboard = sequelize.define(
-		"TNRTP81_DASHBOARD_FORMS_MASTER",
+		"TNRTP95_DASHBOARD_FORMS_MASTER",
 		{
 			TNRTP81_DASHBOARD_FORMS_MASTER_D: {
 				type: DataTypes.INTEGER,
