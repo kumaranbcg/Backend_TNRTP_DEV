@@ -1,4 +1,4 @@
-const { DELETE_STATUS, FORM_SECTION_STATUS } = require("../../constants/index");
+	const { DELETE_STATUS, FORM_SECTION_STATUS } = require("../../constants/index");
 module.exports = (sequelize, DataTypes) => {
 	const pgFormUploadDocument = sequelize.define(
 		"TNRTP43_PG_FORMS_UPLOAD_DOCUMENT",

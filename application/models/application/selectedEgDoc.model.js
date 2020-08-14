@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-	const selectedPgDoc = sequelize.define(
+	const selectedEgDoc = sequelize.define(
 		"TNRTP64_SELECTED_EG_UPLOAD_DOCUMENT",
 		{
 			TNRTP64_SELECTED_EG_UPLOAD_DOCUMENT_D: {
@@ -23,6 +23,6 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: false,
 		}
 	);
-	selectedPgDoc.selectedFields = ["docName", "docUrl"];
-	return selectedPgDoc;
+	selectedEgDoc.selectedFields = ["docName", "docUrl"];
+	return selectedEgDoc;
 };

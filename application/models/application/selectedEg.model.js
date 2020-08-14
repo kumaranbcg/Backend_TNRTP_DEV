@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-	const selectedPg = sequelize.define(
+	const selectedEg = sequelize.define(
 		"TNRTP61_SELECTED_EG",
 		{
 			TNRTP61_SELECTED_EG_D: {
@@ -18,12 +18,12 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: false,
 		}
 	);
-	selectedPg.associate = function (models) {
-		selectedPg.belongsTo(models.pcTypes, {
+	selectedEg.associate = function (models) {
+		selectedEg.belongsTo(models.pcTypes, {
 			foreignKey: "TNRTP61_TYPE_OF_PC_MASTER_D",
 			as: "egTypesData",
 		});
 	};
-	selectedPg.selectedFields = ["basicDetailsId"];
-	return selectedPg;
+	selectedEg.selectedFields = ["basicDetailsId"];
+	return selectedEg;
 };

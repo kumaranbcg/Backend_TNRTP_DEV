@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-	const selectedPgSector = sequelize.define(
+	const selectedEgSector = sequelize.define(
 		"TNRTP63_SELECTED_EG_SECTOR",
 		{
 			TNRTP63_SELECTED_EG_SECTOR_D: {
@@ -18,12 +18,12 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: false,
 		}
 	);
-	selectedPgSector.associate = function (models) {
-		selectedPgSector.belongsTo(models.pcSectorTypes, {
+	selectedEgSector.associate = function (models) {
+		selectedEgSector.belongsTo(models.pcSectorTypes, {
 			foreignKey: "TNRTP63_TYPE_OF_SECTOR_MASTER_D",
 			as: "egSectorTypesData",
 		});
 	};
-	selectedPgSector.selectedFields = ["basicDetailsId"];
-	return selectedPgSector;
+	selectedEgSector.selectedFields = ["basicDetailsId"];
+	return selectedEgSector;
 };

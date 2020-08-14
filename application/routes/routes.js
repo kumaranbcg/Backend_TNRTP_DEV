@@ -14,6 +14,7 @@ const {
 } = require("./../controllers/controller");
 
 const { pcFormSubmit, pgFormSubmit, egFormSubmit, symrFormSubmit } = require("../validators");
+
 router.use((req, res, next) => {
 	if (req.headers.authorization) {
 		let token = req.headers.authorization.replace("Bearer ", "");
@@ -35,6 +36,7 @@ router.use((err, req, res, next) => {
 		next();
 	}
 });
+
 router.post("/application/insertActivity", PCFormController.insertActvityMaster);
 
 router.get(

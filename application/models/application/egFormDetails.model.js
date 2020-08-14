@@ -34,16 +34,16 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	);
 	egFormDetails.associate = function (models) {
-		egFormDetails.hasMany(models.selectedPg, {
-			foreignKey: "TNRTP45_EG_FORMS_DETAILS_MASTER_D",
+		egFormDetails.hasMany(models.selectedEg, {
+			foreignKey: "TNRTP61_EG_FORMS_DETAILS_MASTER_D",
 			as: "egTypes",
 		});
-		egFormDetails.hasMany(models.selectedPgCommodity, {
-			foreignKey: "TNRTP47_EG_FORMS_DETAILS_MASTER_D",
+		egFormDetails.hasMany(models.selectedEgCommodity, {
+			foreignKey: "TNRTP62_EG_FORMS_DETAILS_MASTER_D",
 			as: "egCommodityTypes",
 		});
-		egFormDetails.hasMany(models.selectedPgSector, {
-			foreignKey: "TNRTP46_EG_FORMS_DETAILS_MASTER_D",
+		egFormDetails.hasMany(models.selectedEgSector, {
+			foreignKey: "TNRTP63_EG_FORMS_DETAILS_MASTER_D",
 			as: "egSectorTypes",
 		});
 		egFormDetails.belongsTo(models.registrationUnder, {
