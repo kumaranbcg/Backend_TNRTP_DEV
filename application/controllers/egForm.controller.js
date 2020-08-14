@@ -1,7 +1,7 @@
 const service = require("./../services/egApplication.service");
 const errorCodes = require("./../configs/errorCodes.js");
 const errMessages = require("./../configs/errorMsgs");
-// const { EG_FORM_MASTER_STATUS, EG_FORM_STAGE } = require("./../constants/index");
+const { EG_FORM_MASTER_STATUS, EG_FORM_STAGE } = require("../constants/index");
 
 class EGFormController {}
 

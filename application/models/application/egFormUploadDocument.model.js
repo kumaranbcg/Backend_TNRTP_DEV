@@ -27,16 +27,16 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	);
 	egFormUploadDocument.associate = function (models) {
-		egFormUploadDocument.hasMany(models.selectedPgDoc, {
-			foreignKey: "TNRTP44_EG_FORMS_UPLOAD_DOCUMENT_MASTER_D",
+		egFormUploadDocument.hasMany(models.selectedEgDoc, {
+			foreignKey: "TNRTP64_EG_FORMS_UPLOAD_DOCUMENT_MASTER_D",
 			as: "minOfEGRefund",
 		});
-		egFormUploadDocument.hasMany(models.selectedPgDoc, {
-			foreignKey: "TNRTP44_EG_FORMS_UPLOAD_DOCUMENT_MASTER_D",
+		egFormUploadDocument.hasMany(models.selectedEgDoc, {
+			foreignKey: "TNRTP64_EG_FORMS_UPLOAD_DOCUMENT_MASTER_D",
 			as: "bankPassBook",
 		});
-		egFormUploadDocument.hasMany(models.selectedPgDoc, {
-			foreignKey: "TNRTP44_EG_FORMS_UPLOAD_DOCUMENT_MASTER_D",
+		egFormUploadDocument.hasMany(models.selectedEgDoc, {
+			foreignKey: "TNRTP64_EG_FORMS_UPLOAD_DOCUMENT_MASTER_D",
 			as: "businessPlan",
 		});
 	};

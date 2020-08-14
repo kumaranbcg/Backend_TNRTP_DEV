@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-	const selectedPgCommodity = sequelize.define(
+	const selectedEgCommodity = sequelize.define(
 		"TNRTP62_SELECTED_EG_COMMODITY",
 		{
 			TNRTP62_SELECTED_EG_COMMODITY_D: {
@@ -18,12 +18,12 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: false,
 		}
 	);
-	selectedPgCommodity.associate = function (models) {
-		selectedPgCommodity.belongsTo(models.pcCommodityTypes, {
+	selectedEgCommodity.associate = function (models) {
+		selectedEgCommodity.belongsTo(models.pcCommodityTypes, {
 			foreignKey: "TNRTP62_TYPE_OF_COMMODITY_MASTER_D",
 			as: "egCommodityTypesData",
 		});
 	};
-	selectedPgCommodity.selectedFields = ["basicDetailsId"];
-	return selectedPgCommodity;
+	selectedEgCommodity.selectedFields = ["basicDetailsId"];
+	return selectedEgCommodity;
 };
