@@ -55,6 +55,7 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: false,
 		}
 	);
+	
 	mainDashboard.selectedFields = [
 		"formId",
 		"formTypeId",

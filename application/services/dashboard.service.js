@@ -322,7 +322,8 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 				required: false,
 				where: { ...searchCondition },
 			}
-        ).slice(0, -1);
+		).slice(0, -1);
+		
 		let dashBoardData = await mainDashboard.findOne({
 			where: { ...searchCondition },
 			attributes: [
