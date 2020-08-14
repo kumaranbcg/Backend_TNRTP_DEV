@@ -424,7 +424,6 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 			data: obj,
 		};
 	} catch (err) {
-		console.log("getSectorTypesService", err);
 		return {
 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
 			message: err,

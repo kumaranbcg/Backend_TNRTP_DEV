@@ -413,7 +413,7 @@ router.post(
 	SYMRFormController.updateSymrDisbursmentUc
 );
 
-router.get(
+router.post(
   "/application/dashboard/statistics",
   verifyToken,
   hasRole([STAFF_ROLE.ADMIN]),
