@@ -43,6 +43,7 @@ const {
 	PC_STAFF_DOC,
 	PC_DISBURSEMENT_STATE,
 	FORM_TYPES,
+	DASHBOARD_FORM_STATUS,
 } = require("../constants/index");
 const { Op } = require("sequelize");
 const Cryptr = require("cryptr");
@@ -117,7 +118,7 @@ PCApplicationService.prototype.pcFormBasicDetailsSerivce = async (params) => {
 			await pcFormBasicDetails.create({ ...params });
 		}
 		await mainDashboard.update(
-			{ districtId: params.districtId, blockId: params.blockId, panchayatId: params.panchayatId },
+			{ ...params },
 			{
 				where: { formId, formTypeId: FORM_TYPES.PC_FORM },
 			}
@@ -182,11 +183,7 @@ PCApplicationService.prototype.pcFormMemberSerivce = async (params) => {
 			await pcFormMembers.create({ ...params });
 		}
 		await mainDashboard.update(
-			{
-				totalMember: params.districtId,
-				totalGender: params.blockId,
-				panchayatId: params.panchayatId,
-			},
+			{ ...params },
 			{
 				where: { formId, formTypeId: FORM_TYPES.PC_FORM },
 			}
@@ -888,6 +885,26 @@ PCApplicationService.prototype.updateOpenApplicationService = async (params) => 
 				where: { formId },
 			}
 		);
+		let dashBoardFormStatus;
+		switch (params.applicationStatus) {
+			case PC_FORM_MASTER_STATUS.FIRST_TRANCHE: {
+				dashBoardFormStatus = DASHBOARD_FORM_STATUS.APPROVED;
+			}
+			case PC_FORM_MASTER_STATUS.PENDING: {
+				dashBoardFormStatus = DASHBOARD_FORM_STATUS.PENDING;
+			}
+			case PC_FORM_MASTER_STATUS.DECLINED: {
+				dashBoardFormStatus = DASHBOARD_FORM_STATUS.REJECTED;
+			}
+		}
+		if (dashBoardFormStatus) {
+			await mainDashboard.update(
+				{ applicationStatus: dashBoardFormStatus },
+				{
+					where: { formId, formTypeId: FORM_TYPES.PC_FORM },
+				}
+			);
+		}
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -1043,6 +1060,11 @@ PCApplicationService.prototype.updateFirstTrancheService = async (params) => {
 				where: { formId },
 			}
 		);
+		let dashBoardData = await mainDashboard.findOne({
+			where: { formId, formTypeId: FORM_TYPES.PC_FORM },
+		});
+		dashBoardData.totalDisburement = dashBoardData.totalDisburement + params.disbursmentAmount;
+		dashBoardData.save();
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -1093,6 +1115,11 @@ PCApplicationService.prototype.updateSecondTrancheService = async (params) => {
 				where: { formId },
 			}
 		);
+		let dashBoardData = await mainDashboard.findOne({
+			where: { formId, formTypeId: FORM_TYPES.PC_FORM },
+		});
+		dashBoardData.totalDisburement = dashBoardData.totalDisburement + params.disbursmentAmount;
+		dashBoardData.save();
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
