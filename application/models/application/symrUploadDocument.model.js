@@ -28,27 +28,27 @@ module.exports = (sequelize, DataTypes) => {
 	);
 	symrUploadDocument.associate = function (models) {
 		symrUploadDocument.hasMany(models.selectedSymrDoc, {
-			foreignKey: "TNRTP19_SYMR_UPLOAD_DOCUMENT_MASTER_D",
+			foreignKey: "TNRTP90_SYMR_FORMS_UPLOAD_DOCUMENT_MASTER_D",
 			as: "proofOfMigration",
 		});
 		symrUploadDocument.hasMany(models.selectedSymrDoc, {
-			foreignKey: "TNRTP19_SYMR_UPLOAD_DOCUMENT_MASTER_D",
+			foreignKey: "TNRTP90_SYMR_FORMS_UPLOAD_DOCUMENT_MASTER_D",
 			as: "applicationLetter",
 		});
 		symrUploadDocument.hasMany(models.selectedSymrDoc, {
-			foreignKey: "TNRTP19_SYMR_UPLOAD_DOCUMENT_MASTER_D",
+			foreignKey: "TNRTP90_SYMR_FORMS_UPLOAD_DOCUMENT_MASTER_D",
 			as: "bankPassBook",
 		});
 		symrUploadDocument.hasMany(models.selectedSymrDoc, {
-			foreignKey: "TNRTP19_SYMR_UPLOAD_DOCUMENT_MASTER_D",
+			foreignKey: "TNRTP90_SYMR_FORMS_UPLOAD_DOCUMENT_MASTER_D",
 			as: "idProofPhoto",
 		});
 		symrUploadDocument.hasMany(models.selectedSymrDoc, {
-			foreignKey: "TNRTP19_SYMR_UPLOAD_DOCUMENT_MASTER_D",
+			foreignKey: "TNRTP90_SYMR_FORMS_UPLOAD_DOCUMENT_MASTER_D",
 			as: "businessPlan",
         });
         symrUploadDocument.hasMany(models.selectedSymrDoc, {
-			foreignKey: "TNRTP19_SYMR_UPLOAD_DOCUMENT_MASTER_D",
+			foreignKey: "TNRTP90_SYMR_FORMS_UPLOAD_DOCUMENT_MASTER_D",
 			as: "trainingCertificate",
 		});
 	};

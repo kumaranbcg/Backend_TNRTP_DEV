@@ -350,4 +350,16 @@ router.get(
 	hasRole([STAFF_ROLE.PUBLIC]),
 	SYMRFormController.getSymrForm
 );
+router.get(
+	"/application/getSymrMasters",
+	verifyToken,
+	hasRole([STAFF_ROLE.PUBLIC]),
+	SYMRFormController.getSymrMasters
+);
+router.post(
+	"/application/getSymrApplication",
+	verifyToken,
+	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC]),
+	SYMRFormController.getSymrApplication
+);
 module.exports = router;

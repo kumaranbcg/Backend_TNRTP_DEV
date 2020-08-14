@@ -30,6 +30,9 @@ const {
 	courseCompletionYear,
 	scheme,
 	activityTimeline,
+	districtMaster,
+	blockMaster,
+	panchayatMaster
 	// pcApplicationStatus,
 	// pcRequiredDoc,
 	// pcDisbursment,
@@ -348,8 +351,8 @@ SYMRApplicationService.prototype.getSymrFormService = async (params) => {
 	try {
 		const { formId } = params;
 		let formData = await symrFormMaster.findOne({
-			where: { formId, TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED },
-			attributes: ["formId", "userId", "name", "status", ["TNRTP01_UPDATED_AT", "appSubmitDate"]],
+			where: { formId, TNRTP68_DELETED_F: DELETE_STATUS.NOT_DELETED },
+			attributes: ["formId", "userId", "name", "status", ["TNRTP68_UPDATED_AT", "appSubmitDate"]],
 			include: [
 				{
 					model: symrBasicDetails,
@@ -683,46 +686,94 @@ SYMRApplicationService.prototype.getSymrFormService = async (params) => {
 		};
 	}
 };
-// SYMRApplicationService.prototype.getPcMasterService = async (params) => {
-// 	try {
-// 		let registrationUnderData = await registrationUnder.findAll({
-// 			attributes: registrationUnder.selectedFields,
-// 		});
-// 		let formedByData = await formedSupported.findAll({
-// 			attributes: formedSupported.selectedFields,
-// 		});
-// 		let typesOfPc = await pcTypes.findAll({
-// 			attributes: pcTypes.selectedFields,
-// 		});
-// 		let typesOfCommodity = await pcCommodityTypes.findAll({
-// 			attributes: pcCommodityTypes.selectedFields,
-// 		});
-// 		let typesOfSector = await pcSectorTypes.findAll({
-// 			attributes: pcSectorTypes.selectedFields,
-// 		});
-// 		let activityData = await activityTimeline.findAll({
-// 			attributes: activityTimeline.selectedFields,
-// 		});
-// 		return {
-// 			code: errorCodes.HTTP_OK,
-// 			message: messages.success,
-// 			data: {
-// 				registrationUnderData,
-// 				formedByData,
-// 				typesOfPc,
-// 				typesOfCommodity,
-// 				typesOfSector,
-// 				activityData,
-// 			},
-// 		};
-// 	} catch (err) {
-// 		console.log("getPcMasterService", err);
-// 		return {
-// 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-// 			message: err,
-// 		};
-// 	}
-// };
+SYMRApplicationService.prototype.getSymrMasterService = async (params) => {
+	try {
+		let sourceOfInfoData = await sourceOfInfo.findAll({
+			attributes: sourceOfInfo.selectedFields,
+		});
+		let genderData = await gender.findAll({
+			attributes: gender.selectedFields,
+		});
+		let religionData = await religion.findAll({
+			attributes: religion.selectedFields,
+		});
+		let communityData = await community.findAll({
+			attributes: community.selectedFields,
+		});
+		let proofTypeData = await proofType.findAll({
+			attributes: proofType.selectedFields,
+		});
+		let educQualificationData = await educQualification.findAll({
+			attributes: educQualification.selectedFields,
+		});
+		let natureOfMigrationData = await natureOfMigration.findAll({
+			attributes: natureOfMigration.selectedFields,
+		});
+		let shgMemberTypeData = await shgMemberType.findAll({
+			attributes: shgMemberType.selectedFields,
+		});
+		let relationshipTypeData = await relationshipType.findAll({
+			attributes: relationshipType.selectedFields,
+		});
+		let enterpriseTypeData = await enterpriseType.findAll({
+			attributes: enterpriseType.selectedFields,
+		});
+		let typesOfPc = await pcTypes.findAll({
+			attributes: pcTypes.selectedFields,
+		});
+		let typesOfCommodity = await pcCommodityTypes.findAll({
+			attributes: pcCommodityTypes.selectedFields,
+		});
+		let typesOfSector = await pcSectorTypes.findAll({
+			attributes: pcSectorTypes.selectedFields,
+		});
+		let yearsData = await years.findAll({
+			attributes: years.selectedFields,
+		});
+		let courseCompletionYearData = await courseCompletionYear.findAll({
+			attributes: courseCompletionYear.selectedFields,
+		});
+		let schemeData = await scheme.findAll({
+			attributes: scheme.selectedFields,
+		});
+		let existingLoanActivityData = await existingLoanActivity.findAll({
+			attributes: existingLoanActivity.selectedFields,
+		});
+		let activityData = await activityTimeline.findAll({
+			attributes: activityTimeline.selectedFields,
+		});
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+			data: {
+				sourceOfInfoData,
+				genderData,
+				religionData,
+				communityData,
+				proofTypeData,
+				natureOfMigrationData,
+				educQualificationData,
+				shgMemberTypeData,
+				relationshipTypeData,
+				enterpriseTypeData,
+				courseCompletionYearData,
+				yearsData,
+				schemeData,
+				existingLoanActivityData,
+				typesOfPc,
+				typesOfCommodity,
+				typesOfSector,
+				activityData,
+			},
+		};
+	} catch (err) {
+		console.log("getSymrMasterService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
 SYMRApplicationService.prototype.updateSymrFormStatus = async (params) => {
 	try {
 		const { formId, status } = params;
@@ -745,213 +796,213 @@ SYMRApplicationService.prototype.updateSymrFormStatus = async (params) => {
 	}
 };
 
-// SYMRApplicationService.prototype.getSYMRApplicationService = async (params) => {
-// 	try {
-// 		const { status, search, sortBy, page, limit, districtId } = params;
-// 		const searchCondition = !!search
-// 			? {
-// 					[Op.or]: [
-// 						{
-// 							$TNRTP01_PC_FORMS_MASTER_D$: {
-// 								[Op.like]: `%${search}%`,
-// 							},
-// 						},
-// 						{
-// 							"$basicDetails.TNRTP07_NAME_N$": {
-// 								[Op.like]: `%${search}%`,
-// 							},
-// 						},
-// 						{
-// 							"$basicDetails.TNRTP07_PC_NAME_N$": {
-// 								[Op.like]: `%${search}%`,
-// 							},
-// 						},
-// 					],
-// 			  }
-// 			: {};
-// 		const totalAmount = application.dialect.QueryGenerator.selectQuery(
-// 			"TNRTP12_PC_FORMS_PROPOSED_ACTIVITY",
-// 			{
-// 				attributes: [
-// 					[application.fn("SUM", application.col("TNRTP12_AMOUNT_REQUIRED_D")), "totalAmount"],
-// 				],
-// 				required: false,
-// 				where: {
-// 					TNRTP12_PC_FORMS_MASTER_D: {
-// 						[Op.eq]: application.col("TNRTP01_PC_FORMS_MASTER.TNRTP01_PC_FORMS_MASTER_D"),
-// 					},
-// 				},
-// 			}
-// 		).slice(0, -1);
-// 		const districtForms = application.dialect.QueryGenerator.selectQuery(
-// 			"TNRTP07_PC_FORMS_BASIC_DETAILS",
-// 			{
-// 				where: { TNRTP07_US_DISTRICT_MASTER_D: districtId },
-// 				attributes: ["TNRTP07_PC_FORMS_MASTER_D"],
-// 			}
-// 		).slice(0, -1);
-// 		const totalApplication = application.dialect.QueryGenerator.selectQuery(
-// 			"TNRTP01_PC_FORMS_MASTER",
-// 			{
-// 				attributes: [
-// 					[
-// 						application.fn("COUNT", application.col("TNRTP01_PC_FORMS_MASTER_D")),
-// 						"totalApplication",
-// 					],
-// 				],
-// 				required: true,
-// 				where: {
-// 					TNRTP01_PC_FORMS_MASTER_D: { [Op.in]: application.literal("(" + districtForms + ")") },
-// 					TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED,
-// 					TNRTP01_STATUS_D: { [Op.not]: PC_FORM_MASTER_STATUS.DRAFT },
-// 				},
-// 			}
-// 		).slice(0, -1);
-// 		const approvedApplication = application.dialect.QueryGenerator.selectQuery(
-// 			"TNRTP01_PC_FORMS_MASTER",
-// 			{
-// 				attributes: [
-// 					[
-// 						application.fn("COUNT", application.col("TNRTP01_PC_FORMS_MASTER_D")),
-// 						"approvedApplication",
-// 					],
-// 				],
-// 				required: true,
-// 				where: {
-// 					TNRTP01_PC_FORMS_MASTER_D: { [Op.in]: application.literal("(" + districtForms + ")") },
-// 					TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED,
-// 					TNRTP01_STATUS_D: {
-// 						[Op.in]: [
-// 							PC_FORM_MASTER_STATUS.FIRST_TRANCHE,
-// 							PC_FORM_MASTER_STATUS.SECOND_TRANCHE,
-// 							PC_FORM_MASTER_STATUS.SECOND_TRANCHE_UC,
-// 							PC_FORM_MASTER_STATUS.APPROVED,
-// 						],
-// 					},
-// 				},
-// 			}
-// 		).slice(0, -1);
-// 		const rejectedApplication = application.dialect.QueryGenerator.selectQuery(
-// 			"TNRTP01_PC_FORMS_MASTER",
-// 			{
-// 				attributes: [
-// 					[
-// 						application.fn("COUNT", application.col("TNRTP01_PC_FORMS_MASTER_D")),
-// 						"rejectedApplication",
-// 					],
-// 				],
-// 				required: true,
-// 				where: {
-// 					TNRTP01_PC_FORMS_MASTER_D: { [Op.in]: application.literal("(" + districtForms + ")") },
-// 					TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED,
-// 					TNRTP01_STATUS_D: {
-// 						[Op.in]: [PC_FORM_MASTER_STATUS.DECLINED],
-// 					},
-// 				},
-// 			}
-// 		).slice(0, -1);
-// 		let applicationCount = await pcFormMaster.findOne({
-// 			attributes: [
-// 				[application.literal("(" + totalApplication + ")"), "totalApplication"],
-// 				[application.literal("(" + approvedApplication + ")"), "approvedApplication"],
-// 				[application.literal("(" + rejectedApplication + ")"), "rejectedApplication"],
-// 			],
-// 		});
-// 		let { rows, count } = await pcFormMaster.findAndCountAll({
-// 			where: {
-// 				TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED,
-// 				status,
-// 				...searchCondition,
-// 			},
-// 			attributes: [
-// 				"formId",
-// 				"userId",
-// 				"status",
-// 				["TNRTP01_UPDATED_AT", "appSubmitDate"],
-// 				[application.literal("(" + totalAmount + ")"), "totalAmount"],
-// 			],
-// 			include: [
-// 				{
-// 					model: pcFormBasicDetails,
-// 					as: "basicDetails",
-// 					required: true,
-// 					where: { TNRTP07_DELETED_F: DELETE_STATUS.NOT_DELETED, districtId },
-// 					attributes: ["name", "pcName", "blockId", "districtId"],
-// 				},
-// 				{
-// 					model: pcFormDetails,
-// 					as: "pcDetails",
-// 					required: false,
-// 					where: { TNRTP08_DELETED_F: DELETE_STATUS.NOT_DELETED },
-// 					attributes: pcFormDetails.selectedFields,
-// 					include: [
-// 						{
-// 							model: selectedPcCommodity,
-// 							as: "pcCommodityTypes",
-// 							required: true,
-// 							attributes: selectedPcCommodity.selectedFields,
-// 							include: [
-// 								{
-// 									model: pcCommodityTypes,
-// 									as: "pcCommodityTypesData",
-// 									required: true,
-// 									attributes: pcCommodityTypes.selectedFields,
-// 								},
-// 							],
-// 						},
-// 					],
-// 				},
-// 			],
-// 			raw: false,
-// 			nested: true,
-// 			subQuery: false,
-// 			limit,
-// 			order: [["TNRTP01_CREATED_AT", sortBy == ORDERBY.ASC ? "ASC" : "DESC"]],
-// 			distinct: "TNRTP01_PC_FORMS_MASTER_D",
-// 			offset: (page - 1) * limit,
-// 		});
-// 		let blockData = await blockMaster.findAll({
-// 			where: {
-// 				value: rows.map((x) =>
-// 					x.dataValues.basicDetails ? x.dataValues.basicDetails.dataValues.blockId : ""
-// 				),
-// 			},
-// 			attributes: blockMaster.selectedFields,
-// 			raw: true,
-// 		});
-// 		rows.map((element) => {
-// 			if (element.dataValues.basicDetails)
-// 				element.dataValues.basicDetails.dataValues.block = blockData.find(
-// 					(x) => x.value == element.dataValues.basicDetails.dataValues.blockId
-// 				);
-// 			delete element.dataValues.basicDetails.dataValues.blockId;
-// 			return element;
-// 		});
-// 		let meta = {
-// 			pagination: {
-// 				limit,
-// 				page,
-// 				count,
-// 				total_pages: Math.ceil(count / limit),
-// 			},
-// 		};
-// 		return {
-// 			code: errorCodes.HTTP_OK,
-// 			message: messages.success,
-// 			data: {
-// 				list: rows,
-// 				applicationCount,
-// 				meta,
-// 			},
-// 		};
-// 	} catch (err) {
-// 		console.log("getSYMRApplicationService", err);
-// 		return {
-// 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-// 			message: err,
-// 		};
-// 	}
-// };
+SYMRApplicationService.prototype.getSYMRApplicationService = async (params) => {
+	try {
+		const { status, search, sortBy, page, limit, districtId } = params;
+		const searchCondition = !!search
+			? {
+					[Op.or]: [
+						{
+							$TNRTP68_SYMR_FORMS_MASTER_D$: {
+								[Op.like]: `%${search}%`,
+							},
+						},
+						{
+							"$basicDetails.TNRTP69_NAME_N$": {
+								[Op.like]: `%${search}%`,
+							},
+						},
+						// {
+						// 	"$basicDetails.TNRTP07_PC_NAME_N$": {
+						// 		[Op.like]: `%${search}%`,
+						// 	},
+						// },
+					],
+			  }
+			: {};
+		const totalAmount = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP83_SYMR_PROPOSED_ACTIVITY",
+			{
+				attributes: [
+					[application.fn("SUM", application.col("TNRTP83_AMOUNT_REQUIRED_D")), "totalAmount"],
+				],
+				required: false,
+				where: {
+					TNRTP68_SYMR_FORMS_MASTER_D: {
+						[Op.eq]: application.col("TNRTP68_SYMR_FORMS_MASTER.TNRTP68_SYMR_FORMS_MASTER_D"),
+					},
+				},
+			}
+		).slice(0, -1);
+		const districtForms = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP69_SYMR_BASIC_DETAILS",
+			{
+				where: { TNRTP07_US_DISTRICT_MASTER_D: districtId },
+				attributes: ["TNRTP68_SYMR_FORMS_MASTER_D"],
+			}
+		).slice(0, -1);
+		const totalApplication = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP68_SYMR_FORMS_MASTER",
+			{
+				attributes: [
+					[
+						application.fn("COUNT", application.col("TNRTP68_SYMR_FORMS_MASTER_D")),
+						"totalApplication",
+					],
+				],
+				required: true,
+				where: {
+					TNRTP68_SYMR_FORMS_MASTER_D: { [Op.in]: application.literal("(" + districtForms + ")") },
+					TNRTP68_DELETED_F: DELETE_STATUS.NOT_DELETED,
+					TNRTP68_STATUS_D: { [Op.not]: SYMR_FORM_MASTER_STATUS.DRAFT },
+				},
+			}
+		).slice(0, -1);
+		const approvedApplication = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP68_SYMR_FORMS_MASTER",
+			{
+				attributes: [
+					[
+						application.fn("COUNT", application.col("TNRTP68_SYMR_FORMS_MASTER_D")),
+						"approvedApplication",
+					],
+				],
+				required: true,
+				where: {
+					TNRTP68_SYMR_FORMS_MASTER_D: { [Op.in]: application.literal("(" + districtForms + ")") },
+					TNRTP68_DELETED_F: DELETE_STATUS.NOT_DELETED,
+					TNRTP68_STATUS_D: {
+						[Op.in]: [
+							SYMR_FORM_MASTER_STATUS.FIRST_TRANCHE,
+							SYMR_FORM_MASTER_STATUS.SECOND_TRANCHE,
+							SYMR_FORM_MASTER_STATUS.SECOND_TRANCHE_UC,
+							SYMR_FORM_MASTER_STATUS.APPROVED,
+						],
+					},
+				},
+			}
+		).slice(0, -1);
+		const rejectedApplication = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP68_SYMR_FORMS_MASTER",
+			{
+				attributes: [
+					[
+						application.fn("COUNT", application.col("TNRTP68_SYMR_FORMS_MASTER_D")),
+						"rejectedApplication",
+					],
+				],
+				required: true,
+				where: {
+					TNRTP68_SYMR_FORMS_MASTER_D: { [Op.in]: application.literal("(" + districtForms + ")") },
+					TNRTP68_DELETED_F: DELETE_STATUS.NOT_DELETED,
+					TNRTP68_STATUS_D: {
+						[Op.in]: [SYMR_FORM_MASTER_STATUS.DECLINED],
+					},
+				},
+			}
+		).slice(0, -1);
+		let applicationCount = await symrFormMaster.findOne({
+			attributes: [
+				[application.literal("(" + totalApplication + ")"), "totalApplication"],
+				[application.literal("(" + approvedApplication + ")"), "approvedApplication"],
+				[application.literal("(" + rejectedApplication + ")"), "rejectedApplication"],
+			],
+		});
+		let { rows, count } = await symrFormMaster.findAndCountAll({
+			where: {
+				TNRTP68_DELETED_F: DELETE_STATUS.NOT_DELETED,
+				status,
+				...searchCondition,
+			},
+			attributes: [
+				"formId",
+				"userId",
+				"status",
+				["TNRTP68_UPDATED_AT", "appSubmitDate"],
+				[application.literal("(" + totalAmount + ")"), "totalAmount"],
+			],
+			include: [
+				{
+					model: symrBasicDetails,
+					as: "basicDetails",
+					required: true,
+					where: { TNRTP69_DELETED_F: DELETE_STATUS.NOT_DELETED, districtId },
+					attributes: ["name", "address", "blockId", "districtId"],
+				},
+				// {
+				// 	model: pcFormDetails,
+				// 	as: "pcDetails",
+				// 	required: false,
+				// 	where: { TNRTP08_DELETED_F: DELETE_STATUS.NOT_DELETED },
+				// 	attributes: pcFormDetails.selectedFields,
+				// 	include: [
+				// 		{
+				// 			model: selectedPcCommodity,
+				// 			as: "pcCommodityTypes",
+				// 			required: true,
+				// 			attributes: selectedPcCommodity.selectedFields,
+				// 			include: [
+				// 				{
+				// 					model: pcCommodityTypes,
+				// 					as: "pcCommodityTypesData",
+				// 					required: true,
+				// 					attributes: pcCommodityTypes.selectedFields,
+				// 				},
+				// 			],
+				// 		},
+				// 	],
+				// },
+			],
+			raw: false,
+			nested: true,
+			subQuery: false,
+			limit,
+			order: [["TNRTP68_CREATED_AT", sortBy == ORDERBY.ASC ? "ASC" : "DESC"]],
+			distinct: "TNRTP68_SYMR_FORMS_MASTER_D",
+			offset: (page - 1) * limit,
+		});
+		let blockData = await blockMaster.findAll({
+			where: {
+				value: rows.map((x) =>
+					x.dataValues.basicDetails ? x.dataValues.basicDetails.dataValues.blockId : ""
+				),
+			},
+			attributes: blockMaster.selectedFields,
+			raw: true,
+		});
+		rows.map((element) => {
+			if (element.dataValues.basicDetails)
+				element.dataValues.basicDetails.dataValues.block = blockData.find(
+					(x) => x.value == element.dataValues.basicDetails.dataValues.blockId
+				);
+			delete element.dataValues.basicDetails.dataValues.blockId;
+			return element;
+		});
+		let meta = {
+			pagination: {
+				limit,
+				page,
+				count,
+				total_pages: Math.ceil(count / limit),
+			},
+		};
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+			data: {
+				list: rows,
+				applicationCount,
+				meta,
+			},
+		};
+	} catch (err) {
+		console.log("getSYMRApplicationService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
 // SYMRApplicationService.prototype.updateOpenApplicationService = async (params) => {
 // 	try {
 // 		const { formId, userData } = params;

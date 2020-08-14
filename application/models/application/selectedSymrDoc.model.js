@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			uploadDocumentId: {
 				type: DataTypes.INTEGER,
-				field: "TNRTP90_SYMR_UPLOAD_DOCUMENT_MASTER_D",
+				field: "TNRTP90_SYMR_FORMS_UPLOAD_DOCUMENT_MASTER_D",
 			},
 			docName: { type: DataTypes.STRING, field: "TNRTP90_SYMR_UPLOAD_DOCUMENT_NAME_N" },
 			docUrl: { type: DataTypes.STRING, field: "TNRTP90_SYMR_UPLOAD_DOCUMENT_URL_N" },

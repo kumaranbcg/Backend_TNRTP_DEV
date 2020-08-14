@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
 	);
 	selectedSymr.associate = function (models) {
 		selectedSymr.belongsTo(models.pcTypes, {
-			foreignKey: "TNRTP92_TYPE_OF_PC_MASTER_D",
+			foreignKey: "TNRTP92_TYPE_OF_SYMR_MASTER_D",
 			as: "symrTypesData",
 		});
 	};

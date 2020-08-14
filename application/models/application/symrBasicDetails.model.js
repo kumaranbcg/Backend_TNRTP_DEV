@@ -92,9 +92,9 @@ module.exports = (sequelize, DataTypes) => {
         "previousOccupation",
         "isWomeHeaded",
         "isVulnerableCategory",
-		["TNRTP07_US_DISTRICT_MASTER_D", "district"],
-		["TNRTP07_US_BLOCK_MASTER_D", "block"],
-		["TNRTP07_US_PANCHAYAT_MASTER_D", "panchayat"],
+		["TNRTP69_US_DISTRICT_MASTER_D", "district"],
+		["TNRTP69_US_BLOCK_MASTER_D", "block"],
+		["TNRTP69_US_PANCHAYAT_MASTER_D", "panchayat"],
 	];
 	return symrBasicDetails;
 };
