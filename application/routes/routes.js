@@ -399,6 +399,19 @@ router.get(
 	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC]),
 	SYMRFormController.getSymrAssesment
 );
+router.post(
+	"/application/updateSymrAmountDisbursment",
+	verifyToken,
+	hasRole([STAFF_ROLE.VPRC]),
+	SYMRFormController.updateSymrAmountDisbursment
+);
+
+router.post(
+	"/application/updateSymrDisbursmentUc",
+	verifyToken,
+	hasRole([STAFF_ROLE.VPRC]),
+	SYMRFormController.updateSymrDisbursmentUc
+);
 
 router.get(
   "/application/dashboard/statistics",

@@ -39,8 +39,8 @@ const {
 	symrRepayOfExistingLoan,
 	symrProposedEnterpriseLocation,
 	symrExperience,
-	// pcDisbursment,
-	// pcAssessmentDoc,
+	symrDisbursment,
+	symrAssessmentDoc,
 	symrAssessment,
 	// pcAuditYear,
 	// pcConvergence,
@@ -58,7 +58,7 @@ const errorCodes = require("./../configs/errorCodes.js");
 const {
 	SYMR_FORM_MASTER_STATUS,
 	SYMR_UPLOAD_DOC,
-	DISBURSEMENT_STATE,
+	SYMR_DISBURSEMENT_STATE,
 	DELETE_STATUS,
 	ORDERBY,
 	SYMR_STAFF_DOC
@@ -1260,91 +1260,33 @@ SYMRApplicationService.prototype.getSymrApplicationStatusService = async (params
 			],
 			include: [
 				{
-					model: pcApplicationStatus,
-					as: "pcApplicationStatus",
+					model: symrApplicationStatus,
+					as: "symrApplicationStatus",
 					required: false,
-					attributes: pcApplicationStatus.selectedFields,
+					attributes: symrApplicationStatus.selectedFields,
 					include: [
 						{
-							model: pcRequiredDoc,
-							as: "smpuApprovalLetter",
+							model: symrRequiredDoc,
+							as: "vprcCommitteeMom",
 							required: false,
-							where: { docType: PC_STAFF_DOC.SMPU_APPROVAL },
-							attributes: pcRequiredDoc.selectedFields,
-						},
-						{
-							model: pcRequiredDoc,
-							as: "decMom",
-							required: false,
-							where: { docType: PC_STAFF_DOC.DECMM },
-							attributes: pcRequiredDoc.selectedFields,
-						},
-						{
-							model: pcRequiredDoc,
-							as: "signedAssesment",
-							required: false,
-							where: { docType: PC_STAFF_DOC.SIGNED_ASSESMENT },
-							attributes: pcRequiredDoc.selectedFields,
-						},
+							where: { docType: SYMR_STAFF_DOC.VPRC_COMMITTEE_MOM },
+							attributes: symrRequiredDoc.selectedFields,
+						}
 					],
 				},
 				{
-					model: pcDisbursment,
-					as: "firstTranche",
+					model: symrDisbursment,
+					as: "ucCertificate",
 					required: false,
-					where: { disbursmentType: DISBURSEMENT_STATE.FIRST_TRANCHE },
+					where: { disbursmentType: DISBURSEMENT_STATE.UC_CERTIFICATE },
 					attributes: [
 						"isDisbursment",
 						"disbursmentDate",
 						"disbursmentAmount",
-						["TNRTP22_UPDATED_D", "disbursedBy"],
+						["TNRTP104_UPDATED_D", "disbursedBy"],
 					],
 				},
-				{
-					model: pcDisbursment,
-					as: "secondTranche",
-					required: false,
-					where: { disbursmentType: DISBURSEMENT_STATE.SECOND_TRANCHE },
-					attributes: [
-						"isDisbursment",
-						"disbursmentDate",
-						"disbursmentSubmitDate",
-						"disbursmentAmount",
-						["TNRTP22_UPDATED_D", "disbursedBy"],
-					],
-					include: [
-						{
-							model: pcRequiredDoc,
-							as: "firstUcCertificate",
-							required: false,
-							where: { docType: PC_STAFF_DOC.FIRST_TRANCHE },
-							attributes: pcRequiredDoc.selectedFields,
-						},
-						{
-							model: pcRequiredDoc,
-							as: "smpuTrancheApproval",
-							required: false,
-							where: { docType: PC_STAFF_DOC.SMPU_TRANCHE_APPROVAL },
-							attributes: pcRequiredDoc.selectedFields,
-						},
-					],
-				},
-				{
-					model: pcDisbursment,
-					as: "secondTrancheUc",
-					required: false,
-					where: { disbursmentType: DISBURSEMENT_STATE.SECOND_TRANCHE_UC },
-					attributes: ["disbursmentSubmitDate", ["TNRTP22_UPDATED_D", "disbursedBy"]],
-					include: [
-						{
-							model: pcRequiredDoc,
-							as: "secondTrancheApproval",
-							required: false,
-							where: { docType: PC_STAFF_DOC.SECOND_TRANCHE },
-							attributes: pcRequiredDoc.selectedFields,
-						},
-					],
-				},
+				
 			],
 		});
 		return {
@@ -1360,115 +1302,76 @@ SYMRApplicationService.prototype.getSymrApplicationStatusService = async (params
 		};
 	}
 };
-// SYMRApplicationService.prototype.updateFirstTrancheService = async (params) => {
-// 	try {
-// 		let { userData, formId } = params;
-// 		params.TNRTP22_CREATED_D = userData.userId;
-// 		params.TNRTP22_UPDATED_D = userData.userId;
-// 		delete params.userData;
-// 		await pcDisbursment.create({ ...params });
-// 		await pcFormMaster.update(
-// 			{ status: PC_FORM_MASTER_STATUS.SECOND_TRANCHE },
-// 			{
-// 				where: { formId },
-// 			}
-// 		);
-// 		return {
-// 			code: errorCodes.HTTP_OK,
-// 			message: messages.success,
-// 		};
-// 	} catch (err) {
-// 		console.log("updateFirstTrancheService", err);
-// 		return {
-// 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-// 			message: err,
-// 		};
-// 	}
-// };
-// SYMRApplicationService.prototype.updateSecondTrancheService = async (params) => {
-// 	try {
-// 		const { userData, formId } = params;
-// 		if (params.firstUcCertificate && params.firstUcCertificate.length) {
-// 			params.firstUcCertificate.map((element) => {
-// 				element.docType = PC_STAFF_DOC.FIRST_TRANCHE;
-// 			});
-// 		}
-// 		if (params.smpuTrancheApproval && params.smpuTrancheApproval.length) {
-// 			params.smpuTrancheApproval.map((element) => {
-// 				element.docType = PC_STAFF_DOC.SMPU_TRANCHE_APPROVAL;
-// 			});
-// 		}
-// 		delete params.userData;
-// 		params.TNRTP22_CREATED_D = userData.userId;
-// 		params.TNRTP22_UPDATED_D = userData.userId;
-// 		await pcDisbursment.create(
-// 			{ ...params },
-// 			{
-// 				include: [
-// 					{
-// 						model: pcRequiredDoc,
-// 						as: "firstUcCertificate",
-// 					},
-// 					{
-// 						model: pcRequiredDoc,
-// 						as: "smpuTrancheApproval",
-// 					},
-// 				],
-// 			}
-// 		);
-// 		await pcFormMaster.update(
-// 			{ status: PC_FORM_MASTER_STATUS.SECOND_TRANCHE_UC },
-// 			{
-// 				where: { formId },
-// 			}
-// 		);
-// 		return {
-// 			code: errorCodes.HTTP_OK,
-// 			message: messages.success,
-// 		};
-// 	} catch (err) {
-// 		console.log("updateSecondTrancheService", err);
-// 		return {
-// 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-// 			message: err,
-// 		};
-// 	}
-// };
-// SYMRApplicationService.prototype.updateSecondTrancheUcService = async (params) => {
-// 	try {
-// 		const { formId, userData } = params;
-// 		if (params.secondTrancheApproval && params.secondTrancheApproval.length) {
-// 			params.secondTrancheApproval.map((element) => {
-// 				element.docType = PC_STAFF_DOC.SECOND_TRANCHE;
-// 			});
-// 		}
-// 		delete params.userData;
-// 		params.TNRTP22_CREATED_D = userData.userId;
-// 		params.TNRTP22_UPDATED_D = userData.userId;
-// 		await pcDisbursment.create(
-// 			{ ...params },
-// 			{
-// 				include: [
-// 					{
-// 						model: pcRequiredDoc,
-// 						as: "secondTrancheApproval",
-// 					},
-// 				],
-// 			}
-// 		);
-// 		await pcFormMaster.update({ status: PC_FORM_MASTER_STATUS.APPROVED }, { where: { formId } });
-// 		return {
-// 			code: errorCodes.HTTP_OK,
-// 			message: messages.success,
-// 		};
-// 	} catch (err) {
-// 		console.log("updateSecondTrancheUcService", err);
-// 		return {
-// 			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
-// 			message: err,
-// 		};
-// 	}
-// };
+SYMRApplicationService.prototype.updateSymrAmountDisbursmentService = async (params) => {
+	try {
+		const { formId, userData } = params;
+		params.disbursmentType = SYMR_DISBURSEMENT_STATE.AMOUNT_DISBURSMENT;
+		delete params.userData;
+		params.TNRTP104_CREATED_D = userData.userId;
+		params.TNRTP104_UPDATED_D = userData.userId;
+		await symrDisbursment.create({ ...params });
+		await symrFormMaster.update(
+			{ status: SYMR_FORM_MASTER_STATUS.AMOUNT_DISBURSMENT },
+			{
+				where: { formId },
+			}
+		);
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+		};
+	} catch (err) {
+		console.log("getSymrApplicationService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+SYMRApplicationService.prototype.updateSymrDisbursmentUcService = async (params) => {
+	try {
+		const { formId, userData } = params;
+		if (params.firstUcCertificate && params.firstUcCertificate.length) {
+			params.firstUcCertificate.map((element) => {
+				element.docType = SYMR_STAFF_DOC.FIRST_TRANCHE_UC;
+			});
+		}
+		params.disbursmentType = SYMR_DISBURSEMENT_STATE.SUBMIT_UC_DISBURSMENT;
+		delete params.userData;
+		params.TNRTP104_CREATED_D = userData.userId;
+		params.TNRTP104_UPDATED_D = userData.userId;
+		await symrDisbursment.update(
+			{ ...params },
+			{
+				where: { formId },
+			},
+			{
+				include: [
+					{
+						model: symrRequiredDoc,
+						as: "firstUcCertificate",
+					},
+				],
+			}
+		);
+		await symrFormMaster.update(
+			{ status: SYMR_FORM_MASTER_STATUS.SUBMIT_UC },
+			{
+				where: { formId },
+			}
+		);
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+		};
+	} catch (err) {
+		console.log("getSymrApplicationService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
 SYMRApplicationService.prototype.startSymrAssesmentService = async (params) => {
 	try {
 		const { formId } = params;
