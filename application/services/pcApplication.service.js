@@ -26,15 +26,12 @@ const {
 	pcDisbursment,
 	pcAssessmentDoc,
 	pcAssessment,
-	pcAuditYear,
-	pcConvergence,
-	pcLinkage,
-	pcPartnership,
 	pcAreaMember,
 	pcAreaMemberBlock,
 	pcCoverageArea,
 	pcCoverageBlock,
 	pcCoveragePanchayat,
+	mainDashboard,
 } = require("../models");
 const messages = require("./../configs/errorMsgs.js");
 const errorCodes = require("./../configs/errorCodes.js");
@@ -45,6 +42,7 @@ const {
 	ORDERBY,
 	PC_STAFF_DOC,
 	PC_DISBURSEMENT_STATE,
+	FORM_TYPES,
 } = require("../constants/index");
 const { Op } = require("sequelize");
 const Cryptr = require("cryptr");
@@ -90,6 +88,10 @@ PCApplicationService.prototype.pcFormCreateSerivce = async (params) => {
 		// 	};
 		// }
 		let formData = await pcFormMaster.create({ ...createMaster });
+		await mainDashboard.create({
+			formId: formData.formId,
+			formTypeId: FORM_TYPES.PC_FORM,
+		});
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.formCreated,
@@ -114,6 +116,12 @@ PCApplicationService.prototype.pcFormBasicDetailsSerivce = async (params) => {
 		} else {
 			await pcFormBasicDetails.create({ ...params });
 		}
+		await mainDashboard.update(
+			{ districtId: params.districtId, blockId: params.blockId, panchayatId: params.panchayatId },
+			{
+				where: { formId, formTypeId: FORM_TYPES.PC_FORM },
+			}
+		);
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -173,6 +181,16 @@ PCApplicationService.prototype.pcFormMemberSerivce = async (params) => {
 		} else {
 			await pcFormMembers.create({ ...params });
 		}
+		await mainDashboard.update(
+			{
+				totalMember: params.districtId,
+				totalGender: params.blockId,
+				panchayatId: params.panchayatId,
+			},
+			{
+				where: { formId, formTypeId: FORM_TYPES.PC_FORM },
+			}
+		);
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -1142,7 +1160,7 @@ PCApplicationService.prototype.startAssesmentService = async (params) => {
 			"TNRTP28_PC_AUDIT_FINANCIAL_YEAR_MASTER",
 			{
 				attributes: [
-					["TNRTP28_PC_AUDIT_FINANCIAL_YEAR_MASTER_D", "label"],
+					["TNRTP28_PC_AUDIT_FINANCIAL_YEAR_MASTER_D", "text"],
 					["TNRTP28_PC_AUDIT_YEAR_D", "value"],
 				],
 			}
@@ -1151,7 +1169,7 @@ PCApplicationService.prototype.startAssesmentService = async (params) => {
 			"TNRTP32_PC_NO_OF_CONVERGENCE_MASTER",
 			{
 				attributes: [
-					["TNRTP32_PC_NO_OF_CONVERGENCE_D", "label"],
+					["TNRTP32_PC_NO_OF_CONVERGENCE_D", "text"],
 					["TNRTP32_PC_NO_OF_CONVERGENCE_MASTER_D", "value"],
 				],
 			}
@@ -1160,7 +1178,7 @@ PCApplicationService.prototype.startAssesmentService = async (params) => {
 			"TNRTP26_PC_ASSESSMENT_LINKAGE_MASTER",
 			{
 				attributes: [
-					["TNRTP26_PC_LINKAGE_D", "label"],
+					["TNRTP26_PC_LINKAGE_D", "text"],
 					["TNRTP26_PC_ASSESSMENT_LINKAGE_MASTER_D", "value"],
 				],
 			}
@@ -1169,7 +1187,7 @@ PCApplicationService.prototype.startAssesmentService = async (params) => {
 			"TNRTP33_PC_NO_OF_PARTNERSHIP_MASTER",
 			{
 				attributes: [
-					["TNRTP33_PC_NO_OF_PARTNERSHIP_D", "label"],
+					["TNRTP33_PC_NO_OF_PARTNERSHIP_D", "text"],
 					["TNRTP33_PC_NO_OF_PARTNERSHIP_MASTER_D", "value"],
 				],
 			}

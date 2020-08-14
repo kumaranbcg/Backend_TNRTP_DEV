@@ -11,8 +11,8 @@ module.exports = (sequelize, DataTypes) => {
 			formId: { type: DataTypes.STRING, field: "TNRTP23_PC_FORMS_MASTER_D" },
 			assessmentName: { type: DataTypes.STRING, field: "TNRTP23_PC_APPLICATION_ASSESSMENT_NAME_N" },
 			assessmentValue: {
-				type: DataTypes.INTEGER,
-				field: "TNRTP23_PC_APPLICATION_ASSESSMENT_VALUE_D",
+				type: DataTypes.STRING,
+				field: "TNRTP23_PC_APPLICATION_ASSESSMENT_VALUE_N",
 			},
 			assessmentScore: {
 				type: DataTypes.INTEGER,

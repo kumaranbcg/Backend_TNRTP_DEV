@@ -12,6 +12,12 @@ const ORDERBY = {
 	ASC: 0,
 	DESC: 1,
 };
+
+const DASHBOARD_FORM_STATUS = {
+	APPROVED: 1,
+	PENDING: 2,
+	REJECTED: 3,
+};
 const STAFF_STATUS = {
 	INACTIVE: 0,
 	ACTIVE: 1,
@@ -177,7 +183,7 @@ const PG_DISBURSEMENT_STATE = {
 };
 
 //EG CONSTANTS
-
+module.exports.DASHBOARD_FORM_STATUS = DASHBOARD_FORM_STATUS;
 module.exports.STAFF_ROLE = STAFF_ROLE;
 module.exports.ORDERBY = ORDERBY;
 module.exports.STAFF_STATUS = STAFF_STATUS;
