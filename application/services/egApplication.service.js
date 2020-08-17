@@ -407,14 +407,14 @@ EGApplicationService.prototype.getEgFormService = async (params) => {
 				{
 					model: egFormBankDetails,
 					as: "egFormBankDetails",
-					where: { TNRTP41_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					where: { TNRTP58_DELETED_F: DELETE_STATUS.NOT_DELETED },
 					required: false,
 					attributes: egFormBankDetails.selectedFields,
 				},
 				{
 					model: egFormProposedActivity,
 					as: "egFormProposedActivity",
-					where: { TNRTP58_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					where: { TNRTP59_DELETED_F: DELETE_STATUS.NOT_DELETED },
 					required: false,
 					attributes: egFormProposedActivity.selectedFields,
 					include: [
