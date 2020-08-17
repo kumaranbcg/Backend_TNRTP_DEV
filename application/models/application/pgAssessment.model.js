@@ -44,6 +44,7 @@ module.exports = (sequelize, DataTypes) => {
 		"assessmentName",
 		"assessmentValue",
 		"assessmentScore",
+		"assessmentTotalScore",
 		"isSupportive",
 		"reason",
 	];
