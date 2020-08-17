@@ -68,6 +68,18 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: "formId",
 			as: "secondTrancheUc",
 		});
+		pcFormMaster.hasMany(models.pcAssessment, {
+			foreignKey: "formId",
+			as: "pcAssessment",
+		});
+		pcFormMaster.hasMany(models.pcAreaMember, {
+			foreignKey: "formId",
+			as: "pcAreaMember",
+		});
+		pcFormMaster.hasMany(models.pcCoverageArea, {
+			foreignKey: "formId",
+			as: "pcCoverageArea",
+		});
 	};
 	return pcFormMaster;
 };

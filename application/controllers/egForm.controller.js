@@ -131,6 +131,7 @@ EGFormController.prototype.submitEgForm = async (req, res) => {
 		let userData = {
 			userData: req.user,
 		};
+		
 		let basicRes = await service.egFormBasicDetailsSerivce({
 			...req.body.basicDetails,
 			...userData,

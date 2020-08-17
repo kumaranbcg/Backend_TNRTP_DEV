@@ -69,6 +69,10 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: "formId",
 			as: "disbursmentUc",
 		});
+		pgFormMaster.hasMany(models.pgAssessment, {
+			foreignKey: "formId",
+			as: "pgAssessment",
+		});
 	};
 	return pgFormMaster;
 };

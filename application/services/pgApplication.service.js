@@ -966,6 +966,12 @@ PGApplicationService.prototype.getPgApplicationStatusService = async (params) =>
 						},
 					],
 				},
+				{
+					model: pgAssessment,
+					as: "pgAssessment",
+					required: false,
+					attributes: pgAssessment.selectedFields,
+				},
 			],
 		});
 		return {

@@ -299,7 +299,7 @@ const schemas = {
 			registrationNumber: BaseJoi.string().required(),
 			promotingOrgName: BaseJoi.string().required(),
 			formSupportedBy: BaseJoi.number().required(),
-			noOfPG: BaseJoi.number().required(),
+			// noOfPG: BaseJoi.number().required(),
 			othersName: BaseJoi.optional(),
 			egTypes: BaseJoi.array()
 				.items({

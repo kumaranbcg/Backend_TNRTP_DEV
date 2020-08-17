@@ -23,7 +23,6 @@ module.exports = (sequelize, DataTypes) => {
 			noOfMale: { type: DataTypes.INTEGER, field: "TNRTP95_TOTAL_MALE_D" },
 			noOfFemale: { type: DataTypes.INTEGER, field: "TNRTP95_TOTAL_FEMALE_D" },
 			noOfTransGender: { type: DataTypes.INTEGER, field: "TNRTP95_TOTAL_TRANSGENDER_D" },
-			genderTotal: { type: DataTypes.INTEGER, field: "TNRTP09_GENDER_TOTAL_D" },
 			noOfBC: { type: DataTypes.INTEGER, field: "TNRTP95_TOTAL_BC_D" },
 			noOfMBC: { type: DataTypes.INTEGER, field: "TNRTP95_TOTAL_MBC_D" },
 			noOfSC: { type: DataTypes.INTEGER, field: "TNRTP95_TOTAL_SC_D" },
@@ -56,16 +55,35 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: false,
 		}
 	);
+	mainDashboard.associate = function (models) {
+		mainDashboard.hasOne(models.pcFormDetails, {
+			foreignKey: "formId",
+			as: "pcDetails",
+		});
+	};
 	mainDashboard.selectedFields = [
 		"formId",
 		"formTypeId",
 		"totalDisburement",
 		"applicationStatus",
-		"totalMember",
-		"totalGender",
-		"totalCommunity",
-		"totalSHG",
-		"totalVulnerable",
+		"totalMembers",
+		"noOfMale",
+		"noOfFemale",
+		"noOfTransGender",
+		"noOfBC",
+		"noOfMBC",
+		"noOfSC",
+		"noOfST",
+		"noOfCommunityOthers",
+		"noOfDiffAbled",
+		"noOfWidow",
+		"noOfDesitute",
+		"noOfDeserted",
+		"noOfVulTransGender",
+		"noOfEiderly",
+		"noOfSHGMembers",
+		"noOfSHGTotal",
+		"noOfNonSHGTotal",
 		["TNRTP07_US_DISTRICT_MASTER_D", "district"],
 		["TNRTP07_US_BLOCK_MASTER_D", "block"],
 		["TNRTP07_US_PANCHAYAT_MASTER_D", "panchayat"],
