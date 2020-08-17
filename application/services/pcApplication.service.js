@@ -886,15 +886,18 @@ PCApplicationService.prototype.updateOpenApplicationService = async (params) => 
 			}
 		);
 		let dashBoardFormStatus;
-		switch (params.applicationStatus) {
+		switch (parseInt(params.applicationStatus)) {
 			case PC_FORM_MASTER_STATUS.FIRST_TRANCHE: {
 				dashBoardFormStatus = DASHBOARD_FORM_STATUS.APPROVED;
+				break;
 			}
 			case PC_FORM_MASTER_STATUS.PENDING: {
 				dashBoardFormStatus = DASHBOARD_FORM_STATUS.PENDING;
+				break;
 			}
 			case PC_FORM_MASTER_STATUS.DECLINED: {
 				dashBoardFormStatus = DASHBOARD_FORM_STATUS.REJECTED;
+				break;
 			}
 		}
 		if (dashBoardFormStatus) {
