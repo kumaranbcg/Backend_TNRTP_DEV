@@ -1031,6 +1031,48 @@ PCApplicationService.prototype.getPcApplicationStatusService = async (params) =>
 						},
 					],
 				},
+				{
+					model: pcAssessment,
+					as: "pcAssessment",
+					required: false,
+					attributes: pcAssessment.selectedFields,
+				},
+				{
+					model: pcAreaMember,
+					as: "pcAreaMember",
+					required: false,
+					attributes: pcAreaMember.selectedFields,
+					include: [
+						{
+							model: pcAreaMemberBlock,
+							as: "areaMembersBlock",
+							required: false,
+							attributes: pcAreaMemberBlock.selectedFields,
+						},
+					],
+				},
+				{
+					model: pcCoverageArea,
+					as: "pcCoverageArea",
+					required: false,
+					attributes: pcCoverageArea.selectedFields,
+					include: [
+						{
+							model: pcCoverageBlock,
+							as: "coverageBlock",
+							required: false,
+							attributes: pcCoverageBlock.selectedFields,
+							include: [
+								{
+									model: pcCoveragePanchayat,
+									as: "coveragePanchayat",
+									required: false,
+									attributes: pcCoveragePanchayat.selectedFields,
+								},
+							],
+						},
+					],
+				},
 			],
 		});
 		return {

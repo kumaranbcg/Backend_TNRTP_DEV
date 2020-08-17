@@ -424,7 +424,7 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
-			data: obj,
+			data: dashBoardData,
 		};
 	} catch (err) {
 		console.log(err);
