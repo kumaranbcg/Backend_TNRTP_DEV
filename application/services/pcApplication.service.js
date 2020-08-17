@@ -1108,8 +1108,10 @@ PCApplicationService.prototype.updateFirstTrancheService = async (params) => {
 		let dashBoardData = await mainDashboard.findOne({
 			where: { formId, formTypeId: FORM_TYPES.PC_FORM },
 		});
-		dashBoardData.totalDisburement = dashBoardData.totalDisburement + params.disbursmentAmount;
-		dashBoardData.save();
+		if (dashBoardData) {
+			dashBoardData.totalDisburement = dashBoardData.totalDisburement + params.disbursmentAmount;
+			dashBoardData.save();
+		}
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -1163,8 +1165,10 @@ PCApplicationService.prototype.updateSecondTrancheService = async (params) => {
 		let dashBoardData = await mainDashboard.findOne({
 			where: { formId, formTypeId: FORM_TYPES.PC_FORM },
 		});
-		dashBoardData.totalDisburement = dashBoardData.totalDisburement + params.disbursmentAmount;
-		dashBoardData.save();
+		if (dashBoardData) {
+			dashBoardData.totalDisburement = dashBoardData.totalDisburement + params.disbursmentAmount;
+			dashBoardData.save();
+		}
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
