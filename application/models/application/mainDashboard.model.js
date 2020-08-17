@@ -55,7 +55,12 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: false,
 		}
 	);
-	
+	mainDashboard.associate = function (models) {
+		mainDashboard.hasOne(models.pcFormDetails, {
+			foreignKey: "formId",
+			as: "pcDetails",
+		});
+	};
 	mainDashboard.selectedFields = [
 		"formId",
 		"formTypeId",
