@@ -1077,8 +1077,10 @@ PGApplicationService.prototype.updateAmountDisbursmentService = async (params) =
 		let dashBoardData = await mainDashboard.findOne({
 			where: { formId, formTypeId: FORM_TYPES.PG_FORM },
 		});
-		dashBoardData.totalDisburement = dashBoardData.totalDisburement + params.disbursmentAmount;
-		dashBoardData.save();
+		if (dashBoardData) {
+			dashBoardData.totalDisburement = dashBoardData.totalDisburement + params.disbursmentAmount;
+			dashBoardData.save();
+		}
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
