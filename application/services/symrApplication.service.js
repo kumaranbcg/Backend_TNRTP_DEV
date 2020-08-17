@@ -42,16 +42,7 @@ const {
 	symrDisbursment,
 	symrAssessmentDoc,
 	symrAssessment,
-	// pcAuditYear,
-	// pcConvergence,
-	// pcLinkage,
-	// pcPartnership,
-	// pcAreaMember,
-	// pcAreaMemberBlock,
-	// pcCoverageArea,
-	// pcCoverageBlock,
-	// pcCoveragePanchayat,
-	// pcCoverageMembers,
+	mainDashboard
 } = require("../models");
 const messages = require("./../configs/errorMsgs.js");
 const errorCodes = require("./../configs/errorCodes.js");
@@ -87,6 +78,10 @@ SYMRApplicationService.prototype.symrFormCreateSerivce = async (params) => {
 		// 	};
 		// }
 		let formData = await symrFormMaster.create({ ...createMaster });
+		await mainDashboard.create({
+			formId: formData.formId,
+			formTypeId: FORM_TYPES.SYMR_FORM,
+		});
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.formCreated,
@@ -111,6 +106,12 @@ SYMRApplicationService.prototype.symrBasicDetailsSerivce = async (params) => {
 		} else {
 			await symrBasicDetails.create({ ...params });
 		}
+		await mainDashboard.update(
+			{ ...params },
+			{
+				where: { formId, formTypeId: FORM_TYPES.SYMR_FORM },
+			}
+		);
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -134,6 +135,12 @@ SYMRApplicationService.prototype.symrShgDetailService = async (params) => {
 		} else {
 			await symrShgDetails.create({ ...params });
 		}
+		await mainDashboard.update(
+			{ ...params },
+			{
+				where: { formId, formTypeId: FORM_TYPES.SYMR_FORM },
+			}
+		);
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -172,7 +179,7 @@ SYMRApplicationService.prototype.symrSkillDetailService = async (params) => {
 SYMRApplicationService.prototype.symrEnterpriseDetailService = async (params) => {
 	try {
 		const { formId } = params;
-		await symrEnterprise.destroy({ where: { formId } }).then(() => {
+		let enterprise = await symrEnterprise.destroy({ where: { formId } }).then(() => {
 			return symrEnterprise.create(
 				{ ...params },
 				{
@@ -193,6 +200,7 @@ SYMRApplicationService.prototype.symrEnterpriseDetailService = async (params) =>
 				}
 			);
 		});
+		console.log(enterprise)
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -1218,6 +1226,23 @@ SYMRApplicationService.prototype.updateOpenApplicationService = async (params) =
 				where: { formId },
 			}
 		);
+		let dashBoardFormStatus;
+		switch (params.applicationStatus) {
+			case SYMR_FORM_MASTER_STATUS.AMOUNT_DISBURSMENT: {
+				dashBoardFormStatus = DASHBOARD_FORM_STATUS.APPROVED;
+			}
+			case SYMR_FORM_MASTER_STATUS.PENDING: {
+				dashBoardFormStatus = DASHBOARD_FORM_STATUS.PENDING;
+			}
+		}
+		if (dashBoardFormStatus) {
+			await mainDashboard.update(
+				{ applicationStatus: dashBoardFormStatus },
+				{
+					where: { formId, formTypeId: FORM_TYPES.SYMR_FORM },
+				}
+			);
+		}
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -1315,6 +1340,11 @@ SYMRApplicationService.prototype.updateSymrAmountDisbursmentService = async (par
 				where: { formId },
 			}
 		);
+		let dashBoardData = await mainDashboard.findOne({
+			where: { formId, formTypeId: FORM_TYPES.SYMR_FORM },
+		});
+		dashBoardData.totalDisburement = dashBoardData.totalDisburement + params.disbursmentAmount;
+		dashBoardData.save();
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,

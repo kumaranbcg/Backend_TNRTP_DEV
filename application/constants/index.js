@@ -103,6 +103,7 @@ const FORM_TYPES = {
 	PC_FORM: 1,
 	PG_FORM: 2,
 	EG_FORM: 3,
+	SYMR_FORM: 4
 };
 const FORM_SECTION_STATUS = {
 	NOTFILLED: 1,
