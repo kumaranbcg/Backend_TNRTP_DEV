@@ -73,7 +73,7 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 		let dashBoardData = await mainDashboard.findOne({
 			where: { ...searchCondition },
 			attributes: [
-				"formId",
+				{ include: [application.col("TNRTP95_DASHBOARD_FORMS_MASTER_D"), "formIDD"] },
 				[
 					application.fn("COUNT", application.col("TNRTP95_DASHBOARD_FORMS_MASTER_D")),
 					"totalApplication",
@@ -170,7 +170,7 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 				"value",
 				"label",
 			],
-			where: { "$activity.TNRTP16_PC_FORMS_DETAILS_MASTER_D$": 6 },
+			// where: { "$activity.TNRTP16_PC_FORMS_DETAILS_MASTER_D$": 6 },
 			include: [
 				{
 					model: selectedPc,
