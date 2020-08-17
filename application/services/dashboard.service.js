@@ -1,11 +1,7 @@
 const errorCodes = require("./../configs/errorCodes");
 const messages = require("./../configs/errorMsgs");
 const { mainDashboard, application, pcFormDetails, pcTypes, selectedPc } = require("../models");
-const {
-	PG_FORM_MASTER_STATUS,
-	PC_FORM_MASTER_STATUS,
-	DELETE_STATUS,
-} = require("./../constants/index");
+const { DASHBOARD_FORM_STATUS, DELETE_STATUS } = require("./../constants/index");
 const { Op } = require("sequelize");
 class DashboardService {}
 
@@ -26,19 +22,6 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 				},
 			],
 		};
-		const totalDisbursmentAmount = application.dialect.QueryGenerator.selectQuery(
-			"TNRTP95_DASHBOARD_FORMS_MASTER",
-			{
-				attributes: [
-					[
-						application.fn("SUM", application.col("TNRTP95_TOTAL_DISBURSEMENT_AMOUNT_D")),
-						"totalAmount",
-					],
-				],
-				required: false,
-				where: { ...searchCondition },
-			}
-		).slice(0, -1);
 		const approvedApplication = application.dialect.QueryGenerator.selectQuery(
 			"TNRTP95_DASHBOARD_FORMS_MASTER",
 			{
@@ -51,13 +34,7 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 				required: false,
 				where: {
 					...searchCondition,
-					TNRTP95_IS_APPLICATION_STATUS_D: [
-						PG_FORM_MASTER_STATUS.APPROVED,
-						PG_FORM_MASTER_STATUS.SUBMIT_UC,
-						PC_FORM_MASTER_STATUS.SECOND_TRANCHE,
-						PC_FORM_MASTER_STATUS.SECOND_TRANCHE_UC,
-						PC_FORM_MASTER_STATUS.APPROVED,
-					],
+					TNRTP95_IS_APPLICATION_STATUS_D: DASHBOARD_FORM_STATUS.APPROVED,
 				},
 			}
 		).slice(0, -1);
@@ -73,7 +50,7 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 				required: false,
 				where: {
 					...searchCondition,
-					TNRTP95_IS_APPLICATION_STATUS_D: [PG_FORM_MASTER_STATUS.PENDING],
+					TNRTP95_IS_APPLICATION_STATUS_D: DASHBOARD_FORM_STATUS.PENDING,
 				},
 			}
 		).slice(0, -1);
@@ -89,208 +66,14 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 				required: false,
 				where: {
 					...searchCondition,
-					TNRTP95_IS_APPLICATION_STATUS_D: [PG_FORM_MASTER_STATUS.DECLINED],
+					TNRTP95_IS_APPLICATION_STATUS_D: DASHBOARD_FORM_STATUS.REJECTED,
 				},
 			}
 		).slice(0, -1);
-		const totalBeneficiaries = application.dialect.QueryGenerator.selectQuery(
-			"TNRTP95_DASHBOARD_FORMS_MASTER",
-			{
-				attributes: [
-					[application.fn("SUM", application.col("TNRTP95_TOTAL_MEMBERS_D")), "totalMember"],
-				],
-				required: false,
-				where: { ...searchCondition },
-			}
-		).slice(0, -1);
-		const totalMale = application.dialect.QueryGenerator.selectQuery(
-			"TNRTP95_DASHBOARD_FORMS_MASTER",
-			{
-				attributes: [[application.fn("SUM", application.col("TNRTP95_TOTAL_MALE_D")), "totalMale"]],
-				required: false,
-				where: { ...searchCondition },
-			}
-		).slice(0, -1);
-		const totalFemale = application.dialect.QueryGenerator.selectQuery(
-			"TNRTP95_DASHBOARD_FORMS_MASTER",
-			{
-				attributes: [
-					[application.fn("SUM", application.col("TNRTP95_TOTAL_FEMALE_D")), "totalFemale"],
-				],
-				required: false,
-				where: { ...searchCondition },
-			}
-		).slice(0, -1);
-		const totalTransgender = application.dialect.QueryGenerator.selectQuery(
-			"TNRTP95_DASHBOARD_FORMS_MASTER",
-			{
-				attributes: [
-					[
-						application.fn("SUM", application.col("TNRTP95_TOTAL_TRANSGENDER_D")),
-						"totalTransgender",
-					],
-				],
-				required: false,
-				where: { ...searchCondition },
-			}
-		).slice(0, -1);
-		const totalBC = application.dialect.QueryGenerator.selectQuery(
-			"TNRTP95_DASHBOARD_FORMS_MASTER",
-			{
-				attributes: [[application.fn("SUM", application.col("TNRTP95_TOTAL_BC_D")), "totalBC"]],
-				required: false,
-				where: { ...searchCondition },
-			}
-		).slice(0, -1);
-		const totalMBC = application.dialect.QueryGenerator.selectQuery(
-			"TNRTP95_DASHBOARD_FORMS_MASTER",
-			{
-				attributes: [[application.fn("SUM", application.col("TNRTP95_TOTAL_MBC_D")), "totalMBC"]],
-				required: false,
-				where: { ...searchCondition },
-			}
-		).slice(0, -1);
-		const totalSC = application.dialect.QueryGenerator.selectQuery(
-			"TNRTP95_DASHBOARD_FORMS_MASTER",
-			{
-				attributes: [[application.fn("SUM", application.col("TNRTP95_TOTAL_SC_D")), "totalSC"]],
-				required: false,
-				where: { ...searchCondition },
-			}
-		).slice(0, -1);
-		const totalST = application.dialect.QueryGenerator.selectQuery(
-			"TNRTP95_DASHBOARD_FORMS_MASTER",
-			{
-				attributes: [[application.fn("SUM", application.col("TNRTP95_TOTAL_ST_D")), "totalST"]],
-				required: false,
-				where: { ...searchCondition },
-			}
-		).slice(0, -1);
-		const totalCommunityOthers = application.dialect.QueryGenerator.selectQuery(
-			"TNRTP95_DASHBOARD_FORMS_MASTER",
-			{
-				attributes: [
-					[
-						application.fn("SUM", application.col("TNRTP95_TOTAL_COMMUNITY_OTHERS_D")),
-						"totalCommunityOthers",
-					],
-				],
-				required: false,
-				where: { ...searchCondition },
-			}
-		).slice(0, -1);
-		const totalSHGMember = application.dialect.QueryGenerator.selectQuery(
-			"TNRTP95_DASHBOARD_FORMS_MASTER",
-			{
-				attributes: [
-					[application.fn("SUM", application.col("TNRTP95_TOTAL_SHG_MEMBERS_D")), "totalSHGMember"],
-				],
-				required: false,
-				where: { ...searchCondition },
-			}
-		).slice(0, -1);
-		const totalSHGHouseholds = application.dialect.QueryGenerator.selectQuery(
-			"TNRTP95_DASHBOARD_FORMS_MASTER",
-			{
-				attributes: [
-					[
-						application.fn("SUM", application.col("TNRTP95_TOTAL_SHG_HOUSE_HOLDS_D")),
-						"totalSHGHouseholds",
-					],
-				],
-				required: false,
-				where: { ...searchCondition },
-			}
-		).slice(0, -1);
-		const totalNonSHGHouseholds = application.dialect.QueryGenerator.selectQuery(
-			"TNRTP95_DASHBOARD_FORMS_MASTER",
-			{
-				attributes: [
-					[
-						application.fn("SUM", application.col("TNRTP95_TOTAL_NON_SHG_HOUSE_HOLDS_D")),
-						"totalNonSHGHouseholds",
-					],
-				],
-				required: false,
-				where: { ...searchCondition },
-			}
-		).slice(0, -1);
-		const TotalDifferentlyAbled = application.dialect.QueryGenerator.selectQuery(
-			"TNRTP95_DASHBOARD_FORMS_MASTER",
-			{
-				attributes: [
-					[
-						application.fn("SUM", application.col("TNRTP95_TOTAL_DIFFERENTLY_ABLED_D")),
-						"TotalDifferentlyAbled",
-					],
-				],
-				required: false,
-				where: { ...searchCondition },
-			}
-		).slice(0, -1);
-		const TotalWidow = application.dialect.QueryGenerator.selectQuery(
-			"TNRTP95_DASHBOARD_FORMS_MASTER",
-			{
-				attributes: [
-					[application.fn("SUM", application.col("TNRTP95_TOTAL_WIDOW_D")), "TotalWidow"],
-				],
-				required: false,
-				where: { ...searchCondition },
-			}
-		).slice(0, -1);
-		const TotalDestituteWomen = application.dialect.QueryGenerator.selectQuery(
-			"TNRTP95_DASHBOARD_FORMS_MASTER",
-			{
-				attributes: [
-					[
-						application.fn("SUM", application.col("TNRTP95_TOTAL_DESTITUTE_WOMEN_D")),
-						"TotalDestituteWomen",
-					],
-				],
-				required: false,
-				where: { ...searchCondition },
-			}
-		).slice(0, -1);
-		const TotalDesertedWomen = application.dialect.QueryGenerator.selectQuery(
-			"TNRTP95_DASHBOARD_FORMS_MASTER",
-			{
-				attributes: [
-					[
-						application.fn("SUM", application.col("TNRTP95_TOTAL_DESERTED_WOMEN_D")),
-						"TotalDesertedWomen",
-					],
-				],
-				required: false,
-				where: { ...searchCondition },
-			}
-		).slice(0, -1);
-		const TotalEiderly = application.dialect.QueryGenerator.selectQuery(
-			"TNRTP95_DASHBOARD_FORMS_MASTER",
-			{
-				attributes: [
-					[application.fn("SUM", application.col("TNRTP95_TOTAL_EIDERLY_D")), "TotalEiderly"],
-				],
-				required: false,
-				where: { ...searchCondition },
-			}
-		).slice(0, -1);
-		const TotalVulnerableTransgender = application.dialect.QueryGenerator.selectQuery(
-			"TNRTP95_DASHBOARD_FORMS_MASTER",
-			{
-				attributes: [
-					[
-						application.fn("SUM", application.col("TNRTP95_TOTAL_VULNERABLE_TRANSGENDER_D")),
-						"TotalVulnerableTransgender",
-					],
-				],
-				required: false,
-				where: { ...searchCondition },
-			}
-		).slice(0, -1);
-
 		let dashBoardData = await mainDashboard.findOne({
 			where: { ...searchCondition },
 			attributes: [
+				"formId",
 				[
 					application.fn("COUNT", application.col("TNRTP95_DASHBOARD_FORMS_MASTER_D")),
 					"totalApplication",
@@ -307,28 +90,52 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 					application.fn("AVG", application.col("TNRTP95_TOTAL_DISBURSEMENT_AMOUNT_D")),
 					"averageAmount",
 				],
-				[application.literal("(" + totalDisbursmentAmount + ")"), "totalDisbursmentAmount"],
+				[
+					application.fn("SUM", application.col("TNRTP95_TOTAL_DISBURSEMENT_AMOUNT_D")),
+					"totalDisbursmentAmount",
+				],
 				[application.literal("(" + approvedApplication + ")"), "approvedApplication"],
 				[application.literal("(" + pendingApplication + ")"), "pendingApplication"],
 				[application.literal("(" + rejectedApplication + ")"), "rejectedApplication"],
-				[application.literal("(" + totalBeneficiaries + ")"), "totalBeneficiaries"],
-				[application.literal("(" + totalMale + ")"), "totalMale"],
-				[application.literal("(" + totalFemale + ")"), "totalFemale"],
-				[application.literal("(" + totalTransgender + ")"), "totalTransgender"],
-				[application.literal("(" + totalBC + ")"), "totalBC"],
-				[application.literal("(" + totalMBC + ")"), "totalMBC"],
-				[application.literal("(" + totalSC + ")"), "totalSC"],
-				[application.literal("(" + totalST + ")"), "totalST"],
-				[application.literal("(" + totalCommunityOthers + ")"), "totalCommunityOthers"],
-				[application.literal("(" + totalSHGMember + ")"), "totalSHGMember"],
-				[application.literal("(" + totalSHGHouseholds + ")"), "totalSHGHouseholds"],
-				[application.literal("(" + totalNonSHGHouseholds + ")"), "totalNonSHGHouseholds"],
-				[application.literal("(" + TotalDifferentlyAbled + ")"), "TotalDifferentlyAbled"],
-				[application.literal("(" + TotalWidow + ")"), "TotalWidow"],
-				[application.literal("(" + TotalDestituteWomen + ")"), "TotalDestituteWomen"],
-				[application.literal("(" + TotalDesertedWomen + ")"), "TotalDesertedWomen"],
-				[application.literal("(" + TotalEiderly + ")"), "TotalEiderly"],
-				[application.literal("(" + TotalVulnerableTransgender + ")"), "TotalVulnerableTransgender"],
+				[application.fn("SUM", application.col("TNRTP95_TOTAL_MEMBERS_D")), "totalBeneficiaries"],
+				[application.fn("SUM", application.col("TNRTP95_TOTAL_MALE_D")), "totalMale"],
+				[application.fn("SUM", application.col("TNRTP95_TOTAL_FEMALE_D")), "totalFemale"],
+				[application.fn("SUM", application.col("TNRTP95_TOTAL_TRANSGENDER_D")), "totalTransgender"],
+				[application.fn("SUM", application.col("TNRTP95_TOTAL_BC_D")), "totalBC"],
+				[application.fn("SUM", application.col("TNRTP95_TOTAL_MBC_D")), "totalMBC"],
+				[application.fn("SUM", application.col("TNRTP95_TOTAL_SC_D")), "totalSC"],
+				[application.fn("SUM", application.col("TNRTP95_TOTAL_ST_D")), "totalST"],
+				[
+					application.fn("SUM", application.col("TNRTP95_TOTAL_COMMUNITY_OTHERS_D")),
+					"totalCommunityOthers",
+				],
+				[application.fn("SUM", application.col("TNRTP95_TOTAL_SHG_MEMBERS_D")), "totalSHGMember"],
+				[
+					application.fn("SUM", application.col("TNRTP95_TOTAL_SHG_HOUSE_HOLDS_D")),
+					"totalSHGHouseholds",
+				],
+				[
+					application.fn("SUM", application.col("TNRTP95_TOTAL_NON_SHG_HOUSE_HOLDS_D")),
+					"totalNonSHGHouseholds",
+				],
+				[
+					application.fn("SUM", application.col("TNRTP95_TOTAL_DIFFERENTLY_ABLED_D")),
+					"TotalDifferentlyAbled",
+				],
+				[application.fn("SUM", application.col("TNRTP95_TOTAL_WIDOW_D")), "TotalWidow"],
+				[
+					application.fn("SUM", application.col("TNRTP95_TOTAL_DESTITUTE_WOMEN_D")),
+					"TotalDestituteWomen",
+				],
+				[
+					application.fn("SUM", application.col("TNRTP95_TOTAL_DESERTED_WOMEN_D")),
+					"TotalDesertedWomen",
+				],
+				[application.fn("SUM", application.col("TNRTP95_TOTAL_EIDERLY_D")), "TotalEiderly"],
+				[
+					application.fn("SUM", application.col("TNRTP95_TOTAL_VULNERABLE_TRANSGENDER_D")),
+					"TotalVulnerableTransgender",
+				],
 			],
 			include: {
 				model: pcFormDetails,
@@ -354,11 +161,31 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 				],
 			},
 		});
+		let activity = await pcTypes.findAll({
+			attributes: [
+				[
+					application.fn("COUNT", application.col("activity.TNRTP16_PC_FORMS_DETAILS_MASTER_D")),
+					"activityCount",
+				],
+				"value",
+				"label",
+			],
+			where: { "$activity.TNRTP16_PC_FORMS_DETAILS_MASTER_D$": 6 },
+			include: [
+				{
+					model: selectedPc,
+					as: "activity",
+					attributes: [],
+				},
+			],
+			group: ["TNRTP04_TYPE_OF_PC_MASTER_D"],
+		});
 		dashBoardData = dashBoardData.get({ plain: true });
 		let obj = {
 			fund: {
 				target: 3000000,
 				totalDisbursmentAmount: dashBoardData.totalDisbursmentAmount,
+				totalDisbursmentAmount1: dashBoardData.totalDisbursmentAmount1,
 			},
 			loanSize: {
 				lowestAmount: dashBoardData.lowestAmount,
@@ -424,7 +251,7 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
-			data: dashBoardData,
+			data: obj,
 		};
 	} catch (err) {
 		console.log(err);

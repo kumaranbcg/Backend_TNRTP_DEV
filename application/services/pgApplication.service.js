@@ -1026,15 +1026,18 @@ PGApplicationService.prototype.updateDmpuOpenApplicationService = async (params)
 			}
 		);
 		let dashBoardFormStatus;
-		switch (params.applicationStatus) {
+		switch (parseInt(params.applicationStatus)) {
 			case PG_FORM_MASTER_STATUS.AMOUNT_DISBURSMENT: {
 				dashBoardFormStatus = DASHBOARD_FORM_STATUS.APPROVED;
+				break;
 			}
 			case PG_FORM_MASTER_STATUS.PENDING: {
 				dashBoardFormStatus = DASHBOARD_FORM_STATUS.PENDING;
+				break;
 			}
 			case PG_FORM_MASTER_STATUS.DECLINED: {
 				dashBoardFormStatus = DASHBOARD_FORM_STATUS.REJECTED;
+				break;
 			}
 		}
 		if (dashBoardFormStatus) {
@@ -1071,6 +1074,11 @@ PGApplicationService.prototype.updateAmountDisbursmentService = async (params) =
 				where: { formId },
 			}
 		);
+		let dashBoardData = await mainDashboard.findOne({
+			where: { formId, formTypeId: FORM_TYPES.PG_FORM },
+		});
+		dashBoardData.totalDisburement = dashBoardData.totalDisburement + params.disbursmentAmount;
+		dashBoardData.save();
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
