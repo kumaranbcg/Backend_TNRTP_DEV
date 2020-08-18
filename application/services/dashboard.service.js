@@ -22,6 +22,13 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 				},
 			],
 		};
+		const dashBoardIds = await mainDashboard.findAll({
+			where: {
+				...searchCondition,
+			},
+			raw: true,
+			attributes: [["TNRTP95_DASHBOARD_FORMS_MASTER_D", "dashBoardMasterId"]],
+		});
 		const approvedApplication = application.dialect.QueryGenerator.selectQuery(
 			"TNRTP95_DASHBOARD_FORMS_MASTER",
 			{
@@ -33,7 +40,7 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 				],
 				required: false,
 				where: {
-					...searchCondition,
+					TNRTP95_DASHBOARD_FORMS_MASTER_D: dashBoardIds.map((x) => x.dashBoardMasterId),
 					TNRTP95_IS_APPLICATION_STATUS_D: DASHBOARD_FORM_STATUS.APPROVED,
 				},
 			}
@@ -49,7 +56,7 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 				],
 				required: false,
 				where: {
-					...searchCondition,
+					TNRTP95_DASHBOARD_FORMS_MASTER_D: dashBoardIds.map((x) => x.dashBoardMasterId),
 					TNRTP95_IS_APPLICATION_STATUS_D: DASHBOARD_FORM_STATUS.PENDING,
 				},
 			}
@@ -65,15 +72,14 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 				],
 				required: false,
 				where: {
-					...searchCondition,
+					TNRTP95_DASHBOARD_FORMS_MASTER_D: dashBoardIds.map((x) => x.dashBoardMasterId),
 					TNRTP95_IS_APPLICATION_STATUS_D: DASHBOARD_FORM_STATUS.REJECTED,
 				},
 			}
 		).slice(0, -1);
 		let dashBoardData = await mainDashboard.findOne({
-			where: { ...searchCondition },
+			where: { TNRTP95_DASHBOARD_FORMS_MASTER_D: dashBoardIds.map((x) => x.dashBoardMasterId) },
 			attributes: [
-				"formId",
 				[
 					application.fn("COUNT", application.col("TNRTP95_DASHBOARD_FORMS_MASTER_D")),
 					"totalApplication",
@@ -170,7 +176,7 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 				"value",
 				"label",
 			],
-			where: { "$activity.TNRTP16_PC_FORMS_DETAILS_MASTER_D$": 6 },
+			// where: { "$activity.TNRTP16_PC_FORMS_DETAILS_MASTER_D$": 6 },
 			include: [
 				{
 					model: selectedPc,
