@@ -19,6 +19,12 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: false,
 		}
 	);
+	pcCommodityTypes.associate = function (models) {
+		pcCommodityTypes.hasMany(models.dashboardCommodity, {
+			foreignKey: "TNRTP107_TYPE_OF_COMMODITY_MASTER_D",
+			as: "commodityType",
+		});
+	};
 	pcCommodityTypes.selectedFields = ["value", "label"];
 	return pcCommodityTypes;
 };

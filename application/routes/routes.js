@@ -472,7 +472,7 @@ router.post(
 router.post(
   "/application/dashboard/statistics",
   verifyToken,
-  hasRole([STAFF_ROLE.ADMIN]),
+  hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC]),
   DashboardController.dashboardStatistics
 );
 
