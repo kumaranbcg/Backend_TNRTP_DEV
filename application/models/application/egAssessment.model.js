@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
 	egAssessment.associate = function (models) {
 		// associations can be defined here
 		egAssessment.hasMany(models.egAssessmentDoc, {
-			foreignKey: "TNRTP108_EG_APPLICATION_ASSESSMENT_MASTER_D",
+			foreignKey: "TNRTP111_EG_APPLICATION_ASSESSMENT_MASTER_D",
 			as: "documents",
 		});
 	};
