@@ -52,7 +52,9 @@ const {
 	SYMR_DISBURSEMENT_STATE,
 	DELETE_STATUS,
 	ORDERBY,
-	SYMR_STAFF_DOC
+	SYMR_STAFF_DOC,
+	FORM_TYPES,
+	DASHBOARD_FORM_STATUS
 } = require("../constants/index");
 const { Op } = require("sequelize");
 const Cryptr = require("cryptr");
@@ -1266,7 +1268,7 @@ SYMRApplicationService.prototype.getSymrApplicationStatusService = async (params
 				],
 				required: false,
 				where: {
-					TNRTP68_SYMR_FORMS_MASTER_D: {
+					TNRTP83_SYMR_FORMS_MASTER_D: {
 						[Op.eq]: application.col("TNRTP68_SYMR_FORMS_MASTER.TNRTP68_SYMR_FORMS_MASTER_D"),
 					},
 				},
@@ -1300,14 +1302,30 @@ SYMRApplicationService.prototype.getSymrApplicationStatusService = async (params
 				},
 				{
 					model: symrDisbursment,
-					as: "ucCertificate",
+					as: "amountDisbursment",
 					required: false,
-					where: { disbursmentType: DISBURSEMENT_STATE.UC_CERTIFICATE },
+					where: { disbursmentType: SYMR_DISBURSEMENT_STATE.AMOUNT_DISBURSMENT },
 					attributes: [
 						"isDisbursment",
 						"disbursmentDate",
 						"disbursmentAmount",
 						["TNRTP104_UPDATED_D", "disbursedBy"],
+					],
+				},
+				{
+					model: symrDisbursment,
+					as: "disbursmentUc",
+					required: false,
+					where: { disbursmentType: SYMR_DISBURSEMENT_STATE.SUBMIT_UC_DISBURSMENT },
+					attributes: ["disbursmentSubmitDate", ["TNRTP104_UPDATED_D", "disbursedBy"]],
+					include: [
+						{
+							model: symrRequiredDoc,
+							as: "firstUcCertificate",
+							required: false,
+							where: { docType: SYMR_STAFF_DOC.VPRC_COMMITTEE_MOM },
+							attributes: symrRequiredDoc.selectedFields,
+						},
 					],
 				},
 				
@@ -1362,7 +1380,7 @@ SYMRApplicationService.prototype.updateSymrDisbursmentUcService = async (params)
 		const { formId, userData } = params;
 		if (params.firstUcCertificate && params.firstUcCertificate.length) {
 			params.firstUcCertificate.map((element) => {
-				element.docType = SYMR_STAFF_DOC.FIRST_TRANCHE_UC;
+				element.docType = SYMR_STAFF_DOC.VPRC_COMMITTEE_MOM;
 			});
 		}
 		params.disbursmentType = SYMR_DISBURSEMENT_STATE.SUBMIT_UC_DISBURSMENT;
