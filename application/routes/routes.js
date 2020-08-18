@@ -406,7 +406,12 @@ router.post(
 router.get(
 	"/application/getSymrForm",
 	verifyToken,
-	hasRole([STAFF_ROLE.PUBLIC]),
+	hasRole([STAFF_ROLE.PUBLIC,
+		STAFF_ROLE.DPMU,
+		STAFF_ROLE.SPMU,
+		STAFF_ROLE.PLF,
+		STAFF_ROLE.BPMU,
+		STAFF_ROLE.VPRC]),
 	SYMRFormController.getSymrForm
 );
 router.get(
