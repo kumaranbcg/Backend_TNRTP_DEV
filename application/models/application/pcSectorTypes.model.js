@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: "TNRTP05_TYPE_OF_SECTOR_MASTER_D",
 			as: "commodityTypes",
 		});
+		pcSectorTypes.hasMany(models.dashboardSector, {
+			foreignKey: "TNRTP106_TYPE_OF_SECTOR_MASTER_D",
+			as: "sectorType",
+		});
 	};
 	pcSectorTypes.selectedFields = ["value", "label"];
 	return pcSectorTypes;
