@@ -210,13 +210,6 @@ router.post(
 	PGFormController.submitPgForm
 );
 
-// SYMR
-router.get(
-	"/application/symrFormCreate",
-	verifyToken,
-	hasRole([STAFF_ROLE.PUBLIC]),
-	SYMRFormController.symrFormCreate
-);
 
 router.post(
 	"/application/getPgApplication",
@@ -318,11 +311,74 @@ router.post(
 	EGFormController.submitEgForm
 );
 
+router.post(
+	"/application/getEgApplication",
+	verifyToken,
+	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC]),
+	EGFormController.getEgApplication
+);
+router.post(
+	"/application/updateBmpuOpenApplication",
+	verifyToken,
+	hasRole([STAFF_ROLE.BPMU]),
+	EGFormController.updateBmpuOpenApplication
+);
+
+router.get(
+	"/application/getEgApplicationStatus",
+	verifyToken,
+	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC]),
+	EGFormController.getEgApplicationStatus
+);
+
+router.get(
+	"/application/startEgAssesment",
+	verifyToken,
+	hasRole([STAFF_ROLE.BPMU]),
+	EGFormController.startEgAssesment
+);
+
+router.post(
+	"/application/submitEgAssesment",
+	verifyToken,
+	hasRole([STAFF_ROLE.BPMU]),
+	EGFormController.submitEgAssesment
+);
+
+router.get(
+	"/application/getEgAssesment",
+	verifyToken,
+	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC]),
+	EGFormController.getEgAssesment
+);
+
+router.post(
+	"/application/updateDmpuOpenApplication",
+	verifyToken,
+	hasRole([STAFF_ROLE.DPMU]),
+	EGFormController.updateDmpuOpenApplication
+);
+
+router.post(
+	"/application/updateAmountDisbursment",
+	verifyToken,
+	hasRole([STAFF_ROLE.DPMU]),
+	EGFormController.updateAmountDisbursment
+);
+
+router.post(
+	"/application/updateDisbursmentUc",
+	verifyToken,
+	hasRole([STAFF_ROLE.DPMU]),
+	EGFormController.updateDisbursmentUc
+);
 router.get("/application/getActivityTypes", verifyToken, userFormController.getActivityTypes);
 
 router.post("/application/getSectorTypes", verifyToken, userFormController.getSectorTypes);
 
 router.post("/application/getCommodityTypes", verifyToken, userFormController.getCommodityTypes);
+
+
 
 // SYMR
 router.get(

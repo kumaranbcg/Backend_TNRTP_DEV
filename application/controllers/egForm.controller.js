@@ -175,5 +175,82 @@ EGFormController.prototype.submitEgForm = async (req, res) => {
 	}
 };
 
+EGFormController.prototype.getEgApplication = async (req, res) => {
+	try {
+		let result = await service.getEgApplicationService({ ...req.body });
+		res.status(result.code).json({ message: result.message, data: result.data });
+	} catch (err) {
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
+EGFormController.prototype.updateBmpuOpenApplication = async (req, res) => {
+	try {
+		req.body.userData = req.user;
+		let result = await service.updateBmpuOpenApplicationService({ ...req.body });
+		res.status(result.code).json({ message: result.message, data: result.data });
+	} catch (err) {
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
+EGFormController.prototype.getEgApplicationStatus = async (req, res) => {
+	try {
+		let result = await service.getEgApplicationStatusService({ ...req.query });
+		res.status(result.code).json({ message: result.message, data: result.data });
+	} catch (err) {
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
+EGFormController.prototype.updateDmpuOpenApplication = async (req, res) => {
+	try {
+		req.body.userData = req.user;
+		let result = await service.updateDmpuOpenApplicationService({ ...req.body });
+		res.status(result.code).json({ message: result.message, data: result.data });
+	} catch (err) {
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
+EGFormController.prototype.updateAmountDisbursment = async (req, res) => {
+	try {
+		req.body.userData = req.user;
+		let result = await service.updateAmountDisbursmentService({ ...req.body });
+		res.status(result.code).json({ message: result.message, data: result.data });
+	} catch (err) {
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
+EGFormController.prototype.updateDisbursmentUc = async (req, res) => {
+	try {
+		req.body.userData = req.user;
+		let result = await service.updateDisbursmentUcService({ ...req.body });
+		res.status(result.code).json({ message: result.message, data: result.data });
+	} catch (err) {
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
+EGFormController.prototype.startEgAssesment = async (req, res) => {
+	try {
+		let result = await service.startEgAssesmentService({ ...req.query });
+		res.status(result.code).json({ message: result.message, data: result.data });
+	} catch (err) {
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
+EGFormController.prototype.submitEgAssesment = async (req, res) => {
+	try {
+		let result = await service.submitEgAssesmentService({ ...req.body });
+		res.status(result.code).json({ message: result.message, data: result.data });
+	} catch (err) {
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
+EGFormController.prototype.getEgAssesment = async (req, res) => {
+	try {
+		let result = await service.getEgAssesmentService({ ...req.query });
+		res.status(result.code).json({ message: result.message, data: result.data });
+	} catch (err) {
+		console.log(err);
+		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
+	}
+};
 
 module.exports = new EGFormController();
