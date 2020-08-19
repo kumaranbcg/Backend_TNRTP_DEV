@@ -22,7 +22,19 @@ class UserFormService {}
 
 UserFormService.prototype.getUserApplicationsService = async (params) => {
 	try {
-		const { userId } = params;
+		const { userId, mobileNumber } = params;
+		let userPCFormsFilter = {
+			[Op.or]: {
+				userId,
+				"$basicDetails.TNRTP07_MOBILE_NUMBER_R$": mobileNumber,
+			},
+		};
+		let userPGFormsFilter = {
+			[Op.or]: {
+				userId,
+				"$basicDetails.TNRTP37_MOBILE_NUMBER_R$": mobileNumber,
+			},
+		};
 		const pcFormAmt = application.dialect.QueryGenerator.selectQuery(
 			"TNRTP12_PC_FORMS_PROPOSED_ACTIVITY",
 			{
@@ -50,7 +62,7 @@ UserFormService.prototype.getUserApplicationsService = async (params) => {
 			}
 		).slice(0, -1);
 		let pcForms = await pcFormMaster.findAll({
-			where: { TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED, userId },
+			where: { TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED, ...userPCFormsFilter },
 			attributes: [
 				"formId",
 				"status",
@@ -98,7 +110,7 @@ UserFormService.prototype.getUserApplicationsService = async (params) => {
 			],
 		});
 		let pgForms = await pgFormMaster.findAll({
-			where: { TNRTP36_DELETED_F: DELETE_STATUS.NOT_DELETED },
+			where: { TNRTP36_DELETED_F: DELETE_STATUS.NOT_DELETED, ...userPGFormsFilter },
 			attributes: [
 				"formId",
 				"status",

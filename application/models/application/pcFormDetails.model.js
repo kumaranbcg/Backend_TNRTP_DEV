@@ -13,10 +13,11 @@ module.exports = (sequelize, DataTypes) => {
 			dateRegistration: { type: DataTypes.DATE, field: "TNRTP08_DATE_OF_REGISTRATION" },
 			registrationUnder: { type: DataTypes.INTEGER, field: "TNRTP08_REGISTRATION_UNDER_MASTER_D" },
 			registrationNumber: { type: DataTypes.STRING, field: "TNRTP08_REGISTRATION_NUMBER_R" },
-			promotingOrgName: { type: DataTypes.STRING, field: "TNRTP08_PROMOTING_ORGANIZATION_NAME_N" },
+			promotingOrgName: { type: DataTypes.INTEGER, field: "TNRTP08_PROMOTING_ORGANIZATION_NAME_D" },
+			orgOthersName: { type: DataTypes.STRING, field: "TNRTP08_OTHERS_ORGANISATION_NAME_N" },
 			formSupportedBy: { type: DataTypes.INTEGER, field: "TNRTP08_FORMED_SUPPORTED_BY_MASTER_D" },
 			othersName: { type: DataTypes.STRING, field: "TNRTP08_OTHERS_NAME_N" },
-			noOfPG: { type: DataTypes.INTEGER, field: "TNRTP08_NO_OF_PG_N" },
+			noOfPG: { type: DataTypes.STRING, field: "TNRTP08_NO_OF_PG_N" },
 			status: {
 				type: DataTypes.INTEGER,
 				defaultValue: FORM_SECTION_STATUS.FILLED,
@@ -54,12 +55,16 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: "TNRTP08_FORMED_SUPPORTED_BY_MASTER_D",
 			as: "formSupportedData",
 		});
+		pcFormDetails.belongsTo(models.promotingOrg, {
+			foreignKey: "TNRTP08_PROMOTING_ORGANIZATION_NAME_D",
+			as: "promotingOrg",
+		});
 	};
 	pcFormDetails.selectedFields = [
 		"dateFormation",
 		"dateRegistration",
 		"registrationNumber",
-		"promotingOrgName",
+		"orgOthersName",
 		"othersName",
 		"noOfPG",
 	];

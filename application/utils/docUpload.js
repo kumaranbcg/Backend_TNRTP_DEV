@@ -46,7 +46,7 @@ docUpload = async (req, res, next) => {
 	multer({
 		storage: storage,
 		fileFilter: (req, file, cb) => filter(req, res, file, cb),
-		limits: { fileSize: 10000000 },
+		limits: { fileSize: 5 * 1024 * 1024 },
 	}).any()(req, res, (err) => {
 		if (err && err.message) return res.status(400).json({ status: 400, message: err.message }); //only for file too lage
 		next();

@@ -100,6 +100,7 @@ PGFormController.prototype.submitPgForm = async (req, res) => {
 			let data = {
 				formId: req.body.basicDetails.formId,
 				status: PG_FORM_MASTER_STATUS.BMPU_OPEN_APPLICATION,
+				appSubmitDate: req.body.basicDetails.appSubmitDate,
 			};
 			let result = await service.updatePgFormStatus({ ...data });
 			res.status(result.code).json({ message: result.message, data: result.data });
@@ -114,6 +115,7 @@ PGFormController.prototype.submitPgForm = async (req, res) => {
 };
 PGFormController.prototype.getPgApplication = async (req, res) => {
 	try {
+		req.body.user = req.user;
 		let result = await service.getPgApplicationService({ ...req.body });
 		res.status(result.code).json({ message: result.message, data: result.data });
 	} catch (err) {

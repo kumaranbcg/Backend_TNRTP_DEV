@@ -13,7 +13,8 @@ module.exports = (sequelize, DataTypes) => {
 			dateRegistration: { type: DataTypes.DATE, field: "TNRTP38_DATE_OF_REGISTRATION" },
 			registrationUnder: { type: DataTypes.INTEGER, field: "TNRTP38_REGISTRATION_UNDER_MASTER_D" },
 			registrationNumber: { type: DataTypes.STRING, field: "TNRTP38_REGISTRATION_NUMBER_R" },
-			promotingOrgName: { type: DataTypes.STRING, field: "TNRTP38_PROMOTING_ORGANIZATION_NAME_N" },
+			promotingOrgName: { type: DataTypes.INTEGER, field: "TNRTP38_PROMOTING_ORGANIZATION_NAME_D" },
+			orgOthersName: { type: DataTypes.STRING, field: "TNRTP38_OTHERS_ORGANISATION_NAME_N" },
 			formSupportedBy: { type: DataTypes.INTEGER, field: "TNRTP38_FORMED_SUPPORTED_BY_MASTER_D" },
 			othersName: { type: DataTypes.STRING, field: "TNRTP38_OTHERS_NAME_N" },
 			noOfPG: { type: DataTypes.INTEGER, field: "TNRTP38_NO_OF_PG_N" },
@@ -54,14 +55,18 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: "TNRTP38_FORMED_SUPPORTED_BY_MASTER_D",
 			as: "formSupportedData",
 		});
+		pgFormDetails.belongsTo(models.promotingOrg, {
+			foreignKey: "TNRTP38_PROMOTING_ORGANIZATION_NAME_D",
+			as: "promotingOrg",
+		});
 	};
 	pgFormDetails.selectedFields = [
 		"dateFormation",
 		"dateRegistration",
 		"registrationNumber",
-		"promotingOrgName",
 		"othersName",
 		"noOfPG",
+		"orgOthersName",
 	];
 	return pgFormDetails;
 };

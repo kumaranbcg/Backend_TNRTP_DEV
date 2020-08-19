@@ -7,6 +7,7 @@ const {
 	PG_STAFF_DOC,
 	ORDERBY,
 	PG_APPLICATION_STATUS_TYPE,
+	STAFF_ROLE,
 	PG_DISBURSEMENT_STATE,
 	FORM_TYPES,
 	DASHBOARD_FORM_STATUS,
@@ -41,6 +42,7 @@ const {
 	pgAssessment,
 	pgAssessmentDoc,
 	mainDashboard,
+	promotingOrg,
 } = require("../models");
 class PGApplicationService {}
 PGApplicationService.prototype.pgFormCreateSerivce = async (params) => {
@@ -375,6 +377,12 @@ PGApplicationService.prototype.getPgFormService = async (params) => {
 							required: false,
 							attributes: formedSupported.selectedFields,
 						},
+						{
+							model: promotingOrg,
+							as: "promotingOrg",
+							required: false,
+							attributes: promotingOrg.selectedFields,
+						},
 					],
 				},
 				{
@@ -517,9 +525,9 @@ PGApplicationService.prototype.getPgFormService = async (params) => {
 };
 PGApplicationService.prototype.updatePgFormStatus = async (params) => {
 	try {
-		const { formId, status } = params;
+		const { formId, status, appSubmitDate } = params;
 		await pgFormMaster.update(
-			{ status, TNRTP36_UPDATED_AT: new Date() },
+			{ status, TNRTP36_UPDATED_AT: appSubmitDate ? appSubmitDate : new Date() },
 			{
 				where: { formId },
 			}
@@ -538,7 +546,16 @@ PGApplicationService.prototype.updatePgFormStatus = async (params) => {
 };
 PGApplicationService.prototype.getPgApplicationService = async (params) => {
 	try {
-		const { status, search, sortBy, page, limit, districtId, blockId } = params;
+		const { status, search, sortBy, page, limit, districtId, blockId, user } = params;
+		let districtBlockFilter = {};
+		if (user.role != STAFF_ROLE.SPMU) {
+			districtBlockFilter = {
+				[Op.or]: [
+					{ TNRTP37_US_DISTRICT_MASTER_D: districtId },
+					{ TNRTP37_US_BLOCK_MASTER_D: blockId },
+				],
+			};
+		}
 		const searchCondition = !!search
 			? {
 					[Op.and]: [
@@ -569,12 +586,7 @@ PGApplicationService.prototype.getPgApplicationService = async (params) => {
 		const districtBlockForms = application.dialect.QueryGenerator.selectQuery(
 			"TNRTP37_PG_FORMS_BASIC_DETAILS",
 			{
-				where: {
-					[Op.or]: [
-						{ TNRTP37_US_DISTRICT_MASTER_D: districtId },
-						{ TNRTP37_US_BLOCK_MASTER_D: blockId },
-					],
-				},
+				where: { ...districtBlockFilter },
 				attributes: ["TNRTP37_PG_FORMS_MASTER_D"],
 			}
 		).slice(0, -1);
@@ -697,9 +709,8 @@ PGApplicationService.prototype.getPgApplicationService = async (params) => {
 					required: true,
 					where: {
 						TNRTP37_DELETED_F: DELETE_STATUS.NOT_DELETED,
-						[Op.or]: [{ districtId }, { blockId }],
+						...districtBlockFilter,
 					},
-
 					attributes: ["name", "pgName", "blockId", "districtId", "panchayatId"],
 				},
 				{

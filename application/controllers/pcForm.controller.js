@@ -79,6 +79,7 @@ PCFormController.prototype.submitPcForm = async (req, res) => {
 			let data = {
 				formId: req.body.basicDetails.formId,
 				status: PC_FORM_MASTER_STATUS.OPEN_APPLICATION,
+				appSubmitDate: req.body.basicDetails.appSubmitDate,
 			};
 			let result = await service.updatePcFormStatus({ ...data });
 			res.status(result.code).json({ message: result.message, data: result.data });
@@ -125,6 +126,7 @@ PCFormController.prototype.uploadDoc = async (req, res) => {
 
 PCFormController.prototype.getPcApplication = async (req, res) => {
 	try {
+		req.body.user = req.user;
 		let result = await service.getPcApplicationService({ ...req.body });
 		res.status(result.code).json({ message: result.message, data: result.data });
 	} catch (err) {

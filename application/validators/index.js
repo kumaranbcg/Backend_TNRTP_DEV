@@ -20,9 +20,10 @@ const schemas = {
 			dateRegistration: BaseJoi.date().required(),
 			registrationUnder: BaseJoi.number().required(),
 			registrationNumber: BaseJoi.string().required(),
-			promotingOrgName: BaseJoi.string().required(),
+			promotingOrgName: BaseJoi.number().required(),
+			orgOthersName: BaseJoi.optional(),
 			formSupportedBy: BaseJoi.number().required(),
-			noOfPG: BaseJoi.number().required(),
+			noOfPG: BaseJoi.string().required(),
 			pcTypes: BaseJoi.array()
 				.items({
 					value: BaseJoi.number().required(),
@@ -164,9 +165,10 @@ const schemas = {
 			dateRegistration: BaseJoi.date().required(),
 			registrationUnder: BaseJoi.number().required(),
 			registrationNumber: BaseJoi.string().required(),
-			promotingOrgName: BaseJoi.string().required(),
+			promotingOrgName: BaseJoi.number().required(),
+			orgOthersName: BaseJoi.optional(),
 			formSupportedBy: BaseJoi.number().required(),
-			noOfPG: BaseJoi.number().required(),
+			noOfPG: BaseJoi.string().required(),
 			othersName: BaseJoi.optional(),
 			pgTypes: BaseJoi.array()
 				.items({

@@ -1,10 +1,16 @@
 const errorCodes = require("./../configs/errorCodes");
 const messages = require("./../configs/errorMsgs");
-const { mainDashboard, application, pcFormDetails, pcTypes, selectedPc } = require("../models");
+const {
+	mainDashboard,
+	application,
+	pcFormDetails,
+	pcTypes,
+	selectedPc,
+	dashboardActivity,
+} = require("../models");
 const { DASHBOARD_FORM_STATUS, DELETE_STATUS } = require("./../constants/index");
 const { Op } = require("sequelize");
 class DashboardService {}
-
 DashboardService.prototype.dashboardStatisticService = async (params) => {
 	try {
 		const { district, formType } = params;
@@ -170,21 +176,25 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 		let activity = await pcTypes.findAll({
 			attributes: [
 				[
-					application.fn("COUNT", application.col("activity.TNRTP16_PC_FORMS_DETAILS_MASTER_D")),
+					application.fn("COUNT", application.col("activityType.TNRTP105_TYPE_OF_PC_MASTER_D")),
 					"activityCount",
 				],
 				"value",
 				"label",
 			],
-			// where: { "$activity.TNRTP16_PC_FORMS_DETAILS_MASTER_D$": 6 },
 			include: [
 				{
-					model: selectedPc,
-					as: "activity",
+					model: dashboardActivity,
+					as: "activityType",
 					attributes: [],
+					required: false,
+					where: {
+						TNRTP105_DASHBOARD_FORMS_MASTER_D: dashBoardIds.map((x) => x.dashBoardMasterId),
+					},
 				},
 			],
 			group: ["TNRTP04_TYPE_OF_PC_MASTER_D"],
+			raw: true,
 		});
 		dashBoardData = dashBoardData.get({ plain: true });
 		let obj = {

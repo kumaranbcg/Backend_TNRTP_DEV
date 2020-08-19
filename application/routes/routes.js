@@ -42,14 +42,28 @@ router.post("/application/insertActivity", PCFormController.insertActvityMaster)
 router.get(
 	"/application/pcFormCreate",
 	verifyToken,
-	hasRole([STAFF_ROLE.PUBLIC]),
+	hasRole([
+		STAFF_ROLE.PUBLIC,
+		STAFF_ROLE.DPMU,
+		STAFF_ROLE.SPMU,
+		STAFF_ROLE.PLF,
+		STAFF_ROLE.BPMU,
+		STAFF_ROLE.VPRC,
+	]),
 	PCFormController.pcFormCreate
 );
 
 router.post(
 	"/application/pcFormFill",
 	verifyToken,
-	hasRole([STAFF_ROLE.PUBLIC]),
+	hasRole([
+		STAFF_ROLE.PUBLIC,
+		STAFF_ROLE.DPMU,
+		STAFF_ROLE.SPMU,
+		STAFF_ROLE.PLF,
+		STAFF_ROLE.BPMU,
+		STAFF_ROLE.VPRC,
+	]),
 	PCFormController.pcFormFill
 );
 
@@ -70,7 +84,14 @@ router.get(
 router.get(
 	"/application/getPCMasters",
 	verifyToken,
-	hasRole([STAFF_ROLE.PUBLIC]),
+	hasRole([
+		STAFF_ROLE.PUBLIC,
+		STAFF_ROLE.DPMU,
+		STAFF_ROLE.SPMU,
+		STAFF_ROLE.PLF,
+		STAFF_ROLE.BPMU,
+		STAFF_ROLE.VPRC,
+	]),
 	PCFormController.getPCMasters
 );
 
@@ -79,7 +100,14 @@ router.post("/application/uploadDoc", verifyToken, docUpload, PCFormController.u
 router.post(
 	"/application/submitPcForm",
 	verifyToken,
-	hasRole([STAFF_ROLE.PUBLIC]),
+	hasRole([
+		STAFF_ROLE.PUBLIC,
+		STAFF_ROLE.DPMU,
+		STAFF_ROLE.SPMU,
+		STAFF_ROLE.PLF,
+		STAFF_ROLE.BPMU,
+		STAFF_ROLE.VPRC,
+	]),
 	// decryptData,
 	pcFormSubmit,
 	PCFormController.submitPcForm
@@ -184,21 +212,42 @@ router.get(
 router.get(
 	"/application/pgFormCreate",
 	verifyToken,
-	hasRole([STAFF_ROLE.PUBLIC]),
+	hasRole([
+		STAFF_ROLE.PUBLIC,
+		STAFF_ROLE.DPMU,
+		STAFF_ROLE.SPMU,
+		STAFF_ROLE.PLF,
+		STAFF_ROLE.BPMU,
+		STAFF_ROLE.VPRC,
+	]),
 	PGFormController.pgFormCreate
 );
 
 router.post(
 	"/application/pgFormFill",
 	verifyToken,
-	hasRole([STAFF_ROLE.PUBLIC]),
+	hasRole([
+		STAFF_ROLE.PUBLIC,
+		STAFF_ROLE.DPMU,
+		STAFF_ROLE.SPMU,
+		STAFF_ROLE.PLF,
+		STAFF_ROLE.BPMU,
+		STAFF_ROLE.VPRC,
+	]),
 	PGFormController.pgFormFill
 );
 
 router.get(
 	"/application/getPgForm",
 	verifyToken,
-	hasRole([STAFF_ROLE.PUBLIC]),
+	hasRole([
+		STAFF_ROLE.PUBLIC,
+		STAFF_ROLE.DPMU,
+		STAFF_ROLE.SPMU,
+		STAFF_ROLE.PLF,
+		STAFF_ROLE.BPMU,
+		STAFF_ROLE.VPRC,
+	]),
 	PGFormController.getPgForm
 );
 
@@ -206,7 +255,14 @@ router.post(
 	"/application/submitPgForm",
 	verifyToken,
 	pgFormSubmit,
-	hasRole([STAFF_ROLE.PUBLIC]),
+	hasRole([
+		STAFF_ROLE.PUBLIC,
+		STAFF_ROLE.DPMU,
+		STAFF_ROLE.SPMU,
+		STAFF_ROLE.PLF,
+		STAFF_ROLE.BPMU,
+		STAFF_ROLE.VPRC,
+	]),
 	PGFormController.submitPgForm
 );
 
@@ -414,10 +470,10 @@ router.post(
 );
 
 router.post(
-  "/application/dashboard/statistics",
-  verifyToken,
-  hasRole([STAFF_ROLE.ADMIN]),
-  DashboardController.dashboardStatistics
+	"/application/dashboard/statistics",
+	verifyToken,
+	hasRole([STAFF_ROLE.ADMIN]),
+	DashboardController.dashboardStatistics
 );
 
 module.exports = router;

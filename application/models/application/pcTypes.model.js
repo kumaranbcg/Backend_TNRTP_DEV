@@ -23,9 +23,9 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: "TNRTP14_TYPE_OF_ACTIVITY_MASTER_D",
 			as: "sectorTypes",
 		});
-		pcTypes.hasMany(models.selectedPc, {
-			foreignKey: "value",
-			as: "activity",
+		pcTypes.hasMany(models.dashboardActivity, {
+			foreignKey: "TNRTP105_TYPE_OF_PC_MASTER_D",
+			as: "activityType",
 		});
 	};
 	pcTypes.selectedFields = ["value", "label"];

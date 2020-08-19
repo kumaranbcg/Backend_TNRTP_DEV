@@ -32,6 +32,7 @@ const {
 	pcCoverageBlock,
 	pcCoveragePanchayat,
 	mainDashboard,
+	promotingOrg,
 } = require("../models");
 const messages = require("./../configs/errorMsgs.js");
 const errorCodes = require("./../configs/errorCodes.js");
@@ -41,6 +42,7 @@ const {
 	PC_UPLOAD_DOC,
 	ORDERBY,
 	PC_STAFF_DOC,
+	STAFF_ROLE,
 	PC_DISBURSEMENT_STATE,
 	FORM_TYPES,
 	DASHBOARD_FORM_STATUS,
@@ -410,6 +412,12 @@ PCApplicationService.prototype.getPcFormService = async (params) => {
 							required: false,
 							attributes: formedSupported.selectedFields,
 						},
+						{
+							model: promotingOrg,
+							as: "promotingOrg",
+							required: false,
+							attributes: promotingOrg.selectedFields,
+						},
 					],
 				},
 				{
@@ -591,7 +599,21 @@ PCApplicationService.prototype.getPcMasterService = async (params) => {
 				],
 			}
 		);
-		let concatQueries = [registerUnderTable, formedByTable, activityTimelineTable].join(" ");
+		const promotingOrganistation = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP100_PROMOTING_ORGANISATION_MASTER",
+			{
+				attributes: [
+					["TNRTP100_NAME_N", "label"],
+					["TNRTP100_PROMOTING_ORGANISATION_MASTER_D", "value"],
+				],
+			}
+		);
+		let concatQueries = [
+			registerUnderTable,
+			formedByTable,
+			activityTimelineTable,
+			promotingOrganistation,
+		].join(" ");
 		let resultSet = await application.query(concatQueries);
 		return {
 			code: errorCodes.HTTP_OK,
@@ -600,6 +622,7 @@ PCApplicationService.prototype.getPcMasterService = async (params) => {
 				registrationUnderData: resultSet[0][0],
 				formedByData: resultSet[0][1],
 				activityData: resultSet[0][2],
+				promotingOrgData: resultSet[0][3],
 			},
 		};
 	} catch (err) {
@@ -612,9 +635,9 @@ PCApplicationService.prototype.getPcMasterService = async (params) => {
 };
 PCApplicationService.prototype.updatePcFormStatus = async (params) => {
 	try {
-		const { formId, status } = params;
+		const { formId, status, appSubmitDate } = params;
 		await pcFormMaster.update(
-			{ status, TNRTP01_UPDATED_AT: new Date() },
+			{ status, TNRTP01_UPDATED_AT: appSubmitDate ? appSubmitDate : new Date() },
 			{
 				where: { formId },
 			}
@@ -634,7 +657,9 @@ PCApplicationService.prototype.updatePcFormStatus = async (params) => {
 
 PCApplicationService.prototype.getPcApplicationService = async (params) => {
 	try {
-		const { status, search, sortBy, page, limit, districtId } = params;
+		const { status, search, sortBy, page, limit, districtId, user } = params;
+		let districtFilter = {};
+		if (user.role != STAFF_ROLE.SPMU) districtFilter = { TNRTP07_US_DISTRICT_MASTER_D: districtId };
 		const searchCondition = !!search
 			? {
 					[Op.or]: [
@@ -673,7 +698,7 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 		const districtForms = application.dialect.QueryGenerator.selectQuery(
 			"TNRTP07_PC_FORMS_BASIC_DETAILS",
 			{
-				where: { TNRTP07_US_DISTRICT_MASTER_D: districtId },
+				where: { ...districtFilter },
 				attributes: ["TNRTP07_PC_FORMS_MASTER_D"],
 			}
 		).slice(0, -1);
@@ -762,7 +787,7 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 					model: pcFormBasicDetails,
 					as: "basicDetails",
 					required: true,
-					where: { TNRTP07_DELETED_F: DELETE_STATUS.NOT_DELETED, districtId },
+					where: { TNRTP07_DELETED_F: DELETE_STATUS.NOT_DELETED, ...districtFilter },
 					attributes: ["name", "pcName", "blockId", "districtId"],
 				},
 				{
