@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
 				autoIncrement: true,
 			},
 			dashboardMasterId: { type: DataTypes.INTEGER, field: "TNRTP105_DASHBOARD_FORMS_MASTER_D" },
-			activityId: { type: DataTypes.INTEGER, field: "TNRTP105_TYPE_OF_PC_MASTER_D" },
+			value: { type: DataTypes.INTEGER, field: "TNRTP105_TYPE_OF_PC_MASTER_D" },
 			TNRTP105_STATUS_D: { type: DataTypes.INTEGER },
 			TNRTP105_CREATED_AT: { type: DataTypes.DATE },
 			TNRTP105_UPDATED_AT: { type: DataTypes.DATE },
@@ -18,6 +18,6 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: false,
 		}
 	);
-	dashboardActivity.selectedFields = ["activityId"];
+	dashboardActivity.selectedFields = ["value"];
 	return dashboardActivity;
 };

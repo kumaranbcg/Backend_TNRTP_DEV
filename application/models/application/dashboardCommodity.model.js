@@ -7,8 +7,8 @@ module.exports = (sequelize, DataTypes) => {
 				primaryKey: true,
 				autoIncrement: true,
 			},
-			dashboardMasterId: { type: DataTypes.INTEGER, field: "TNRTP105_DASHBOARD_FORMS_MASTER_D" },
-			commodityId: { type: DataTypes.INTEGER, field: "TNRTP107_TYPE_OF_COMMODITY_MASTER_D" },
+			dashboardMasterId: { type: DataTypes.INTEGER, field: "TNRTP107_DASHBOARD_FORMS_MASTER_D" },
+			value: { type: DataTypes.INTEGER, field: "TNRTP107_TYPE_OF_COMMODITY_MASTER_D" },
 			TNRTP107_STATUS_D: { type: DataTypes.INTEGER },
 			TNRTP107_CREATED_AT: { type: DataTypes.DATE },
 			TNRTP107_UPDATED_AT: { type: DataTypes.DATE },
@@ -18,6 +18,6 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: false,
 		}
 	);
-	dashboardCommodity.selectedFields = ["commodityId"];
+	dashboardCommodity.selectedFields = ["value"];
 	return dashboardCommodity;
 };

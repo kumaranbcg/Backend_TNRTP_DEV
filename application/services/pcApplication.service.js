@@ -33,6 +33,9 @@ const {
 	pcCoveragePanchayat,
 	mainDashboard,
 	promotingOrg,
+	dashboardActivity,
+	dashboardSector,
+	dashboardCommodity,
 } = require("../models");
 const messages = require("./../configs/errorMsgs.js");
 const errorCodes = require("./../configs/errorCodes.js");
@@ -161,6 +164,35 @@ PCApplicationService.prototype.pcFormDetailsSerivce = async (params) => {
 				}
 			);
 		});
+		let dashBoardData = await mainDashboard.findOne({
+			where: { formId, formTypeId: FORM_TYPES.PC_FORM },
+			raw: true,
+		});
+		if (dashBoardData) {
+			await mainDashboard.destroy({ where: { formId, formTypeId: FORM_TYPES.PC_FORM } });
+			dashBoardData.dashboardActivity = params.pcTypes;
+			dashBoardData.dashboardSector = params.pcSectorTypes;
+			dashBoardData.dashboardCommodity = params.pcCommodityTypes;
+			await mainDashboard.create(
+				{ ...dashBoardData },
+				{
+					include: [
+						{
+							model: dashboardActivity,
+							as: "dashboardActivity",
+						},
+						{
+							model: dashboardSector,
+							as: "dashboardSector",
+						},
+						{
+							model: dashboardCommodity,
+							as: "dashboardCommodity",
+						},
+					],
+				}
+			);
+		}
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -600,11 +632,11 @@ PCApplicationService.prototype.getPcMasterService = async (params) => {
 			}
 		);
 		const promotingOrganistation = application.dialect.QueryGenerator.selectQuery(
-			"TNRTP100_PROMOTING_ORGANISATION_MASTER",
+			"TNRTP113_PROMOTING_ORGANISATION_MASTER",
 			{
 				attributes: [
-					["TNRTP100_NAME_N", "label"],
-					["TNRTP100_PROMOTING_ORGANISATION_MASTER_D", "value"],
+					["TNRTP113_NAME_N", "label"],
+					["TNRTP113_PROMOTING_ORGANISATION_MASTER_D", "value"],
 				],
 			}
 		);

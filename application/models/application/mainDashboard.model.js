@@ -60,6 +60,18 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: "formId",
 			as: "pcDetails",
 		});
+		mainDashboard.hasMany(models.dashboardActivity, {
+			foreignKey: "TNRTP105_DASHBOARD_FORMS_MASTER_D",
+			as: "dashboardActivity",
+		});
+		mainDashboard.hasMany(models.dashboardSector, {
+			foreignKey: "TNRTP106_DASHBOARD_FORMS_MASTER_D",
+			as: "dashboardSector",
+		});
+		mainDashboard.hasMany(models.dashboardCommodity, {
+			foreignKey: "TNRTP107_DASHBOARD_FORMS_MASTER_D",
+			as: "dashboardCommodity",
+		});
 	};
 	mainDashboard.selectedFields = [
 		"formId",
