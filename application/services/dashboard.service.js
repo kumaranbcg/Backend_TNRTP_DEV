@@ -187,6 +187,7 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 				],
 			},
 		});
+		// act
 		let activity = await pcTypes.findAll({
 			attributes: [
 				[
