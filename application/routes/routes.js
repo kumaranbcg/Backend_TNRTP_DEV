@@ -437,14 +437,26 @@ router.post("/application/getCommodityTypes", verifyToken, userFormController.ge
 router.get(
 	"/application/symrFormCreate",
 	verifyToken,
-	hasRole([STAFF_ROLE.PUBLIC]),
+	hasRole([
+		STAFF_ROLE.PUBLIC,
+		STAFF_ROLE.DPMU,
+		STAFF_ROLE.SPMU,
+		STAFF_ROLE.PLF,
+		STAFF_ROLE.BPMU,
+		STAFF_ROLE.VPRC]),
 	SYMRFormController.symrFormCreate
 );
 
 router.post(
 	"/application/symrFormFill",
 	verifyToken,
-	hasRole([STAFF_ROLE.PUBLIC]),
+	hasRole([
+		STAFF_ROLE.PUBLIC,
+		STAFF_ROLE.DPMU,
+		STAFF_ROLE.SPMU,
+		STAFF_ROLE.PLF,
+		STAFF_ROLE.BPMU,
+		STAFF_ROLE.VPRC]),
 	SYMRFormController.symrFormFill
 );
 router.post("/application/uploadDoc", verifyToken, docUpload, SYMRFormController.uploadDoc);
@@ -452,7 +464,14 @@ router.post("/application/uploadDoc", verifyToken, docUpload, SYMRFormController
 router.post(
 	"/application/submitSymrForm",
 	verifyToken,
-	hasRole([STAFF_ROLE.PUBLIC]),
+	hasRole([
+		STAFF_ROLE.PUBLIC,
+		STAFF_ROLE.DPMU,
+		STAFF_ROLE.SPMU,
+		STAFF_ROLE.PLF,
+		STAFF_ROLE.BPMU,
+		STAFF_ROLE.VPRC
+	]),
 	symrFormSubmit,
 	SYMRFormController.submitSymrForm
 );
@@ -472,7 +491,14 @@ router.get(
 router.get(
 	"/application/getSymrMasters",
 	verifyToken,
-	hasRole([STAFF_ROLE.PUBLIC]),
+	hasRole([
+		STAFF_ROLE.PUBLIC,
+		STAFF_ROLE.DPMU,
+		STAFF_ROLE.SPMU,
+		STAFF_ROLE.PLF,
+		STAFF_ROLE.BPMU,
+		STAFF_ROLE.VPRC
+	]),
 	SYMRFormController.getSymrMasters
 );
 router.post(

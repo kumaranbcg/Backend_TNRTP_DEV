@@ -792,9 +792,9 @@ SYMRApplicationService.prototype.getSymrMasterService = async (params) => {
 };
 SYMRApplicationService.prototype.updateSymrFormStatus = async (params) => {
 	try {
-		const { formId, status } = params;
+		const { formId, status, appSubmitDate } = params;
 		await symrFormMaster.update(
-			{ status, TNRTP01_UPDATED_AT: new Date() },
+			{ status, TNRTP68_UPDATED_AT: appSubmitDate ? appSubmitDate : new Date() },
 			{
 				where: { formId },
 			}

@@ -188,15 +188,7 @@ UserFormService.prototype.getUserApplicationsService = async (params) => {
 					required: false,
 					where: { TNRTP69_DELETED_F: DELETE_STATUS.NOT_DELETED },
 					attributes: ["mobileNumber",
-						"name",
-						"address",
-						"fatherName",
-						"dateOfBirth",
-						"age",
-						"govtIdNumber",
-						"placeReturnFrom",
-						"previousOccupation",
-						"isWomeHeaded"
+						"name"
 					]
 				},
 				{
