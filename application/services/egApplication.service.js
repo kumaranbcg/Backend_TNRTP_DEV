@@ -532,6 +532,688 @@ EGApplicationService.prototype.getEgMasterService = async (params) => {
 };
 
 
+EGApplicationService.prototype.getEgApplicationService = async (params) => {
+	try {
+		const { status, search, sortBy, page, limit, districtId, blockId } = params;
+		const searchCondition = !!search
+			? {
+					[Op.and]: [
+						{
+							[Op.or]: [
+								{ $TNRTP53_EG_FORMS_MASTER_D$: { [Op.like]: `%${search}%` } },
+								{ "$basicDetails.TNRTP54_NAME_N$": { [Op.like]: `%${search}%` } },
+								{ "$basicDetails.TNRTP54_EG_NAME_N$": { [Op.like]: `%${search}%` } },
+							],
+						},
+					],
+			  }
+			: {};
+		const totalAmount = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP59_EG_FORMS_PROPOSED_ACTIVITY",
+			{
+				attributes: [
+					[application.fn("SUM", application.col("TNRTP59_AMOUNT_REQUIRED_D")), "totalAmount"],
+				],
+				required: false,
+				where: {
+					TNRTP53_EG_FORMS_MASTER_D: {
+						[Op.eq]: application.col("TNRTP53_EG_FORMS_MASTER.TNRTP53_EG_FORMS_MASTER_D"),
+					},
+				},
+			}
+		).slice(0, -1);
+		const districtBlockForms = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP54_EG_FORMS_BASIC_DETAILS",
+			{
+				where: {
+					[Op.or]: [
+						{ TNRTP54_US_DISTRICT_MASTER_D: districtId },
+						{ TNRTP54_US_BLOCK_MASTER_D: blockId },
+					],
+				},
+				attributes: ["TNRTP53_EG_FORMS_MASTER_D"],
+			}
+		).slice(0, -1);
+		const totalApplication = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP53_EG_FORMS_MASTER",
+			{
+				attributes: [
+					[
+						application.fn("COUNT", application.col("TNRTP53_EG_FORMS_MASTER_D")),
+						"totalApplication",
+					],
+				],
+				required: true,
+				where: {
+					TNRTP53_EG_FORMS_MASTER_D: {
+						[Op.in]: application.literal("(" + districtBlockForms + ")"),
+					},
+					TNRTP53_DELETED_F: DELETE_STATUS.NOT_DELETED,
+					TNRTP53_IS_APPLICATION_STATUS: { [Op.not]: EG_FORM_MASTER_STATUS.DRAFT },
+				},
+			}
+		).slice(0, -1);
+		const recommendedApplication = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP53_EG_FORMS_MASTER",
+			{
+				attributes: [
+					[
+						application.fn("COUNT", application.col("TNRTP53_EG_FORMS_MASTER_D")),
+						"approvedApplication",
+					],
+				],
+				required: true,
+				where: {
+					TNRTP53_EG_FORMS_MASTER_D: {
+						[Op.in]: application.literal("(" + districtBlockForms + ")"),
+					},
+					TNRTP53_DELETED_F: DELETE_STATUS.NOT_DELETED,
+					TNRTP53_IS_APPLICATION_STATUS: {
+						[Op.in]: [
+							EG_FORM_MASTER_STATUS.DMPU_OPEN_APPLICATION,
+							EG_FORM_MASTER_STATUS.AMOUNT_DISBURSMENT,
+							EG_FORM_MASTER_STATUS.SUBMIT_UC,
+							EG_FORM_MASTER_STATUS.APPROVED,
+						],
+					},
+				},
+			}
+		).slice(0, -1);
+		const approvedApplication = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP53_EG_FORMS_MASTER",
+			{
+				attributes: [
+					[
+						application.fn("COUNT", application.col("TNRTP53_EG_FORMS_MASTER_D")),
+						"approvedApplication",
+					],
+				],
+				required: true,
+				where: {
+					TNRTP53_EG_FORMS_MASTER_D: {
+						[Op.in]: application.literal("(" + districtBlockForms + ")"),
+					},
+					TNRTP53_DELETED_F: DELETE_STATUS.NOT_DELETED,
+					TNRTP53_IS_APPLICATION_STATUS: {
+						[Op.in]: [
+							EG_FORM_MASTER_STATUS.AMOUNT_DISBURSMENT,
+							EG_FORM_MASTER_STATUS.SUBMIT_UC,
+							EG_FORM_MASTER_STATUS.APPROVED,
+						],
+					},
+				},
+			}
+		).slice(0, -1);
+		const rejectedApplication = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP53_EG_FORMS_MASTER",
+			{
+				attributes: [
+					[
+						application.fn("COUNT", application.col("TNRTP53_EG_FORMS_MASTER_D")),
+						"rejectedApplication",
+					],
+				],
+				required: true,
+				where: {
+					TNRTP53_EG_FORMS_MASTER_D: {
+						[Op.in]: application.literal("(" + districtBlockForms + ")"),
+					},
+					TNRTP53_DELETED_F: DELETE_STATUS.NOT_DELETED,
+					TNRTP53_IS_APPLICATION_STATUS: {
+						[Op.in]: [EG_FORM_MASTER_STATUS.DECLINED],
+					},
+				},
+			}
+		).slice(0, -1);
+		let applicationCount = await egFormMaster.findOne({
+			attributes: [
+				[application.literal("(" + totalApplication + ")"), "totalApplication"],
+				[application.literal("(" + approvedApplication + ")"), "approvedApplication"],
+				[application.literal("(" + recommendedApplication + ")"), "recommendedApplication"],
+				[application.literal("(" + rejectedApplication + ")"), "rejectedApplication"],
+			],
+		});
+		let { rows, count } = await egFormMaster.findAndCountAll({
+			where: {
+				TNRTP53_DELETED_F: DELETE_STATUS.NOT_DELETED,
+				status,
+				...searchCondition,
+			},
+			attributes: [
+				"formId",
+				"userId",
+				"status",
+				["TNRTP53_UPDATED_AT", "appSubmitDate"],
+				[application.literal("(" + totalAmount + ")"), "totalAmount"],
+			],
+			include: [
+				{
+					model: egFormBasicDetails,
+					as: "basicDetails",
+					required: true,
+					where: {
+						TNRTP54_DELETED_F: DELETE_STATUS.NOT_DELETED,
+						[Op.or]: [{ districtId }, { blockId }],
+					},
+
+					attributes: ["name", "EGName", "blockId", "districtId", "panchayatId"],
+				},
+				{
+					model: egFormDetails,
+					as: "egDetails",
+					required: false,
+					where: { TNRTP55_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					attributes: pgFormDetails.selectedFields,
+					include: [
+						{
+							model: selectedEgCommodity,
+							as: "egCommodityTypes",
+							required: true,
+							attributes: selectedEgCommodity.selectedFields,
+							include: [
+								{
+									model: pcCommodityTypes,
+									as: "egCommodityTypesData",
+									required: true,
+									attributes: pcCommodityTypes.selectedFields,
+								},
+							],
+						},
+					],
+				},
+			],
+			raw: false,
+			nested: true,
+			subQuery: false,
+			limit,
+			order: [["TNRTP53_CREATED_AT", sortBy == ORDERBY.ASC ? "ASC" : "DESC"]],
+			distinct: "TNRTP53_EG_FORMS_MASTER_D",
+			offset: (page - 1) * limit,
+		});
+		let blockData = await blockMaster.findAll({
+			where: {
+				value: rows.map((x) =>
+					x.dataValues.basicDetails ? x.dataValues.basicDetails.dataValues.blockId : ""
+				),
+			},
+			attributes: blockMaster.selectedFields,
+			raw: true,
+		});
+		let panchayatData = await panchayatMaster.findAll({
+			where: {
+				value: rows.map((x) =>
+					x.dataValues.basicDetails ? x.dataValues.basicDetails.dataValues.panchayatId : ""
+				),
+			},
+			attributes: panchayatMaster.selectedFields,
+			raw: true,
+		});
+		rows.map((element) => {
+			if (element.dataValues.basicDetails) {
+				element.dataValues.basicDetails.dataValues.block = blockData.find(
+					(x) => x.value == element.dataValues.basicDetails.dataValues.blockId
+				);
+				element.dataValues.basicDetails.dataValues.panchayat = panchayatData.find(
+					(x) => x.value == element.dataValues.basicDetails.dataValues.panchayatId
+				);
+			}
+			delete element.dataValues.basicDetails.dataValues.blockId;
+			delete element.dataValues.basicDetails.dataValues.panchayatId;
+			return element;
+		});
+		let meta = {
+			pagination: {
+				limit,
+				page,
+				count,
+				total_pages: Math.ceil(count / limit),
+			},
+		};
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+			data: {
+				list: rows,
+				applicationCount,
+				meta,
+			},
+		};
+	} catch (err) {
+		console.log("getEgApplicationService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+EGApplicationService.prototype.updateBmpuOpenApplicationService = async (params) => {
+	try {
+		const { formId, userData } = params;
+		if (params.blockLevelForm && params.blockLevelForm.length) {
+			params.blockLevelForm.map((element) => {
+				element.docType = EG_STAFF_DOC.BLECMM;
+			});
+		}
+		if (params.signedAssesment && params.signedAssesment.length) {
+			params.signedAssesment.map((element) => {
+				element.docType = EG_STAFF_DOC.SIGNED_ASSESMENT;
+			});
+		}
+		params.TNRTP105_TYPE_D = EG_APPLICATION_STATUS_TYPE.BMPU_OPEN_APPLICATION;
+		delete params.userData;
+		params.TNRTP105_CREATED_D = userData.userId;
+		params.TNRTP105_UPDATED_D = userData.userId;
+		await egApplicationStatus.create(
+			{ ...params },
+			{
+				include: [
+					{
+						model: egRequiredDoc,
+						as: "signedAssesment",
+					},
+					{
+						model: egRequiredDoc,
+						as: "blockLevelForm",
+					},
+				],
+			}
+		);
+		await egFormMaster.update(
+			{ status: params.applicationStatus },
+			{
+				where: { formId },
+			}
+		);
+		let dashBoardFormStatus;
+		if (params.applicationStatus == EG_FORM_MASTER_STATUS.DECLINED) {
+			dashBoardFormStatus = DASHBOARD_FORM_STATUS.REJECTED;
+		}
+		if (dashBoardFormStatus) {
+			await mainDashboard.update(
+				{ applicationStatus: dashBoardFormStatus },
+				{
+					where: { formId, formTypeId: FORM_TYPES.EG_FORM },
+				}
+			);
+		}
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+		};
+	} catch (err) {
+		console.log("getEgApplicationService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+EGApplicationService.prototype.getEgApplicationStatusService = async (params) => {
+	try {
+		const { formId } = params;
+		const totalAmount = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP59_EG_FORMS_PROPOSED_ACTIVITY",
+			{
+				attributes: [
+					[application.fn("SUM", application.col("TNRTP59_AMOUNT_REQUIRED_D")), "totalAmount"],
+				],
+				required: false,
+				where: {
+					TNRTP53_EG_FORMS_MASTER_D: {
+						[Op.eq]: application.col("TNRTP53_EG_FORMS_MASTER.TNRTP53_EG_FORMS_MASTER_D"),
+					},
+				},
+			}
+		).slice(0, -1);
+		let applicationStatus = await egFormMaster.findOne({
+			where: { formId },
+			attributes: [
+				"formId",
+				"userId",
+				"name",
+				"status",
+				["TNRTP53_UPDATED_AT", "appRecievedDate"],
+				[application.literal("(" + totalAmount + ")"), "totalAmount"],
+			],
+			include: [
+				{
+					model: egApplicationStatus,
+					as: "egBmpuApplicationStatus",
+					required: false,
+					where: { TNRTP105_TYPE_D: EG_APPLICATION_STATUS_TYPE.BMPU_OPEN_APPLICATION },
+					attributes: [
+						"isActivityEsmf",
+						"activityCategory",
+						"approvedAmount",
+						["TNRTP105_UPDATED_AT", "recommendedDate"],
+						["TNRTP105_UPDATED_D", "recommendedBy"],
+					],
+					include: [
+						{
+							model: egRequiredDoc,
+							as: "blockLevelForm",
+							required: false,
+							where: { docType: EG_STAFF_DOC.BLECMM },
+							attributes: egRequiredDoc.selectedFields,
+						},
+						{
+							model: egRequiredDoc,
+							as: "signedAssesment",
+							required: false,
+							where: { docType: EG_STAFF_DOC.SIGNED_ASSESMENT },
+							attributes: egRequiredDoc.selectedFields,
+						},
+					],
+				},
+				{
+					model: egApplicationStatus,
+					as: "egDmpuApplicationStatus",
+					required: false,
+					where: { TNRTP105_TYPE_D: EG_APPLICATION_STATUS_TYPE.DMPU_OPEN_APPLICATION },
+					attributes: [
+						"decMeetingDate",
+						"isSmpuVerified",
+						["TNRTP105_UPDATED_AT", "approvedDate"],
+						["TNRTP105_UPDATED_D", "approvedBy"],
+					],
+					include: [
+						{
+							model: egRequiredDoc,
+							as: "decmm",
+							required: false,
+							where: { docType: EG_STAFF_DOC.DECMM },
+							attributes: egRequiredDoc.selectedFields,
+						},
+						{
+							model: egRequiredDoc,
+							as: "smpuApprovalLetter",
+							required: false,
+							where: { docType: EG_STAFF_DOC.SMPU_APPROVAL },
+							attributes: egRequiredDoc.selectedFields,
+						},
+					],
+				},
+				{
+					model: egDisbursment,
+					as: "amountDisbursment",
+					required: false,
+					where: { disbursmentType: EG_DISBURSEMENT_STATE.AMOUNT_DISBURSMENT },
+					attributes: [
+						"isDisbursment",
+						"disbursmentDate",
+						"disbursmentAmount",
+						"firstTrancheSubmitDate",
+						["TNRTP107_UPDATED_D", "disbursedBy"],
+					],
+				},
+				{
+					model: egDisbursment,
+					as: "disbursmentUc",
+					required: false,
+					where: { disbursmentType: EG_DISBURSEMENT_STATE.SUBMIT_UC_DISBURSMENT },
+					attributes: ["disbursmentSubmitDate", ["TNRTP107_UPDATED_D", "disbursedBy"]],
+					include: [
+						{
+							model: egRequiredDoc,
+							as: "firstUcCertificate",
+							required: false,
+							where: { docType: EG_STAFF_DOC.FIRST_TRANCHE_UC },
+							attributes: egRequiredDoc.selectedFields,
+						},
+					],
+				},
+				{
+					model: egAssessment,
+					as: "egAssessment",
+					required: false,
+					attributes: egAssessment.selectedFields,
+				},
+			],
+		});
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+			data: applicationStatus,
+		};
+	} catch (err) {
+		console.log("getEgApplicationStatusService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+EGApplicationService.prototype.updateDmpuOpenApplicationService = async (params) => {
+	try {
+		const { formId, userData } = params;
+		if (params.decmm && params.decmm.length) {
+			params.decmm.map((element) => {
+				element.docType = EG_STAFF_DOC.DECMM;
+			});
+		}
+		if (params.smpuApprovalLetter && params.smpuApprovalLetter.length) {
+			params.smpuApprovalLetter.map((element) => {
+				element.docType = EG_STAFF_DOC.SMPU_APPROVAL;
+			});
+		}
+		params.TNRTP105_TYPE_D = EG_APPLICATION_STATUS_TYPE.DMPU_OPEN_APPLICATION;
+		delete params.userData;
+		params.TNRTP105_CREATED_D = userData.userId;
+		params.TNRTP105_UPDATED_D = userData.userId;
+		await egApplicationStatus.create(
+			{ ...params },
+			{
+				include: [
+					{
+						model: egRequiredDoc,
+						as: "smpuApprovalLetter",
+					},
+					{
+						model: egRequiredDoc,
+						as: "decmm",
+					},
+				],
+			}
+		);
+		await egFormMaster.update(
+			{ status: params.applicationStatus },
+			{
+				where: { formId },
+			}
+		);
+		let dashBoardFormStatus;
+		switch (parseInt(params.applicationStatus)) {
+			case EG_FORM_MASTER_STATUS.AMOUNT_DISBURSMENT: {
+				dashBoardFormStatus = DASHBOARD_FORM_STATUS.APPROVED;
+				break;
+			}
+			case EG_FORM_MASTER_STATUS.PENDING: {
+				dashBoardFormStatus = DASHBOARD_FORM_STATUS.PENDING;
+				break;
+			}
+			case EG_FORM_MASTER_STATUS.DECLINED: {
+				dashBoardFormStatus = DASHBOARD_FORM_STATUS.REJECTED;
+				break;
+			}
+		}
+		if (dashBoardFormStatus) {
+			await mainDashboard.update(
+				{ applicationStatus: dashBoardFormStatus },
+				{
+					where: { formId, formTypeId: FORM_TYPES.EG_FORM },
+				}
+			);
+		}
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+		};
+	} catch (err) {
+		console.log("getEgApplicationService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+EGApplicationService.prototype.updateAmountDisbursmentService = async (params) => {
+	try {
+		const { formId, userData } = params;
+		params.disbursmentType = EG_DISBURSEMENT_STATE.AMOUNT_DISBURSMENT;
+		delete params.userData;
+		params.TNRTP107_CREATED_D = userData.userId;
+		params.TNRTP107_UPDATED_D = userData.userId;
+		await egDisbursment.create({ ...params });
+		await egFormMaster.update(
+			{ status: EG_FORM_MASTER_STATUS.AMOUNT_DISBURSMENT },
+			{
+				where: { formId },
+			}
+		);
+		let dashBoardData = await mainDashboard.findOne({
+			where: { formId, formTypeId: FORM_TYPES.EG_FORM },
+		});
+		dashBoardData.totalDisburement = dashBoardData.totalDisburement + params.disbursmentAmount;
+		dashBoardData.save();
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+		};
+	} catch (err) {
+		console.log("getEgApplicationService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+EGApplicationService.prototype.updateDisbursmentUcService = async (params) => {
+	try {
+		const { formId, userData } = params;
+		if (params.firstUcCertificate && params.firstUcCertificate.length) {
+			params.firstUcCertificate.map((element) => {
+				element.docType = EG_STAFF_DOC.FIRST_TRANCHE_UC;
+			});
+		}
+		params.disbursmentType = EG_DISBURSEMENT_STATE.SUBMIT_UC_DISBURSMENT;
+		delete params.userData;
+		params.TNRTP107_CREATED_D = userData.userId;
+		params.TNRTP107_UPDATED_D = userData.userId;
+		await egDisbursment.create(
+			{ ...params },
+			{
+				include: [
+					{
+						model: egRequiredDoc,
+						as: "firstUcCertificate",
+					},
+				],
+			}
+		);
+		await egFormMaster.update(
+			{ status: EG_FORM_MASTER_STATUS.SUBMIT_UC },
+			{
+				where: { formId },
+			}
+		);
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+		};
+	} catch (err) {
+		console.log("getEgApplicationService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+EGApplicationService.prototype.startEgAssesmentService = async (params) => {
+	try {
+		const { formId } = params;
+		let membersData = await egFormMaster.findOne({
+			where: { formId, TNRTP36_DELETED_F: DELETE_STATUS.NOT_DELETED },
+			attributes: ["formId", "userId", "name"],
+			include: [
+				{
+					model: egFormMembers,
+					as: "egFormMembers",
+					where: { TNRTP56_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					attributes: egFormMembers.selectedFields,
+				},
+			],
+		});
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+			data: { membersData },
+		};
+	} catch (err) {
+		console.log("startAssesmentService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+EGApplicationService.prototype.submitEgAssesmentService = async (params) => {
+	try {
+		const { formId } = params;
+		params.assessments.map((element) => {
+			element.formId = formId;
+		});
+		await egAssessment.destroy({ where: { formId } }).then(() => {
+			return egAssessment.bulkCreate([...params.assessments], {
+				include: [
+					{
+						model: egAssessmentDoc,
+						as: "documents",
+					},
+				],
+			});
+		});
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+		};
+	} catch (err) {
+		console.log("submitAssesmentService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+EGApplicationService.prototype.getEgAssesmentService = async (params) => {
+	try {
+		const { formId } = params;
+		let assessmentData = await egAssessment.findAll({
+			where: { formId },
+			attributes: pgAssessment.selectedFields,
+			include: [
+				{
+					model: egAssessmentDoc,
+					as: "documents",
+					required: false,
+					attributes: egAssessmentDoc.selectedFields,
+				},
+			],
+		});
+		return {
+			code: errorCodes.HTTP_OK,
+			message: messages.success,
+			data: assessmentData,
+		};
+	} catch (err) {
+		console.log("getAssesmentService", err);
+		return {
+			code: errorCodes.HTTP_INTERNAL_SERVER_ERROR,
+			message: err,
+		};
+	}
+};
+
+
 
 module.exports = new EGApplicationService();
 

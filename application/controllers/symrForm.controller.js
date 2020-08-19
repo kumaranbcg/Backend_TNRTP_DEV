@@ -199,40 +199,5 @@ SYMRFormController.prototype.getSymrAssesment = async (req, res) => {
 		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
 	}
 };
-// SYMRFormController.prototype.pcServiceArea = async (req, res) => {
-// 	try {
-// 		let result = await service.pcServiceAreaService({ ...req.body });
-// 		res.status(result.code).json({ message: result.message, data: result.data });
-// 	} catch (err) {
-// 		console.log(err);
-// 		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
-// 	}
-// };
-// SYMRFormController.prototype.getPcServiceArea = async (req, res) => {
-// 	try {
-// 		let result = await service.getPcServiceAreaService({ ...req.query });
-// 		res.status(result.code).json({ message: result.message, data: result.data });
-// 	} catch (err) {
-// 		console.log(err);
-// 		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
-// 	}
-// };
-// SYMRFormController.prototype.pcCoverageArea = async (req, res) => {
-// 	try {
-// 		let result = await service.pcCoverageAreaService({ ...req.body });
-// 		res.status(result.code).json({ message: result.message, data: result.data });
-// 	} catch (err) {
-// 		console.log(err);
-// 		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
-// 	}
-// };
-// SYMRFormController.prototype.getPcCoverageArea = async (req, res) => {
-// 	try {
-// 		let result = await service.getPcCoverageAreaService({ ...req.query });
-// 		res.status(result.code).json({ message: result.message, data: result.data });
-// 	} catch (err) {
-// 		console.log(err);
-// 		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
-// 	}
-// };
+
 module.exports = new SYMRFormController();

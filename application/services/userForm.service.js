@@ -15,6 +15,9 @@ const {
 	pgFormBasicDetails,
 	pgFormDetails,
 	selectedPg,
+	symrFormMaster,
+	symrBankDetails,
+	symrBasicDetails
 } = require("../models");
 const { DELETE_STATUS, FORM_TYPES } = require("./../constants/index");
 const { Op, Sequelize } = require("sequelize");
@@ -57,6 +60,19 @@ UserFormService.prototype.getUserApplicationsService = async (params) => {
 				where: {
 					TNRTP42_PG_FORMS_MASTER_D: {
 						[Op.eq]: application.col("TNRTP36_PG_FORMS_MASTER.TNRTP36_PG_FORMS_MASTER_D"),
+					},
+				},
+			}
+		).slice(0, -1);
+		const symrFormAmt = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP83_SYMR_PROPOSED_ACTIVITY",
+			{
+				attributes: [
+					[application.fn("SUM", application.col("TNRTP83_AMOUNT_REQUIRED_D")), "totalAmount"],
+				],
+				where: {
+					TNRTP83_SYMR_FORMS_MASTER_D: {
+						[Op.eq]: application.col("TNRTP68_SYMR_FORMS_MASTER.TNRTP68_SYMR_FORMS_MASTER_D"),
 					},
 				},
 			}
@@ -157,6 +173,41 @@ UserFormService.prototype.getUserApplicationsService = async (params) => {
 				},
 			],
 		});
+		let symrForms = await symrFormMaster.findAll({
+			where: { TNRTP68_DELETED_F: DELETE_STATUS.NOT_DELETED, userId },
+			attributes: [
+				"formId",
+				"status",
+				["TNRTP68_UPDATED_AT", "appSubmitDate"],
+				[application.literal("(" + symrFormAmt + ")"), "totalAmount"],
+			],
+			include: [
+				{
+					model: symrBasicDetails,
+					as: "basicDetails",
+					required: false,
+					where: { TNRTP69_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					attributes: ["mobileNumber",
+						"name",
+						"address",
+						"fatherName",
+						"dateOfBirth",
+						"age",
+						"govtIdNumber",
+						"placeReturnFrom",
+						"previousOccupation",
+						"isWomeHeaded"
+					]
+				},
+				{
+					model: symrBankDetails,
+					as: "symrBankDetails",
+					where: { TNRTP82_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
+					attributes: ["bnkName"],
+				},
+			],
+		});
 		pcForms.map((element) => {
 			element.dataValues.type = FORM_TYPES.PC_FORM;
 			return element;
@@ -165,7 +216,11 @@ UserFormService.prototype.getUserApplicationsService = async (params) => {
 			element.dataValues.type = FORM_TYPES.PG_FORM;
 			return element;
 		});
-		let forms = [...pcForms, ...pgForms];
+		symrForms.map((element) => {
+			element.dataValues.type = FORM_TYPES.SYMR_FORM;
+			return element;
+		});
+		let forms = [...pcForms, ...pgForms, ...symrForms];
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.formCreated,
