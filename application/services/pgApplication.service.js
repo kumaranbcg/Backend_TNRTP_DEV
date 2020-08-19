@@ -43,6 +43,9 @@ const {
 	pgAssessmentDoc,
 	mainDashboard,
 	promotingOrg,
+	dashboardActivity,
+	dashboardSector,
+	dashboardCommodity,
 } = require("../models");
 class PGApplicationService {}
 PGApplicationService.prototype.pgFormCreateSerivce = async (params) => {
@@ -138,6 +141,35 @@ PGApplicationService.prototype.pgFormDetailsSerivce = async (params) => {
 				}
 			);
 		});
+		let dashBoardData = await mainDashboard.findOne({
+			where: { formId, formTypeId: FORM_TYPES.PG_FORM },
+			raw: true,
+		});
+		if (dashBoardData) {
+			await mainDashboard.destroy({ where: { formId, formTypeId: FORM_TYPES.PG_FORM } });
+			dashBoardData.dashboardActivity = params.pgTypes;
+			dashBoardData.dashboardSector = params.pgSectorTypes;
+			dashBoardData.dashboardCommodity = params.pgCommodityTypes;
+			await mainDashboard.create(
+				{ ...dashBoardData },
+				{
+					include: [
+						{
+							model: dashboardActivity,
+							as: "dashboardActivity",
+						},
+						{
+							model: dashboardSector,
+							as: "dashboardSector",
+						},
+						{
+							model: dashboardCommodity,
+							as: "dashboardCommodity",
+						},
+					],
+				}
+			);
+		}
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
