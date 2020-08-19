@@ -10,6 +10,8 @@ const {
 	EG_DISBURSEMENT_STATE,
 } = require("../constants/index");
 
+const { Op } = require("sequelize");
+
 const {
 	egFormMaster,				// 1
 	egFormBasicDetails,			// 2
@@ -534,6 +536,7 @@ EGApplicationService.prototype.getEgMasterService = async (params) => {
 
 EGApplicationService.prototype.getEgApplicationService = async (params) => {
 	try {
+		console.log('working')
 		const { status, search, sortBy, page, limit, districtId, blockId } = params;
 		const searchCondition = !!search
 			? {
@@ -556,7 +559,7 @@ EGApplicationService.prototype.getEgApplicationService = async (params) => {
 				],
 				required: false,
 				where: {
-					TNRTP53_EG_FORMS_MASTER_D: {
+					TNRTP59_EG_FORMS_MASTER_D: {
 						[Op.eq]: application.col("TNRTP53_EG_FORMS_MASTER.TNRTP53_EG_FORMS_MASTER_D"),
 					},
 				},
@@ -703,7 +706,7 @@ EGApplicationService.prototype.getEgApplicationService = async (params) => {
 					as: "egDetails",
 					required: false,
 					where: { TNRTP55_DELETED_F: DELETE_STATUS.NOT_DELETED },
-					attributes: pgFormDetails.selectedFields,
+					attributes: egFormDetails.selectedFields,
 					include: [
 						{
 							model: selectedEgCommodity,
@@ -799,10 +802,10 @@ EGApplicationService.prototype.updateBmpuOpenApplicationService = async (params)
 				element.docType = EG_STAFF_DOC.SIGNED_ASSESMENT;
 			});
 		}
-		params.TNRTP105_TYPE_D = EG_APPLICATION_STATUS_TYPE.BMPU_OPEN_APPLICATION;
+		params.TNRTP108_TYPE_D = EG_APPLICATION_STATUS_TYPE.BMPU_OPEN_APPLICATION;
 		delete params.userData;
-		params.TNRTP105_CREATED_D = userData.userId;
-		params.TNRTP105_UPDATED_D = userData.userId;
+		params.TNRTP108_CREATED_D = userData.userId;
+		params.TNRTP108_UPDATED_D = userData.userId;
 		await egApplicationStatus.create(
 			{ ...params },
 			{
@@ -859,7 +862,7 @@ EGApplicationService.prototype.getEgApplicationStatusService = async (params) =>
 				],
 				required: false,
 				where: {
-					TNRTP53_EG_FORMS_MASTER_D: {
+					TNRTP59_EG_FORMS_MASTER_D: {
 						[Op.eq]: application.col("TNRTP53_EG_FORMS_MASTER.TNRTP53_EG_FORMS_MASTER_D"),
 					},
 				},
@@ -880,13 +883,13 @@ EGApplicationService.prototype.getEgApplicationStatusService = async (params) =>
 					model: egApplicationStatus,
 					as: "egBmpuApplicationStatus",
 					required: false,
-					where: { TNRTP105_TYPE_D: EG_APPLICATION_STATUS_TYPE.BMPU_OPEN_APPLICATION },
+					where: { TNRTP108_TYPE_D: EG_APPLICATION_STATUS_TYPE.BMPU_OPEN_APPLICATION },
 					attributes: [
 						"isActivityEsmf",
 						"activityCategory",
 						"approvedAmount",
-						["TNRTP105_UPDATED_AT", "recommendedDate"],
-						["TNRTP105_UPDATED_D", "recommendedBy"],
+						["TNRTP108_UPDATED_AT", "recommendedDate"],
+						["TNRTP108_UPDATED_D", "recommendedBy"],
 					],
 					include: [
 						{
@@ -909,12 +912,12 @@ EGApplicationService.prototype.getEgApplicationStatusService = async (params) =>
 					model: egApplicationStatus,
 					as: "egDmpuApplicationStatus",
 					required: false,
-					where: { TNRTP105_TYPE_D: EG_APPLICATION_STATUS_TYPE.DMPU_OPEN_APPLICATION },
+					where: { TNRTP108_TYPE_D: EG_APPLICATION_STATUS_TYPE.DMPU_OPEN_APPLICATION },
 					attributes: [
 						"decMeetingDate",
 						"isSmpuVerified",
-						["TNRTP105_UPDATED_AT", "approvedDate"],
-						["TNRTP105_UPDATED_D", "approvedBy"],
+						["TNRTP108_UPDATED_AT", "approvedDate"],
+						["TNRTP108_UPDATED_D", "approvedBy"],
 					],
 					include: [
 						{
@@ -943,7 +946,7 @@ EGApplicationService.prototype.getEgApplicationStatusService = async (params) =>
 						"disbursmentDate",
 						"disbursmentAmount",
 						"firstTrancheSubmitDate",
-						["TNRTP107_UPDATED_D", "disbursedBy"],
+						["TNRTP110_UPDATED_D", "disbursedBy"],
 					],
 				},
 				{
@@ -951,7 +954,7 @@ EGApplicationService.prototype.getEgApplicationStatusService = async (params) =>
 					as: "disbursmentUc",
 					required: false,
 					where: { disbursmentType: EG_DISBURSEMENT_STATE.SUBMIT_UC_DISBURSMENT },
-					attributes: ["disbursmentSubmitDate", ["TNRTP107_UPDATED_D", "disbursedBy"]],
+					attributes: ["disbursmentSubmitDate", ["TNRTP110_UPDATED_D", "disbursedBy"]],
 					include: [
 						{
 							model: egRequiredDoc,
@@ -1132,7 +1135,7 @@ EGApplicationService.prototype.startEgAssesmentService = async (params) => {
 	try {
 		const { formId } = params;
 		let membersData = await egFormMaster.findOne({
-			where: { formId, TNRTP36_DELETED_F: DELETE_STATUS.NOT_DELETED },
+			where: { formId, TNRTP53_DELETED_F: DELETE_STATUS.NOT_DELETED },
 			attributes: ["formId", "userId", "name"],
 			include: [
 				{
@@ -1158,6 +1161,7 @@ EGApplicationService.prototype.startEgAssesmentService = async (params) => {
 };
 EGApplicationService.prototype.submitEgAssesmentService = async (params) => {
 	try {
+		console.log('working')
 		const { formId } = params;
 		params.assessments.map((element) => {
 			element.formId = formId;
@@ -1189,7 +1193,7 @@ EGApplicationService.prototype.getEgAssesmentService = async (params) => {
 		const { formId } = params;
 		let assessmentData = await egAssessment.findAll({
 			where: { formId },
-			attributes: pgAssessment.selectedFields,
+			attributes: egAssessment.selectedFields,
 			include: [
 				{
 					model: egAssessmentDoc,
