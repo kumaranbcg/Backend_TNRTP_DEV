@@ -333,28 +333,28 @@ router.get(
 router.get(
 	"/application/egFormCreate",
 	verifyToken,
-	hasRole([STAFF_ROLE.PUBLIC]),
+	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC, STAFF_ROLE.PUBLIC]),
 	EGFormController.egFormCreate
 );
 
 router.post(
 	"/application/egFormFill",
 	verifyToken,
-	hasRole([STAFF_ROLE.PUBLIC]),
+	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC, STAFF_ROLE.PUBLIC]),
 	EGFormController.egFormFill
 );
 
 router.get(
 	"/application/getEgForm",
 	verifyToken,
-	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC]),
+	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC, STAFF_ROLE.PUBLIC]),
 	EGFormController.getEgForm
 );
 
 router.get(
 	"/application/getEGMasters",
 	verifyToken,
-	hasRole([STAFF_ROLE.PUBLIC]),
+	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC, STAFF_ROLE.PUBLIC]),
 	EGFormController.getEGMasters
 );
 
@@ -362,7 +362,7 @@ router.post(
 	"/application/submitEgForm",
 	verifyToken,
 	egFormSubmit,
-	hasRole([STAFF_ROLE.PUBLIC]),
+	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC, STAFF_ROLE.PUBLIC]),
 	EGFormController.submitEgForm
 );
 
@@ -373,10 +373,10 @@ router.post(
 	EGFormController.getEgApplication
 );
 router.post(
-	"/application/updateBmpuOpenApplication",
+	"/application/updateEgBmpuOpenApplication",
 	verifyToken,
 	hasRole([STAFF_ROLE.BPMU]),
-	EGFormController.updateBmpuOpenApplication
+	EGFormController.updateEgBmpuOpenApplication
 );
 
 router.get(

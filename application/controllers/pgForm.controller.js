@@ -125,6 +125,7 @@ PGFormController.prototype.getPgApplication = async (req, res) => {
 PGFormController.prototype.updateBmpuOpenApplication = async (req, res) => {
 	try {
 		req.body.userData = req.user;
+		console.log(req.body)
 		let result = await service.updateBmpuOpenApplicationService({ ...req.body });
 		res.status(result.code).json({ message: result.message, data: result.data });
 	} catch (err) {

@@ -777,6 +777,7 @@ EGApplicationService.prototype.getEgApplicationService = async (params) => {
 				total_pages: Math.ceil(count / limit),
 			},
 		};
+		console.log("780",rows)
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -797,6 +798,7 @@ EGApplicationService.prototype.getEgApplicationService = async (params) => {
 EGApplicationService.prototype.updateBmpuOpenApplicationService = async (params) => {
 	try {
 		const { formId, userData } = params;
+		console.log("801",params)
 		if (params.blockLevelForm && params.blockLevelForm.length) {
 			params.blockLevelForm.map((element) => {
 				element.docType = EG_STAFF_DOC.BLECMM;
@@ -811,7 +813,8 @@ EGApplicationService.prototype.updateBmpuOpenApplicationService = async (params)
 		delete params.userData;
 		params.TNRTP108_CREATED_D = userData.userId;
 		params.TNRTP108_UPDATED_D = userData.userId;
-		await egApplicationStatus.create(
+		console.log("815",params)
+		let egst = await egApplicationStatus.create(
 			{ ...params },
 			{
 				include: [
@@ -826,6 +829,7 @@ EGApplicationService.prototype.updateBmpuOpenApplicationService = async (params)
 				],
 			}
 		);
+		console.log("830",egst)
 		await egFormMaster.update(
 			{ status: params.applicationStatus },
 			{
