@@ -408,24 +408,24 @@ router.get(
 );
 
 router.post(
-	"/application/updateDmpuOpenApplication",
+	"/application/updateEgDmpuOpenApplication",
 	verifyToken,
 	hasRole([STAFF_ROLE.DPMU]),
-	EGFormController.updateDmpuOpenApplication
+	EGFormController.updateEgDmpuOpenApplication
 );
 
 router.post(
-	"/application/updateAmountDisbursment",
+	"/application/updateEgAmountDisbursment",
 	verifyToken,
 	hasRole([STAFF_ROLE.DPMU]),
-	EGFormController.updateAmountDisbursment
+	EGFormController.updateEgAmountDisbursment
 );
 
 router.post(
-	"/application/updateDisbursmentUc",
+	"/application/updateEgDisbursmentUc",
 	verifyToken,
 	hasRole([STAFF_ROLE.DPMU]),
-	EGFormController.updateDisbursmentUc
+	EGFormController.updateEgDisbursmentUc
 );
 router.get("/application/getActivityTypes", verifyToken, userFormController.getActivityTypes);
 

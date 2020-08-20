@@ -8,6 +8,8 @@ const {
 	ORDERBY,
 	EG_APPLICATION_STATUS_TYPE,
 	EG_DISBURSEMENT_STATE,
+	DASHBOARD_FORM_STATUS,
+	FORM_TYPES
 } = require("../constants/index");
 
 const { Op } = require("sequelize");
@@ -40,6 +42,7 @@ const {
 	egDisbursement,
 	egAssessment,
 	egAssessmentDoc,
+	mainDashboard
 } = require("../models");
 
 
@@ -65,6 +68,10 @@ EGApplicationService.prototype.egFormCreateSerivce = async (params) => {
 		// 	};
 		// }
 		let formData = await egFormMaster.create({ ...createMaster });
+		await mainDashboard.create({
+			formId: formData.formId,
+			formTypeId: FORM_TYPES.EG_FORM,
+		});
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.formCreated,
@@ -777,7 +784,6 @@ EGApplicationService.prototype.getEgApplicationService = async (params) => {
 				total_pages: Math.ceil(count / limit),
 			},
 		};
-		console.log("780",rows)
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -998,6 +1004,7 @@ EGApplicationService.prototype.getEgApplicationStatusService = async (params) =>
 EGApplicationService.prototype.updateDmpuOpenApplicationService = async (params) => {
 	try {
 		const { formId, userData } = params;
+		console.log(userData)
 		if (params.decmm && params.decmm.length) {
 			params.decmm.map((element) => {
 				element.docType = EG_STAFF_DOC.DECMM;
@@ -1008,11 +1015,11 @@ EGApplicationService.prototype.updateDmpuOpenApplicationService = async (params)
 				element.docType = EG_STAFF_DOC.SMPU_APPROVAL;
 			});
 		}
-		params.TNRTP105_TYPE_D = EG_APPLICATION_STATUS_TYPE.DMPU_OPEN_APPLICATION;
+		params.TNRTP108_TYPE_D = EG_APPLICATION_STATUS_TYPE.DMPU_OPEN_APPLICATION;
 		delete params.userData;
-		params.TNRTP105_CREATED_D = userData.userId;
-		params.TNRTP105_UPDATED_D = userData.userId;
-		await egApplicationStatus.create(
+		params.TNRTP108_CREATED_D = userData.userId;
+		params.TNRTP108_UPDATED_D = userData.userId;
+		let dmpustat = await egApplicationStatus.create(
 			{ ...params },
 			{
 				include: [
@@ -1027,6 +1034,7 @@ EGApplicationService.prototype.updateDmpuOpenApplicationService = async (params)
 				],
 			}
 		);
+		console.log(dmpustat)
 		await egFormMaster.update(
 			{ status: params.applicationStatus },
 			{
@@ -1071,17 +1079,19 @@ EGApplicationService.prototype.updateDmpuOpenApplicationService = async (params)
 EGApplicationService.prototype.updateAmountDisbursmentService = async (params) => {
 	try {
 		const { formId, userData } = params;
+		console.log(params)
 		params.disbursmentType = EG_DISBURSEMENT_STATE.AMOUNT_DISBURSMENT;
 		delete params.userData;
 		params.TNRTP107_CREATED_D = userData.userId;
 		params.TNRTP107_UPDATED_D = userData.userId;
-		await egDisbursment.create({ ...params });
-		await egFormMaster.update(
-			{ status: EG_FORM_MASTER_STATUS.AMOUNT_DISBURSMENT },
+		await egDisbursement.create({ ...params });
+		let egdis = await egFormMaster.update(
+			{ status: EG_FORM_MASTER_STATUS.SUBMIT_UC },
 			{
 				where: { formId },
 			}
 		);
+		console.log("1090",egdis)
 		let dashBoardData = await mainDashboard.findOne({
 			where: { formId, formTypeId: FORM_TYPES.EG_FORM },
 		});
@@ -1111,7 +1121,7 @@ EGApplicationService.prototype.updateDisbursmentUcService = async (params) => {
 		delete params.userData;
 		params.TNRTP107_CREATED_D = userData.userId;
 		params.TNRTP107_UPDATED_D = userData.userId;
-		await egDisbursment.create(
+		await egDisbursement.create(
 			{ ...params },
 			{
 				include: [
@@ -1123,7 +1133,7 @@ EGApplicationService.prototype.updateDisbursmentUcService = async (params) => {
 			}
 		);
 		await egFormMaster.update(
-			{ status: EG_FORM_MASTER_STATUS.SUBMIT_UC },
+			{ status: EG_FORM_MASTER_STATUS.APPROVED },
 			{
 				where: { formId },
 			}

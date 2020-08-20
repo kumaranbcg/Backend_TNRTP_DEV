@@ -42,7 +42,10 @@ const {
 	symrDisbursment,
 	symrAssessmentDoc,
 	symrAssessment,
-	mainDashboard
+	mainDashboard,
+	dashboardActivity,
+	dashboardSector,
+	dashboardCommodity,
 } = require("../models");
 const messages = require("./../configs/errorMsgs.js");
 const errorCodes = require("./../configs/errorCodes.js");
@@ -202,7 +205,35 @@ SYMRApplicationService.prototype.symrEnterpriseDetailService = async (params) =>
 				}
 			);
 		});
-		console.log(enterprise)
+		let dashBoardData = await mainDashboard.findOne({
+			where: { formId, formTypeId: FORM_TYPES.SYMR_FORM },
+			raw: true,
+		});
+		if (dashBoardData) {
+			await mainDashboard.destroy({ where: { formId, formTypeId: FORM_TYPES.SYMR_FORM } });
+			dashBoardData.dashboardActivity = params.symrTypes;
+			dashBoardData.dashboardSector = params.symrSectorTypes;
+			dashBoardData.dashboardCommodity = params.symrCommodityTypes;
+			await mainDashboard.create(
+				{ ...dashBoardData },
+				{
+					include: [
+						{
+							model: dashboardActivity,
+							as: "dashboardActivity",
+						},
+						{
+							model: dashboardSector,
+							as: "dashboardSector",
+						},
+						{
+							model: dashboardCommodity,
+							as: "dashboardCommodity",
+						},
+					],
+				}
+			);
+		}
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -1230,6 +1261,7 @@ SYMRApplicationService.prototype.updateOpenApplicationService = async (params) =
 		);
 		let dashBoardFormStatus;
 		switch (params.applicationStatus) {
+
 			case SYMR_FORM_MASTER_STATUS.AMOUNT_DISBURSMENT: {
 				dashBoardFormStatus = DASHBOARD_FORM_STATUS.APPROVED;
 			}
@@ -1402,7 +1434,7 @@ SYMRApplicationService.prototype.updateSymrDisbursmentUcService = async (params)
 			}
 		);
 		await symrFormMaster.update(
-			{ status: SYMR_FORM_MASTER_STATUS.SUBMIT_UC },
+			{ status: SYMR_FORM_MASTER_STATUS.APPROVED },
 			{
 				where: { formId },
 			}
