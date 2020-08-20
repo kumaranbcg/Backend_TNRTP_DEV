@@ -690,7 +690,7 @@ PCApplicationService.prototype.updatePcFormStatus = async (params) => {
 PCApplicationService.prototype.getPcApplicationService = async (params) => {
 	try {
 		const { status, search, sortBy, page, limit, districtId, user } = params;
-		let districtFilter = {};
+		let districtFilter = {}; //
 		if (user.role != STAFF_ROLE.SPMU) districtFilter = { TNRTP07_US_DISTRICT_MASTER_D: districtId };
 		const searchCondition = !!search
 			? {
