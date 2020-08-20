@@ -14,10 +14,11 @@ const {
 } = require("../models");
 const { DASHBOARD_FORM_STATUS, DELETE_STATUS } = require("./../constants/index");
 const { Op } = require("sequelize");
+
 class DashboardService {}
 DashboardService.prototype.dashboardStatisticService = async (params) => {
 	try {
-		const { district, block, panchayat, formType } = params;
+		const { district, block, panchayat, formType, limit } = params;
 		let searchCondition = {
 			[Op.or]: [
 				{
@@ -187,7 +188,6 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 				],
 			},
 		});
-		// act
 		let activity = await pcTypes.findAll({
 			attributes: [
 				[
@@ -259,7 +259,10 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 				},
 			],
 			group: ["TNRTP05_TYPE_OF_COMMODITY_MASTER_D"],
+			order: [[application.literal("commodityCount"), "DESC"]],
 			raw: true,
+			subQuery: false,
+			limit: limit || 0,
 		});
 		dashBoardData = dashBoardData.get({ plain: true });
 		let obj = {
