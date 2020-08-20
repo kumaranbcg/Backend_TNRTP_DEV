@@ -11,6 +11,8 @@ const {
 	dashboardSector,
 	pcCommodityTypes,
 	dashboardCommodity,
+	dashboardEnterprise,
+	enterpriseType,
 } = require("../models");
 const { DASHBOARD_FORM_STATUS, DELETE_STATUS } = require("./../constants/index");
 const { Op } = require("sequelize");
@@ -264,6 +266,32 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 			subQuery: false,
 			limit: limit || 0,
 		});
+		let enterprise = await enterpriseType.findAll({
+			attributes: [
+				[
+					application.fn(
+						"COUNT",
+						application.col("enterpriseType.TNRTP114_ENTERPRISE_TYPE_MASTER_D")
+					),
+					"enterpriseCount",
+				],
+				"value",
+				"label",
+			],
+			include: [
+				{
+					model: dashboardEnterprise,
+					as: "enterpriseType",
+					attributes: [],
+					required: false,
+					where: {
+						TNRTP114_DASHBOARD_FORMS_MASTER_D: dashBoardIds.map((x) => x.dashBoardMasterId),
+					},
+				},
+			],
+			group: ["TNRTP86_ENTERPRISE_TYPE_MASTER_D"],
+			raw: true,
+		});
 		dashBoardData = dashBoardData.get({ plain: true });
 		let obj = {
 			fund: {
@@ -334,6 +362,7 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 			activitys: activity,
 			sectors: sector,
 			commodity: commodity,
+			enterprise: enterprise,
 		};
 		return {
 			code: errorCodes.HTTP_OK,

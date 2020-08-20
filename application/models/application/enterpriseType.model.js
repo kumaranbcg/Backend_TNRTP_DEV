@@ -18,6 +18,12 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: false,
 		}
 	);
+	enterpriseType.associate = function (models) {
+		enterpriseType.hasMany(models.dashboardEnterprise, {
+			foreignKey: "TNRTP114_ENTERPRISE_TYPE_MASTER_D",
+			as: "enterpriseType",
+		});
+	};
 	enterpriseType.selectedFields = ["value", "label"];
 	return enterpriseType;
 };
