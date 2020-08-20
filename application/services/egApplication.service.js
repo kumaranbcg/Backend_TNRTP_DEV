@@ -537,7 +537,8 @@ EGApplicationService.prototype.getEgMasterService = async (params) => {
 EGApplicationService.prototype.getEgApplicationService = async (params) => {
 	try {
 		console.log('working')
-		const { status, search, sortBy, page, limit, districtId, blockId } = params;
+		const { status, search, sortBy, page, limit, districtId } = params;
+		console.log(params)
 		const searchCondition = !!search
 			? {
 					[Op.and]: [
@@ -571,12 +572,13 @@ EGApplicationService.prototype.getEgApplicationService = async (params) => {
 				where: {
 					[Op.or]: [
 						{ TNRTP54_US_DISTRICT_MASTER_D: districtId },
-						{ TNRTP54_US_BLOCK_MASTER_D: blockId },
+						// { TNRTP54_US_BLOCK_MASTER_D: blockId },
 					],
 				},
 				attributes: ["TNRTP53_EG_FORMS_MASTER_D"],
 			}
 		).slice(0, -1);
+
 		const totalApplication = application.dialect.QueryGenerator.selectQuery(
 			"TNRTP53_EG_FORMS_MASTER",
 			{
@@ -696,7 +698,10 @@ EGApplicationService.prototype.getEgApplicationService = async (params) => {
 					required: true,
 					where: {
 						TNRTP54_DELETED_F: DELETE_STATUS.NOT_DELETED,
-						[Op.or]: [{ districtId }, { blockId }],
+						[Op.or]: [
+							{ districtId }, 
+							// { blockId }
+						],
 					},
 
 					attributes: ["name", "EGName", "blockId", "districtId", "panchayatId"],

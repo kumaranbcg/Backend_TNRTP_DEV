@@ -53,22 +53,22 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: "formId",
 			as: "egFormUploadDocument",
 		});
-		// egFormMaster.hasOne(models.egApplicationStatus, {
-		// 	foreignKey: "formId",
-		// 	as: "egBmpuApplicationStatus",
-		// });
-		// egFormMaster.hasOne(models.egApplicationStatus, {
-		// 	foreignKey: "formId",
-		// 	as: "egDmpuApplicationStatus",
-		// });
-		// egFormMaster.hasOne(models.egDisbursment, {
-		// 	foreignKey: "formId",
-		// 	as: "amountDisbursment",
-		// });
-		// egFormMaster.hasOne(models.egDisbursment, {
-		// 	foreignKey: "formId",
-		// 	as: "disbursmentUc",
-		// });
+		egFormMaster.hasOne(models.egApplicationStatus, {
+			foreignKey: "formId",
+			as: "egBmpuApplicationStatus",
+		});
+		egFormMaster.hasOne(models.egApplicationStatus, {
+			foreignKey: "formId",
+			as: "egDmpuApplicationStatus",
+		});
+		egFormMaster.hasOne(models.egDisbursement, {
+			foreignKey: "formId",
+			as: "amountDisbursment",
+		});
+		egFormMaster.hasOne(models.egDisbursement, {
+			foreignKey: "formId",
+			as: "disbursmentUc",
+		});
 	};
 	return egFormMaster;
 };
