@@ -1360,6 +1360,12 @@ SYMRApplicationService.prototype.getSymrApplicationStatusService = async (params
 						},
 					],
 				},
+				{
+					model: symrAssessment,
+					as: "symrAssessment",
+					required: false,
+					attributes: symrAssessment.selectedFields,
+				},
 				
 			],
 		});

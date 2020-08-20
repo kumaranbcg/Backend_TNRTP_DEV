@@ -68,6 +68,10 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: "formId",
 			as: "disbursmentUc"
 		});
+		symrFormMaster.hasMany(models.symrAssessment, {
+			foreignKey: "formId",
+			as: "symrAssessment",
+		});
 	};
 	return symrFormMaster;
 };
