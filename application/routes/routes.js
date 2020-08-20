@@ -347,7 +347,7 @@ router.post(
 router.get(
 	"/application/getEgForm",
 	verifyToken,
-	hasRole([STAFF_ROLE.PUBLIC]),
+	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC]),
 	EGFormController.getEgForm
 );
 

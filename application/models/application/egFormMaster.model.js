@@ -69,6 +69,10 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: "formId",
 			as: "disbursmentUc",
 		});
+		egFormMaster.hasMany(models.egAssessment, {
+			foreignKey: "formId",
+			as: "egAssessment",
+		});
 	};
 	return egFormMaster;
 };

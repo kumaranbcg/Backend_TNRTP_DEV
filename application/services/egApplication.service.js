@@ -37,7 +37,7 @@ const {
 	application,
 	egApplicationStatus,
 	egRequiredDoc,
-	egDisbursment,
+	egDisbursement,
 	egAssessment,
 	egAssessmentDoc,
 } = require("../models");
@@ -942,7 +942,7 @@ EGApplicationService.prototype.getEgApplicationStatusService = async (params) =>
 					],
 				},
 				{
-					model: egDisbursment,
+					model: egDisbursement,
 					as: "amountDisbursment",
 					required: false,
 					where: { disbursmentType: EG_DISBURSEMENT_STATE.AMOUNT_DISBURSMENT },
@@ -955,7 +955,7 @@ EGApplicationService.prototype.getEgApplicationStatusService = async (params) =>
 					],
 				},
 				{
-					model: egDisbursment,
+					model: egDisbursement,
 					as: "disbursmentUc",
 					required: false,
 					where: { disbursmentType: EG_DISBURSEMENT_STATE.SUBMIT_UC_DISBURSMENT },
