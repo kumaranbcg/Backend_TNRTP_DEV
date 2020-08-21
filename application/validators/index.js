@@ -168,7 +168,7 @@ const schemas = {
 			promotingOrgName: BaseJoi.number().required(),
 			orgOthersName: BaseJoi.optional(),
 			formSupportedBy: BaseJoi.number().required(),
-			noOfPG: BaseJoi.string().required(),
+			// noOfPG: BaseJoi.string().required(),
 			othersName: BaseJoi.optional(),
 			pgTypes: BaseJoi.array()
 				.items({
