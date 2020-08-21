@@ -708,7 +708,7 @@ EGApplicationService.prototype.getEgApplicationService = async (params) => {
 						],
 					},
 
-					attributes: ["name", "EGName", "blockId", "districtId", "panchayatId"],
+					attributes: ["name", "egName", "blockId", "districtId", "panchayatId"],
 				},
 				{
 					model: egFormDetails,
