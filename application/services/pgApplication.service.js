@@ -1192,6 +1192,10 @@ PGApplicationService.prototype.startPgAssesmentService = async (params) => {
 				},
 			],
 		});
+		if (membersData) {
+			membersData.dataValues["members"] = membersData.dataValues["pgFormMembers"];
+			delete membersData.dataValues["pgFormMembers"];
+		}
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,

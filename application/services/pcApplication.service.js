@@ -1289,6 +1289,10 @@ PCApplicationService.prototype.startAssesmentService = async (params) => {
 				},
 			],
 		});
+		if (membersData) {
+			membersData.dataValues["members"] = membersData.dataValues["pcFormMembers"];
+			delete membersData.dataValues["pcFormMembers"];
+		}
 		const auditYearMaster = application.dialect.QueryGenerator.selectQuery(
 			"TNRTP28_PC_AUDIT_FINANCIAL_YEAR_MASTER",
 			{

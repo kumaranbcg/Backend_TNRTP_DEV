@@ -9,24 +9,24 @@ const {
 	EG_APPLICATION_STATUS_TYPE,
 	EG_DISBURSEMENT_STATE,
 	DASHBOARD_FORM_STATUS,
-	FORM_TYPES
+	FORM_TYPES,
 } = require("../constants/index");
 
 const { Op } = require("sequelize");
 
 const {
-	egFormMaster,				// 1
-	egFormBasicDetails,			// 2
-	egFormDetails,				// 3
-	selectedEg,					// 9 
-	selectedEgCommodity,		// 10 
-	selectedEgSector,			// 11 
-	egFormMembers,				// 4
-	egFormAmountRecevied,		// 5
-	egFormBankDetails,			// 6
-	egFormProposedActivity,		// 7
-	egFormUploadDocument,		// 8
-	selectedEgDoc,			    // 12 
+	egFormMaster, // 1
+	egFormBasicDetails, // 2
+	egFormDetails, // 3
+	selectedEg, // 9
+	selectedEgCommodity, // 10
+	selectedEgSector, // 11
+	egFormMembers, // 4
+	egFormAmountRecevied, // 5
+	egFormBankDetails, // 6
+	egFormProposedActivity, // 7
+	egFormUploadDocument, // 8
+	selectedEgDoc, // 12
 	pcTypes,
 	pcCommodityTypes,
 	pcSectorTypes,
@@ -42,9 +42,8 @@ const {
 	egDisbursement,
 	egAssessment,
 	egAssessmentDoc,
-	mainDashboard
+	mainDashboard,
 } = require("../models");
-
 
 class EGApplicationService {}
 
@@ -56,7 +55,7 @@ EGApplicationService.prototype.egFormCreateSerivce = async (params) => {
 			userId,
 			status: EG_FORM_MASTER_STATUS.DRAFT,
 			TNRTP53_CREATED_D: userId,
-			TNRTP53_UPDATED_D: userId
+			TNRTP53_UPDATED_D: userId,
 		};
 		let pendingForm = await egFormMaster.findOne({
 			where: { status: [EG_FORM_MASTER_STATUS.DRAFT, EG_FORM_MASTER_STATUS.PENDING] },
@@ -87,7 +86,7 @@ EGApplicationService.prototype.egFormCreateSerivce = async (params) => {
 };
 EGApplicationService.prototype.egFormBasicDetailsSerivce = async (params) => {
 	try {
-		console.log('Eg form service')
+		console.log("Eg form service");
 		const { formId } = params;
 		params.TNRTP54_CREATED_D = params.userData.userId;
 		params.TNRTP54_UPDATED_D = params.userData.userId;
@@ -116,7 +115,6 @@ EGApplicationService.prototype.egFormDetailsSerivce = async (params) => {
 		const { formId } = params;
 		params.TNRTP55_CREATED_D = params.userData.userId;
 		params.TNRTP55_UPDATED_D = params.userData.userId;
-
 
 		await egFormDetails.destroy({ where: { formId } }).then(() => {
 			return egFormDetails.create(
@@ -249,7 +247,7 @@ EGApplicationService.prototype.egFormProposedActivitySerivce = async (params) =>
 EGApplicationService.prototype.egFormUploadDocSerivce = async (params) => {
 	try {
 		const { formId } = params;
-		
+
 		if (params.minOfEGRefund && params.minOfEGRefund.length) {
 			params.minOfEGRefund.map((element) => {
 				element.docType = EG_UPLOAD_DOC.MIN_OF_EG;
@@ -540,12 +538,11 @@ EGApplicationService.prototype.getEgMasterService = async (params) => {
 	}
 };
 
-
 EGApplicationService.prototype.getEgApplicationService = async (params) => {
 	try {
-		console.log('working')
+		console.log("working");
 		const { status, search, sortBy, page, limit, districtId } = params;
-		console.log(params)
+		console.log(params);
 		const searchCondition = !!search
 			? {
 					[Op.and]: [
@@ -706,7 +703,7 @@ EGApplicationService.prototype.getEgApplicationService = async (params) => {
 					where: {
 						TNRTP54_DELETED_F: DELETE_STATUS.NOT_DELETED,
 						[Op.or]: [
-							{ districtId }, 
+							{ districtId },
 							// { blockId }
 						],
 					},
@@ -804,7 +801,7 @@ EGApplicationService.prototype.getEgApplicationService = async (params) => {
 EGApplicationService.prototype.updateBmpuOpenApplicationService = async (params) => {
 	try {
 		const { formId, userData } = params;
-		console.log("801",params)
+		console.log("801", params);
 		if (params.blockLevelForm && params.blockLevelForm.length) {
 			params.blockLevelForm.map((element) => {
 				element.docType = EG_STAFF_DOC.BLECMM;
@@ -819,7 +816,7 @@ EGApplicationService.prototype.updateBmpuOpenApplicationService = async (params)
 		delete params.userData;
 		params.TNRTP108_CREATED_D = userData.userId;
 		params.TNRTP108_UPDATED_D = userData.userId;
-		console.log("815",params)
+		console.log("815", params);
 		let egst = await egApplicationStatus.create(
 			{ ...params },
 			{
@@ -835,7 +832,7 @@ EGApplicationService.prototype.updateBmpuOpenApplicationService = async (params)
 				],
 			}
 		);
-		console.log("830",egst)
+		console.log("830", egst);
 		await egFormMaster.update(
 			{ status: params.applicationStatus },
 			{
@@ -1004,7 +1001,7 @@ EGApplicationService.prototype.getEgApplicationStatusService = async (params) =>
 EGApplicationService.prototype.updateDmpuOpenApplicationService = async (params) => {
 	try {
 		const { formId, userData } = params;
-		console.log(userData)
+		console.log(userData);
 		if (params.decmm && params.decmm.length) {
 			params.decmm.map((element) => {
 				element.docType = EG_STAFF_DOC.DECMM;
@@ -1034,7 +1031,7 @@ EGApplicationService.prototype.updateDmpuOpenApplicationService = async (params)
 				],
 			}
 		);
-		console.log(dmpustat)
+		console.log(dmpustat);
 		await egFormMaster.update(
 			{ status: params.applicationStatus },
 			{
@@ -1079,7 +1076,7 @@ EGApplicationService.prototype.updateDmpuOpenApplicationService = async (params)
 EGApplicationService.prototype.updateAmountDisbursmentService = async (params) => {
 	try {
 		const { formId, userData } = params;
-		console.log(params)
+		console.log(params);
 		params.disbursmentType = EG_DISBURSEMENT_STATE.AMOUNT_DISBURSMENT;
 		delete params.userData;
 		params.TNRTP107_CREATED_D = userData.userId;
@@ -1091,7 +1088,7 @@ EGApplicationService.prototype.updateAmountDisbursmentService = async (params) =
 				where: { formId },
 			}
 		);
-		console.log("1090",egdis)
+		console.log("1090", egdis);
 		let dashBoardData = await mainDashboard.findOne({
 			where: { formId, formTypeId: FORM_TYPES.EG_FORM },
 		});
@@ -1165,6 +1162,10 @@ EGApplicationService.prototype.startEgAssesmentService = async (params) => {
 				},
 			],
 		});
+		if (membersData) {
+			membersData.dataValues["members"] = membersData.dataValues["egFormMembers"];
+			delete membersData.dataValues["egFormMembers"];
+		}
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -1180,7 +1181,7 @@ EGApplicationService.prototype.startEgAssesmentService = async (params) => {
 };
 EGApplicationService.prototype.submitEgAssesmentService = async (params) => {
 	try {
-		console.log('working')
+		console.log("working");
 		const { formId } = params;
 		params.assessments.map((element) => {
 			element.formId = formId;
@@ -1236,8 +1237,4 @@ EGApplicationService.prototype.getEgAssesmentService = async (params) => {
 	}
 };
 
-
-
 module.exports = new EGApplicationService();
-
-
