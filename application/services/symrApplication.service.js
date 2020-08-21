@@ -1389,9 +1389,10 @@ SYMRApplicationService.prototype.updateSymrAmountDisbursmentService = async (par
 		delete params.userData;
 		params.TNRTP104_CREATED_D = userData.userId;
 		params.TNRTP104_UPDATED_D = userData.userId;
+		console.log(params)
 		await symrDisbursment.create({ ...params });
 		await symrFormMaster.update(
-			{ status: SYMR_FORM_MASTER_STATUS.AMOUNT_DISBURSMENT },
+			{ status: SYMR_FORM_MASTER_STATUS.SUBMIT_UC },
 			{
 				where: { formId },
 			}
@@ -1425,11 +1426,9 @@ SYMRApplicationService.prototype.updateSymrDisbursmentUcService = async (params)
 		delete params.userData;
 		params.TNRTP104_CREATED_D = userData.userId;
 		params.TNRTP104_UPDATED_D = userData.userId;
-		await symrDisbursment.update(
+		console.log(params)
+		await symrDisbursment.create(
 			{ ...params },
-			{
-				where: { formId },
-			},
 			{
 				include: [
 					{
