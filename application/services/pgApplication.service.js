@@ -1112,7 +1112,7 @@ PGApplicationService.prototype.updateAmountDisbursmentService = async (params) =
 		params.TNRTP50_UPDATED_D = userData.userId;
 		await pgDisbursment.create({ ...params });
 		await pgFormMaster.update(
-			{ status: PG_FORM_MASTER_STATUS.AMOUNT_DISBURSMENT },
+			{ status: PG_FORM_MASTER_STATUS.SUBMIT_UC },
 			{
 				where: { formId },
 			}
@@ -1160,7 +1160,7 @@ PGApplicationService.prototype.updateDisbursmentUcService = async (params) => {
 			}
 		);
 		await pgFormMaster.update(
-			{ status: PG_FORM_MASTER_STATUS.SUBMIT_UC },
+			{ status: PG_FORM_MASTER_STATUS.APPROVED },
 			{
 				where: { formId },
 			}
