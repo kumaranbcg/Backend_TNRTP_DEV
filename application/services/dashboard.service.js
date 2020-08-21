@@ -20,31 +20,69 @@ const { Op } = require("sequelize");
 class DashboardService {}
 DashboardService.prototype.dashboardStatisticService = async (params) => {
 	try {
-		const { district, block, panchayat, formType, limit } = params;
-		let searchCondition = {
-			[Op.or]: [
-				{
+		const { district, block, panchayat, formType, climit,slimit } = params;
+		let districtCondition = {};
+		let blockCondition = {};
+		let panchayatCondition = {};
+		let formTypeCondition = {};
+		let searchCondition = {};
+		if(district.length){
+			districtCondition = {
 					TNRTP95_US_DISTRICT_MASTER_D: {
 						[Op.in]: district,
 					},
-				},
-				{
+			}
+
+		}
+		if(block.length){
+			blockCondition = {
 					TNRTP95_US_BLOCK_MASTER_D: {
 						[Op.in]: block,
 					},
-				},
-				{
-					TNRTP95_US_PANCHAYAT_MASTER_D: {
+			}
+
+		}
+		if(panchayat.length){
+			panchayatCondition = {
+				TNRTP95_US_PANCHAYAT_MASTER_D: {
 						[Op.in]: panchayat,
 					},
-				},
-				{
-					TNRTP95_FORMS_TYPE_D: {
+			}
+
+		}
+		if(formType.length){
+			formTypeCondition = {
+				TNRTP95_FORMS_TYPE_D: {
 						[Op.in]: formType,
 					},
-				},
-			],
-		};
+			}
+
+		}
+		if(formType.length || panchayat.length || block.length || district.length){
+			searchCondition = {
+				[Op.or]: [
+					{
+
+						...districtCondition
+					},
+					{
+
+						...blockCondition
+					},
+					{
+
+						...panchayatCondition
+					},
+					{
+
+						...formTypeCondition
+					}
+					
+				],
+			}
+
+		}
+
 		const dashBoardIds = await mainDashboard.findAll({
 			where: {
 				...searchCondition,
@@ -234,7 +272,10 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 				},
 			],
 			group: ["TNRTP14_TYPE_OF_SECTOR_MASTER_D"],
+			order: [[application.literal("sectorCount"), "DESC"]],
 			raw: true,
+			subQuery: false,
+			limit: slimit || 0,
 		});
 
 		let commodity = await pcCommodityTypes.findAll({
@@ -264,7 +305,7 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 			order: [[application.literal("commodityCount"), "DESC"]],
 			raw: true,
 			subQuery: false,
-			limit: limit || 0,
+			limit: climit || 0,
 		});
 		let enterprise = await enterpriseType.findAll({
 			attributes: [
@@ -300,9 +341,9 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 				totalDisbursmentAmount1: dashBoardData.totalDisbursmentAmount1,
 			},
 			loanSize: {
-				lowestAmount: dashBoardData.lowestAmount,
-				averageAmount: dashBoardData.averageAmount,
-				highestAmount: dashBoardData.highestAmount,
+				Lowest: dashBoardData.lowestAmount,
+				Average: dashBoardData.averageAmount,
+				Highest: dashBoardData.highestAmount,
 			},
 			applicationCount: {
 				approvedApplication: dashBoardData.approvedApplication,
@@ -329,20 +370,20 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 					parseInt(dashBoardData.totalSC) +
 					parseInt(dashBoardData.totalST) +
 					parseInt(dashBoardData.totalCommunityOthers),
-				totalBC: dashBoardData.totalBC,
-				totalMBC: dashBoardData.totalMBC,
-				totalSC: dashBoardData.totalSC,
-				totalST: dashBoardData.totalST,
-				totalCommunityOthers: dashBoardData.totalCommunityOthers,
+					BC: dashBoardData.totalBC,
+					MBC: dashBoardData.totalMBC,
+					SC: dashBoardData.totalSC,
+					ST: dashBoardData.totalST,
+					OTHERS: dashBoardData.totalCommunityOthers,
 			},
 			shg: {
 				totalSHG:
 					parseInt(dashBoardData.totalSHGMember) +
 					parseInt(dashBoardData.totalSHGHouseholds) +
 					parseInt(dashBoardData.totalNonSHGHouseholds),
-				totalSHGMember: dashBoardData.totalSHGMember,
-				totalSHGHouseholds: dashBoardData.totalSHGHouseholds,
-				totalNonSHGHouseholds: dashBoardData.totalNonSHGHouseholds,
+					SHG: dashBoardData.totalSHGMember,
+					SHGHouseholds: dashBoardData.totalSHGHouseholds,
+					NonSHGHouseholds: dashBoardData.totalNonSHGHouseholds,
 			},
 			vulnerable: {
 				totalVulnerable:
@@ -352,12 +393,12 @@ DashboardService.prototype.dashboardStatisticService = async (params) => {
 					parseInt(dashBoardData.TotalDesertedWomen) +
 					parseInt(dashBoardData.TotalEiderly) +
 					parseInt(dashBoardData.TotalVulnerableTransgender),
-				totalDifferentlyAbled: dashBoardData.TotalDifferentlyAbled,
-				totalWidow: dashBoardData.TotalWidow,
-				totalDestituteWomen: dashBoardData.TotalDestituteWomen,
-				totalDesertedWomen: dashBoardData.TotalDesertedWomen,
-				totalEiderly: dashBoardData.TotalEiderly,
-				totalVulnerableTransgender: dashBoardData.TotalVulnerableTransgender,
+					Differentlyabled: dashBoardData.TotalDifferentlyAbled,
+					Widow: dashBoardData.TotalWidow,
+					Destitued: dashBoardData.TotalDestituteWomen,
+					Desserted: dashBoardData.TotalDesertedWomen,
+					Eiderly: dashBoardData.TotalEiderly,
+					Transgender: dashBoardData.TotalVulnerableTransgender,
 			},
 			activitys: activity,
 			sectors: sector,
