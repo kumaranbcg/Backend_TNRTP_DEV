@@ -1502,14 +1502,16 @@ SYMRApplicationService.prototype.submitSymrAssesmentService = async (params) => 
 		params.assessments.map((element) => {
 			element.formId = formId;
 		});
-		await symrAssessment.bulkCreate([...params.assessments], {
+		await symrAssessment.destroy({ where: { formId } }).then(() => {
+			return symrAssessment.bulkCreate([...params.assessments], {
 			include: [
 				{
 					model: symrAssessmentDoc,
 					as: "documents",
 				},
 			],
-		});
+		})
+	})
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
