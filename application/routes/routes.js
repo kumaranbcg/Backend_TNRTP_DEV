@@ -311,14 +311,14 @@ router.post(
 router.get(
 	"/application/startPgAssesment",
 	verifyToken,
-	hasRole([STAFF_ROLE.BPMU]),
+	hasRole([STAFF_ROLE.BPMU, STAFF_ROLE.DPMU]),
 	PGFormController.startPgAssesment
 );
 
 router.post(
 	"/application/submitPgAssesment",
 	verifyToken,
-	hasRole([STAFF_ROLE.BPMU]),
+	hasRole([STAFF_ROLE.BPMU, STAFF_ROLE.DPMU]),
 	PGFormController.submitPgAssesment
 );
 
@@ -333,28 +333,56 @@ router.get(
 router.get(
 	"/application/egFormCreate",
 	verifyToken,
-	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC, STAFF_ROLE.PUBLIC]),
+	hasRole([
+		STAFF_ROLE.DPMU,
+		STAFF_ROLE.SPMU,
+		STAFF_ROLE.PLF,
+		STAFF_ROLE.BPMU,
+		STAFF_ROLE.VPRC,
+		STAFF_ROLE.PUBLIC,
+	]),
 	EGFormController.egFormCreate
 );
 
 router.post(
 	"/application/egFormFill",
 	verifyToken,
-	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC, STAFF_ROLE.PUBLIC]),
+	hasRole([
+		STAFF_ROLE.DPMU,
+		STAFF_ROLE.SPMU,
+		STAFF_ROLE.PLF,
+		STAFF_ROLE.BPMU,
+		STAFF_ROLE.VPRC,
+		STAFF_ROLE.PUBLIC,
+	]),
 	EGFormController.egFormFill
 );
 
 router.get(
 	"/application/getEgForm",
 	verifyToken,
-	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC, STAFF_ROLE.PUBLIC]),
+	hasRole([
+		STAFF_ROLE.DPMU,
+		STAFF_ROLE.SPMU,
+		STAFF_ROLE.PLF,
+		STAFF_ROLE.BPMU,
+		STAFF_ROLE.VPRC,
+		STAFF_ROLE.PUBLIC,
+	]),
 	EGFormController.getEgForm
 );
 
 router.get(
 	"/application/getEGMasters",
 	verifyToken,
-	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC, STAFF_ROLE.PUBLIC]),
+	hasRole([
+		STAFF_ROLE.DPMU,
+		STAFF_ROLE.SPMU,
+		STAFF_ROLE.PLF,
+		STAFF_ROLE.BPMU,
+		STAFF_ROLE.VPRC,
+		STAFF_ROLE.PUBLIC,
+	]),
 	EGFormController.getEGMasters
 );
 
@@ -362,7 +390,14 @@ router.post(
 	"/application/submitEgForm",
 	verifyToken,
 	egFormSubmit,
-	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC, STAFF_ROLE.PUBLIC]),
+	hasRole([
+		STAFF_ROLE.DPMU,
+		STAFF_ROLE.SPMU,
+		STAFF_ROLE.PLF,
+		STAFF_ROLE.BPMU,
+		STAFF_ROLE.VPRC,
+		STAFF_ROLE.PUBLIC,
+	]),
 	EGFormController.submitEgForm
 );
 
@@ -389,14 +424,14 @@ router.get(
 router.get(
 	"/application/startEgAssesment",
 	verifyToken,
-	hasRole([STAFF_ROLE.BPMU]),
+	hasRole([STAFF_ROLE.BPMU, STAFF_ROLE.DPMU]),
 	EGFormController.startEgAssesment
 );
 
 router.post(
 	"/application/submitEgAssesment",
 	verifyToken,
-	hasRole([STAFF_ROLE.BPMU]),
+	hasRole([STAFF_ROLE.BPMU, STAFF_ROLE.DPMU]),
 	EGFormController.submitEgAssesment
 );
 
@@ -443,7 +478,8 @@ router.get(
 		STAFF_ROLE.SPMU,
 		STAFF_ROLE.PLF,
 		STAFF_ROLE.BPMU,
-		STAFF_ROLE.VPRC]),
+		STAFF_ROLE.VPRC,
+	]),
 	SYMRFormController.symrFormCreate
 );
 
@@ -456,7 +492,8 @@ router.post(
 		STAFF_ROLE.SPMU,
 		STAFF_ROLE.PLF,
 		STAFF_ROLE.BPMU,
-		STAFF_ROLE.VPRC]),
+		STAFF_ROLE.VPRC,
+	]),
 	SYMRFormController.symrFormFill
 );
 router.post("/application/uploadDoc", verifyToken, docUpload, SYMRFormController.uploadDoc);
@@ -470,7 +507,7 @@ router.post(
 		STAFF_ROLE.SPMU,
 		STAFF_ROLE.PLF,
 		STAFF_ROLE.BPMU,
-		STAFF_ROLE.VPRC
+		STAFF_ROLE.VPRC,
 	]),
 	symrFormSubmit,
 	SYMRFormController.submitSymrForm
@@ -497,7 +534,7 @@ router.get(
 		STAFF_ROLE.SPMU,
 		STAFF_ROLE.PLF,
 		STAFF_ROLE.BPMU,
-		STAFF_ROLE.VPRC
+		STAFF_ROLE.VPRC,
 	]),
 	SYMRFormController.getSymrMasters
 );

@@ -57,7 +57,7 @@ const {
 	ORDERBY,
 	SYMR_STAFF_DOC,
 	FORM_TYPES,
-	DASHBOARD_FORM_STATUS
+	DASHBOARD_FORM_STATUS,
 } = require("../constants/index");
 const { Op } = require("sequelize");
 const Cryptr = require("cryptr");
@@ -85,6 +85,7 @@ SYMRApplicationService.prototype.symrFormCreateSerivce = async (params) => {
 		let formData = await symrFormMaster.create({ ...createMaster });
 		await mainDashboard.create({
 			formId: formData.formId,
+			userId,
 			formTypeId: FORM_TYPES.SYMR_FORM,
 		});
 		return {
@@ -294,14 +295,17 @@ SYMRApplicationService.prototype.symrExistingLoanSerivce = async (params) => {
 		if (params) {
 			const { formId } = params;
 			await symrExistingLoan.destroy({ where: { formId } }).then(() => {
-				return symrExistingLoan.create({...params}, {
-					include: [
-						{
-							model: existingLoanActivity,
-							as: "existingLoanList",
-						}
-					]
-				});
+				return symrExistingLoan.create(
+					{ ...params },
+					{
+						include: [
+							{
+								model: existingLoanActivity,
+								as: "existingLoanList",
+							},
+						],
+					}
+				);
 			});
 		}
 		return {
@@ -412,45 +416,45 @@ SYMRApplicationService.prototype.getSymrFormService = async (params) => {
 							model: sourceOfInfo,
 							as: "sourceOfInfoData",
 							required: false,
-							attributes: sourceOfInfo.selectedFields
+							attributes: sourceOfInfo.selectedFields,
 						},
 						{
 							model: gender,
 							as: "genderData",
 							required: false,
-							attributes: gender.selectedFields
+							attributes: gender.selectedFields,
 						},
 						{
 							model: religion,
 							as: "religionData",
 							required: false,
-							attributes: religion.selectedFields
+							attributes: religion.selectedFields,
 						},
 						{
 							model: community,
 							as: "communityData",
 							required: false,
-							attributes: community.selectedFields
+							attributes: community.selectedFields,
 						},
 						{
 							model: educQualification,
 							as: "educQualificationData",
 							required: false,
-							attributes: educQualification.selectedFields
+							attributes: educQualification.selectedFields,
 						},
 						{
 							model: proofType,
 							as: "proofTypeData",
 							required: false,
-							attributes: proofType.selectedFields
+							attributes: proofType.selectedFields,
 						},
 						{
 							model: natureOfMigration,
 							as: "natureOfMigrationData",
 							required: false,
-							attributes: natureOfMigration.selectedFields
-						}
-					]
+							attributes: natureOfMigration.selectedFields,
+						},
+					],
 				},
 				{
 					model: symrShgDetails,
@@ -463,15 +467,15 @@ SYMRApplicationService.prototype.getSymrFormService = async (params) => {
 							model: shgMemberType,
 							as: "shgMemberTypeData",
 							required: false,
-							attributes: shgMemberType.selectedFields
+							attributes: shgMemberType.selectedFields,
 						},
 						{
 							model: relationshipType,
 							as: "relationshipTypeData",
 							required: false,
-							attributes: relationshipType.selectedFields
-						}
-					]
+							attributes: relationshipType.selectedFields,
+						},
+					],
 				},
 				{
 					model: symrEnterprise,
@@ -553,27 +557,27 @@ SYMRApplicationService.prototype.getSymrFormService = async (params) => {
 							model: scheme,
 							as: "skilltrainingData",
 							required: false,
-							attributes: scheme.selectedFields
+							attributes: scheme.selectedFields,
 						},
 						{
 							model: scheme,
 							as: "edpschemeData",
 							required: false,
-							attributes: scheme.selectedFields
+							attributes: scheme.selectedFields,
 						},
 						{
 							model: scheme,
 							as: "registeredEdpSchemeData",
 							required: false,
-							attributes: scheme.selectedFields
+							attributes: scheme.selectedFields,
 						},
 						{
 							model: courseCompletionYear,
 							as: "courseCompletionTypeData",
 							required: false,
-							attributes: courseCompletionYear.selectedFields
+							attributes: courseCompletionYear.selectedFields,
 						},
-					]
+					],
 				},
 				{
 					model: symrBankDetails,
@@ -979,45 +983,45 @@ SYMRApplicationService.prototype.getSymrApplicationService = async (params) => {
 							model: sourceOfInfo,
 							as: "sourceOfInfoData",
 							required: false,
-							attributes: sourceOfInfo.selectedFields
+							attributes: sourceOfInfo.selectedFields,
 						},
 						{
 							model: gender,
 							as: "genderData",
 							required: false,
-							attributes: gender.selectedFields
+							attributes: gender.selectedFields,
 						},
 						{
 							model: religion,
 							as: "religionData",
 							required: false,
-							attributes: religion.selectedFields
+							attributes: religion.selectedFields,
 						},
 						{
 							model: community,
 							as: "communityData",
 							required: false,
-							attributes: community.selectedFields
+							attributes: community.selectedFields,
 						},
 						{
 							model: educQualification,
 							as: "educQualificationData",
 							required: false,
-							attributes: educQualification.selectedFields
+							attributes: educQualification.selectedFields,
 						},
 						{
 							model: proofType,
 							as: "proofTypeData",
 							required: false,
-							attributes: proofType.selectedFields
+							attributes: proofType.selectedFields,
 						},
 						{
 							model: natureOfMigration,
 							as: "natureOfMigrationData",
 							required: false,
-							attributes: natureOfMigration.selectedFields
-						}
-					]
+							attributes: natureOfMigration.selectedFields,
+						},
+					],
 				},
 				{
 					model: symrShgDetails,
@@ -1030,15 +1034,15 @@ SYMRApplicationService.prototype.getSymrApplicationService = async (params) => {
 							model: shgMemberType,
 							as: "shgMemberTypeData",
 							required: false,
-							attributes: shgMemberType.selectedFields
+							attributes: shgMemberType.selectedFields,
 						},
 						{
 							model: relationshipType,
 							as: "relationshipTypeData",
 							required: false,
-							attributes: relationshipType.selectedFields
-						}
-					]
+							attributes: relationshipType.selectedFields,
+						},
+					],
 				},
 				{
 					model: symrEnterprise,
@@ -1120,27 +1124,27 @@ SYMRApplicationService.prototype.getSymrApplicationService = async (params) => {
 							model: scheme,
 							as: "skilltrainingData",
 							required: false,
-							attributes: scheme.selectedFields
+							attributes: scheme.selectedFields,
 						},
 						{
 							model: scheme,
 							as: "edpschemeData",
 							required: false,
-							attributes: scheme.selectedFields
+							attributes: scheme.selectedFields,
 						},
 						{
 							model: scheme,
 							as: "registeredEdpSchemeData",
 							required: false,
-							attributes: scheme.selectedFields
+							attributes: scheme.selectedFields,
 						},
 						{
 							model: courseCompletionYear,
 							as: "courseCompletionTypeData",
 							required: false,
-							attributes: courseCompletionYear.selectedFields
+							attributes: courseCompletionYear.selectedFields,
 						},
-					]
+					],
 				},
 				{
 					model: symrBankDetails,
@@ -1178,8 +1182,7 @@ SYMRApplicationService.prototype.getSymrApplicationService = async (params) => {
 							attributes: activityTimeline.selectedFields,
 						},
 					],
-				}
-				
+				},
 			],
 			raw: false,
 			nested: true,
@@ -1249,7 +1252,7 @@ SYMRApplicationService.prototype.updateOpenApplicationService = async (params) =
 					{
 						model: symrRequiredDoc,
 						as: "vprcCommitteeMom",
-					}
+					},
 				],
 			}
 		);
@@ -1261,7 +1264,6 @@ SYMRApplicationService.prototype.updateOpenApplicationService = async (params) =
 		);
 		let dashBoardFormStatus;
 		switch (params.applicationStatus) {
-
 			case SYMR_FORM_MASTER_STATUS.AMOUNT_DISBURSMENT: {
 				dashBoardFormStatus = DASHBOARD_FORM_STATUS.APPROVED;
 			}
@@ -1329,7 +1331,7 @@ SYMRApplicationService.prototype.getSymrApplicationStatusService = async (params
 							required: false,
 							where: { docType: SYMR_STAFF_DOC.VPRC_COMMITTEE_MOM },
 							attributes: symrRequiredDoc.selectedFields,
-						}
+						},
 					],
 				},
 				{
@@ -1366,7 +1368,6 @@ SYMRApplicationService.prototype.getSymrApplicationStatusService = async (params
 					required: false,
 					attributes: symrAssessment.selectedFields,
 				},
-				
 			],
 		});
 		return {
@@ -1389,7 +1390,7 @@ SYMRApplicationService.prototype.updateSymrAmountDisbursmentService = async (par
 		delete params.userData;
 		params.TNRTP104_CREATED_D = userData.userId;
 		params.TNRTP104_UPDATED_D = userData.userId;
-		console.log(params)
+		console.log(params);
 		await symrDisbursment.create({ ...params });
 		await symrFormMaster.update(
 			{ status: SYMR_FORM_MASTER_STATUS.SUBMIT_UC },
@@ -1426,7 +1427,7 @@ SYMRApplicationService.prototype.updateSymrDisbursmentUcService = async (params)
 		delete params.userData;
 		params.TNRTP104_CREATED_D = userData.userId;
 		params.TNRTP104_UPDATED_D = userData.userId;
-		console.log(params)
+		console.log(params);
 		await symrDisbursment.create(
 			{ ...params },
 			{
@@ -1486,7 +1487,13 @@ SYMRApplicationService.prototype.startSymrAssesmentService = async (params) => {
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
-			data: { membersData, shgMemberTypeMaster, symrRepayOfExistingLoanMaster, symrProposedEnterpriseLocationMaster, symrExperienceMaster },
+			data: {
+				membersData,
+				shgMemberTypeMaster,
+				symrRepayOfExistingLoanMaster,
+				symrProposedEnterpriseLocationMaster,
+				symrExperienceMaster,
+			},
 		};
 	} catch (err) {
 		console.log("startAssesmentService", err);
@@ -1504,14 +1511,14 @@ SYMRApplicationService.prototype.submitSymrAssesmentService = async (params) => 
 		});
 		await symrAssessment.destroy({ where: { formId } }).then(() => {
 			return symrAssessment.bulkCreate([...params.assessments], {
-			include: [
-				{
-					model: symrAssessmentDoc,
-					as: "documents",
-				},
-			],
-		})
-	})
+				include: [
+					{
+						model: symrAssessmentDoc,
+						as: "documents",
+					},
+				],
+			});
+		});
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,

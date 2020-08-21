@@ -69,6 +69,7 @@ PGApplicationService.prototype.pgFormCreateSerivce = async (params) => {
 		let formData = await pgFormMaster.create({ ...createMaster });
 		await mainDashboard.create({
 			formId: formData.formId,
+			userId,
 			formTypeId: FORM_TYPES.PG_FORM,
 		});
 		return {

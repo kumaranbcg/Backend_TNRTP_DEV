@@ -6,7 +6,7 @@ class UserFormController {}
 
 UserFormController.prototype.getUserApplications = async (req, res) => {
 	try {
-		let result = await service.getUserApplicationsService({ ...req.user });
+		let result = await service.getUserApplicationsService({ ...req.user, ...req.query });
 		res.status(result.code).json({ message: result.message, data: result.data });
 	} catch (err) {
 		console.log(err);

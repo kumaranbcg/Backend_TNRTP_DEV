@@ -17,7 +17,8 @@ const {
 	selectedPg,
 	symrFormMaster,
 	symrBankDetails,
-	symrBasicDetails
+	symrBasicDetails,
+	mainDashboard,
 } = require("../models");
 const { DELETE_STATUS, FORM_TYPES } = require("./../constants/index");
 const { Op, Sequelize } = require("sequelize");
@@ -25,17 +26,22 @@ class UserFormService {}
 
 UserFormService.prototype.getUserApplicationsService = async (params) => {
 	try {
-		const { userId, mobileNumber } = params;
-		let userPCFormsFilter = {
-			[Op.or]: {
-				userId,
-				"$basicDetails.TNRTP07_MOBILE_NUMBER_R$": mobileNumber,
+		const { userId, mobileNumber, limit, page } = params;
+		let { rows, count } = await mainDashboard.findAndCountAll({
+			where: {
+				[Op.or]: [{ userId }, { mobileNumber }],
 			},
-		};
-		let userPGFormsFilter = {
-			[Op.or]: {
-				userId,
-				"$basicDetails.TNRTP37_MOBILE_NUMBER_R$": mobileNumber,
+			attributes: ["formId", "formTypeId"],
+			raw: true,
+			offset: (page - 1) * limit,
+			limit: parseInt(limit),
+		});
+		let meta = {
+			pagination: {
+				limit,
+				page,
+				count,
+				total_pages: Math.ceil(count / limit),
 			},
 		};
 		const pcFormAmt = application.dialect.QueryGenerator.selectQuery(
@@ -78,7 +84,10 @@ UserFormService.prototype.getUserApplicationsService = async (params) => {
 			}
 		).slice(0, -1);
 		let pcForms = await pcFormMaster.findAll({
-			where: { TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED, ...userPCFormsFilter },
+			where: {
+				TNRTP01_DELETED_F: DELETE_STATUS.NOT_DELETED,
+				formId: rows.filter((x) => x.formTypeId == FORM_TYPES.PC_FORM).map((x) => x.formId),
+			},
 			attributes: [
 				"formId",
 				"status",
@@ -126,7 +135,10 @@ UserFormService.prototype.getUserApplicationsService = async (params) => {
 			],
 		});
 		let pgForms = await pgFormMaster.findAll({
-			where: { TNRTP36_DELETED_F: DELETE_STATUS.NOT_DELETED, ...userPGFormsFilter },
+			where: {
+				TNRTP36_DELETED_F: DELETE_STATUS.NOT_DELETED,
+				formId: rows.filter((x) => x.formTypeId == FORM_TYPES.PG_FORM).map((x) => x.formId),
+			},
 			attributes: [
 				"formId",
 				"status",
@@ -174,7 +186,10 @@ UserFormService.prototype.getUserApplicationsService = async (params) => {
 			],
 		});
 		let symrForms = await symrFormMaster.findAll({
-			where: { TNRTP68_DELETED_F: DELETE_STATUS.NOT_DELETED, userId },
+			where: {
+				TNRTP68_DELETED_F: DELETE_STATUS.NOT_DELETED,
+				formId: rows.filter((x) => x.formTypeId == FORM_TYPES.SYMR_FORM).map((x) => x.formId),
+			},
 			attributes: [
 				"formId",
 				"status",
@@ -187,9 +202,7 @@ UserFormService.prototype.getUserApplicationsService = async (params) => {
 					as: "basicDetails",
 					required: false,
 					where: { TNRTP69_DELETED_F: DELETE_STATUS.NOT_DELETED },
-					attributes: ["mobileNumber",
-						"name"
-					]
+					attributes: ["mobileNumber", "name"],
 				},
 				{
 					model: symrBankDetails,
@@ -216,7 +229,7 @@ UserFormService.prototype.getUserApplicationsService = async (params) => {
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.formCreated,
-			data: { forms },
+			data: { forms, meta },
 		};
 	} catch (err) {
 		console.log("pcFormCreateSerivce", err);

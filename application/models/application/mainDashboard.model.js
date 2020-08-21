@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
 			formId: { type: DataTypes.INTEGER, field: "TNRTP95_FORMS_MASTER_D" },
 			formTypeId: { type: DataTypes.INTEGER, field: "TNRTP95_FORMS_TYPE_D" },
 			applicationStatus: { type: DataTypes.INTEGER, field: "TNRTP95_IS_APPLICATION_STATUS_D" },
+			userId: { type: DataTypes.INTEGER, field: "TNRTP95_US_USER_MASTER_D" },
+			mobileNumber: { type: DataTypes.INTEGER, field: "TNRTP95_MOBILE_NUMBER_R" },
 			districtId: { type: DataTypes.INTEGER, field: "TNRTP95_US_DISTRICT_MASTER_D" },
 			blockId: { type: DataTypes.INTEGER, field: "TNRTP95_US_BLOCK_MASTER_D" },
 			panchayatId: { type: DataTypes.INTEGER, field: "TNRTP95_US_PANCHAYAT_MASTER_D" },

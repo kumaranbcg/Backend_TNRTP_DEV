@@ -96,6 +96,7 @@ PCApplicationService.prototype.pcFormCreateSerivce = async (params) => {
 		let formData = await pcFormMaster.create({ ...createMaster });
 		await mainDashboard.create({
 			formId: formData.formId,
+			userId,
 			formTypeId: FORM_TYPES.PC_FORM,
 		});
 		return {

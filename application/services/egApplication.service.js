@@ -69,6 +69,7 @@ EGApplicationService.prototype.egFormCreateSerivce = async (params) => {
 		let formData = await egFormMaster.create({ ...createMaster });
 		await mainDashboard.create({
 			formId: formData.formId,
+			userId,
 			formTypeId: FORM_TYPES.EG_FORM,
 		});
 		return {
