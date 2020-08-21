@@ -1,6 +1,6 @@
 const { DELETE_STATUS, FORM_SECTION_STATUS } = require("../../constants/index");
 module.exports = (sequelize, DataTypes) => {
-	const EGFormBasicDetails = sequelize.define(
+	const egFormBasicDetails = sequelize.define(
 		"TNRTP54_EG_FORMS_BASIC_DETAILS",
 		{
 			TNRTP54_EG_FORMS_BASIC_DETAILS_D: {
@@ -11,8 +11,8 @@ module.exports = (sequelize, DataTypes) => {
 			formId: { type: DataTypes.INTEGER, field: "TNRTP54_EG_FORMS_MASTER_D" },
 			mobileNumber: { type: DataTypes.STRING, field: "TNRTP54_MOBILE_NUMBER_R" },
 			name: { type: DataTypes.STRING, field: "TNRTP54_NAME_N" },
-			EGName: { type: DataTypes.STRING, field: "TNRTP54_EG_NAME_N" },
-			EGAddress: { type: DataTypes.STRING, field: "TNRTP54_EG_ADDRESS_N" },
+			egName: { type: DataTypes.STRING, field: "TNRTP54_EG_NAME_N" },
+			egAddress: { type: DataTypes.STRING, field: "TNRTP54_EG_ADDRESS_N" },
 			districtId: { type: DataTypes.INTEGER, field: "TNRTP54_US_DISTRICT_MASTER_D" },
 			blockId: { type: DataTypes.INTEGER, field: "TNRTP54_US_BLOCK_MASTER_D" },
 			panchayatId: { type: DataTypes.INTEGER, field: "TNRTP54_US_PANCHAYAT_MASTER_D" },
@@ -32,14 +32,14 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: false,
 		}
 	);
-	EGFormBasicDetails.selectedFields = [
+	egFormBasicDetails.selectedFields = [
 		"mobileNumber",
 		"name",
-		"EGName",
-		"EGAddress",
+		"egName",
+		"egAddress",
 		["TNRTP54_US_DISTRICT_MASTER_D", "district"],
 		["TNRTP54_US_BLOCK_MASTER_D", "block"],
 		["TNRTP54_US_PANCHAYAT_MASTER_D", "panchayat"],
 	];
-	return EGFormBasicDetails;
+	return egFormBasicDetails;
 };
