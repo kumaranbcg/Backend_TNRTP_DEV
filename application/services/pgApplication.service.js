@@ -1210,7 +1210,9 @@ PGApplicationService.prototype.startPgAssesmentService = async (params) => {
 			if (membersData.dataValues.ageOfActvity) {
 				let today = new Date();
 				let dateOfFormation = new Date(membersData.dataValues.ageOfActvity);
-				membersData.dataValues.ageOfActvity = today.getFullYear() - dateOfFormation.getFullYear();
+				membersData.dataValues.members.dataValues.ageOfActvity =
+					today.getFullYear() - dateOfFormation.getFullYear();
+				delete membersData.dataValues.ageOfActvity;
 			}
 		}
 		return {
