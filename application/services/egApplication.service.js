@@ -43,6 +43,7 @@ const {
 	egAssessment,
 	egAssessmentDoc,
 	mainDashboard,
+	promotingOrg,
 } = require("../models");
 
 class EGApplicationService {}
@@ -395,6 +396,12 @@ EGApplicationService.prototype.getEgFormService = async (params) => {
 							as: "formSupportedData",
 							required: false,
 							attributes: formedSupported.selectedFields,
+						},
+						{
+							model: promotingOrg,
+							as: "promotingOrg",
+							required: false,
+							attributes: promotingOrg.selectedFields,
 						},
 					],
 				},

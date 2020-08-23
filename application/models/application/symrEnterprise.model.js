@@ -9,24 +9,33 @@ module.exports = (sequelize, DataTypes) => {
 				primaryKey: true,
 				autoIncrement: true,
 			},
-            formId: { type: DataTypes.INTEGER, field: "TNRTP81_SYMR_FORMS_MASTER_D" },
+			formId: { type: DataTypes.INTEGER, field: "TNRTP81_SYMR_FORMS_MASTER_D" },
 			grantenterpriseName: { type: DataTypes.STRING, field: "TNRTP81_GRANT_ENTERPRISE_NAME_N" },
-		    enterpriseType: { type: DataTypes.INTEGER, field: "TNRTP81_ENTERPRISE_TYPE_MASTER_D" },
+			enterpriseType: { type: DataTypes.INTEGER, field: "TNRTP81_ENTERPRISE_TYPE_MASTER_D" },
 			grantActivityName: { type: DataTypes.STRING, field: "TNRTP81_GRANT_ACTIVITY_NAME_N" },
-		    // activityType: { type: DataTypes.INTEGER, field: "TNRTP81_ACTIVITY_TYPE_MASTER_D" },
+			// activityType: { type: DataTypes.INTEGER, field: "TNRTP81_ACTIVITY_TYPE_MASTER_D" },
 			// sector: { type: DataTypes.INTEGER, field: "TNRTP81_TYPE_OF_SECTOR_MASTER_D" },
-            // commodity: { type: DataTypes.INTEGER, field: "TNRTP81_TYPE_OF_COMMODITY_MASTER_D" },
-            summary: { type: DataTypes.STRING, field: "TNRTP81_SUMMARY_N" },
+			// commodity: { type: DataTypes.INTEGER, field: "TNRTP81_TYPE_OF_COMMODITY_MASTER_D" },
+			summary: { type: DataTypes.STRING, field: "TNRTP81_SUMMARY_N" },
 			noOfPersons: { type: DataTypes.INTEGER, field: "TNRTP81_NO_OF_PERSONS_D" },
-            isExperiencedEnterpreneur: { type: DataTypes.BOOLEAN, field: "TNRTP81_IS_EXPERIENCED_ENTERPRENEUR_D" },
-            enterpreneurExpYears: { type: DataTypes.INTEGER, field: "TNRTP81_ENTERPRENEUR_EXP_YEARS_MASTER_D" },
-            isEmployedInActivity: { type: DataTypes.BOOLEAN, field: "TNRTP81_IS_EMPLOYED_IN_ACTIVITY_D" },
-        	activityExpYears: { type: DataTypes.INTEGER, field: "TNRTP81_ACTIVITY_EXP_YEARS_MASTER_D" },
-            designation: { type: DataTypes.STRING, field: "TNRTP81_DESIGNATION_N" },
-            location: { type: DataTypes.STRING, field: "TNRTP81_LOCATION_N" },
-            isLoanAppliedPreviously: { type: DataTypes.BOOLEAN, field: "TNRTP81_IS_LOAN_APPLIED_PREVIOUSLY_D" },
-            schemeAmount: { type: DataTypes.INTEGER, field: "TNRTP81_SCHEME_AMOUNT_N" },
-            schemeName: { type: DataTypes.STRING, field: "TNRTP81_SCHEME_NAME_N" },
+			isExperiencedEnterpreneur: {
+				type: DataTypes.BOOLEAN,
+				field: "TNRTP81_IS_EXPERIENCED_ENTERPRENEUR_D",
+			},
+			enterpreneurExpYears: {
+				type: DataTypes.INTEGER,
+				field: "TNRTP81_ENTERPRENEUR_EXP_YEARS_MASTER_D",
+			},
+			isEmployedInActivity: { type: DataTypes.BOOLEAN, field: "TNRTP81_IS_EMPLOYED_IN_ACTIVITY_D" },
+			activityExpYears: { type: DataTypes.INTEGER, field: "TNRTP81_ACTIVITY_EXP_YEARS_MASTER_D" },
+			designation: { type: DataTypes.STRING, field: "TNRTP81_DESIGNATION_N" },
+			location: { type: DataTypes.STRING, field: "TNRTP81_LOCATION_N" },
+			isLoanAppliedPreviously: {
+				type: DataTypes.BOOLEAN,
+				field: "TNRTP81_IS_LOAN_APPLIED_PREVIOUSLY_D",
+			},
+			schemeAmount: { type: DataTypes.BIGINT, field: "TNRTP81_SCHEME_AMOUNT_N" },
+			schemeName: { type: DataTypes.STRING, field: "TNRTP81_SCHEME_NAME_N" },
 
 			status: {
 				type: DataTypes.INTEGER,
@@ -43,8 +52,8 @@ module.exports = (sequelize, DataTypes) => {
 			freezeTableName: true,
 			timestamps: false,
 		}
-    );
-    symrEnterprise.associate = function (models) {
+	);
+	symrEnterprise.associate = function (models) {
 		symrEnterprise.belongsTo(models.enterpriseType, {
 			foreignKey: "TNRTP81_ENTERPRISE_TYPE_MASTER_D",
 			as: "enterpriseTypeData",
@@ -57,12 +66,12 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: "TNRTP93_SYMR_FORMS_DETAILS_MASTER_D",
 			as: "symrSectorTypes",
 		});
-        symrEnterprise.hasMany(models.selectedSymrCommodity, {
+		symrEnterprise.hasMany(models.selectedSymrCommodity, {
 			foreignKey: "TNRTP91_SYMR_FORMS_DETAILS_MASTER_D",
 			as: "symrCommodityTypes",
-        });
-       
-        symrEnterprise.belongsTo(models.years, {
+		});
+
+		symrEnterprise.belongsTo(models.years, {
 			foreignKey: "TNRTP81_ENTERPRENEUR_EXP_YEARS_MASTER_D",
 			as: "enterpreneurExpYearsData",
 		});
@@ -73,18 +82,18 @@ module.exports = (sequelize, DataTypes) => {
 	};
 	symrEnterprise.selectedFields = [
 		"grantenterpriseName",
-        "grantActivityName",
-        "summary",
-        "noOfPersons",
-        "isExperiencedEnterpreneur",
+		"grantActivityName",
+		"summary",
+		"noOfPersons",
+		"isExperiencedEnterpreneur",
 		"isEmployedInActivity",
 		"enterpreneurExpYears",
 		"activityExpYears",
-        "designation",
-        "isLoanAppliedPreviously",
-        "location",
-        "schemeName",
-        "schemeAmount"
+		"designation",
+		"isLoanAppliedPreviously",
+		"location",
+		"schemeName",
+		"schemeAmount",
 	];
 	return symrEnterprise;
 };

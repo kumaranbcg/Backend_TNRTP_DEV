@@ -1183,7 +1183,12 @@ PGApplicationService.prototype.startPgAssesmentService = async (params) => {
 		const { formId } = params;
 		let membersData = await pgFormMaster.findOne({
 			where: { formId, TNRTP36_DELETED_F: DELETE_STATUS.NOT_DELETED },
-			attributes: ["formId", "userId", "name"],
+			attributes: [
+				"formId",
+				"userId",
+				"name",
+				[application.col("pgDetails.TNRTP38_DATE_OF_FORMATION"), "ageOfActvity"],
+			],
 			include: [
 				{
 					model: pgFormMembers,
@@ -1191,11 +1196,22 @@ PGApplicationService.prototype.startPgAssesmentService = async (params) => {
 					where: { TNRTP39_DELETED_F: DELETE_STATUS.NOT_DELETED },
 					attributes: pgFormMembers.selectedFields,
 				},
+				{
+					model: pgFormDetails,
+					as: "pgDetails",
+					where: { TNRTP38_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					attributes: [],
+				},
 			],
 		});
 		if (membersData) {
 			membersData.dataValues["members"] = membersData.dataValues["pgFormMembers"];
 			delete membersData.dataValues["pgFormMembers"];
+			if (membersData.dataValues.ageOfActvity) {
+				let today = new Date();
+				let dateOfFormation = new Date(membersData.dataValues.ageOfActvity);
+				membersData.dataValues.ageOfActvity = today.getFullYear() - dateOfFormation.getFullYear();
+			}
 		}
 		return {
 			code: errorCodes.HTTP_OK,

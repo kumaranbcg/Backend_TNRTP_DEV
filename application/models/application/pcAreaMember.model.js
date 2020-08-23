@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
 			formId: { type: DataTypes.INTEGER, field: "TNRTP24_PC_FORMS_MASTER_D" },
 			value: { type: DataTypes.INTEGER, field: "TNRTP24_US_DISTRICT_MASTER_D" },
 			districtTotalBlock: { type: DataTypes.INTEGER, field: "TNRTP24_DISTRICT_TOTAL_BLOCK_D" },
-			districtTotalMember: { type: DataTypes.INTEGER, field: "TNRTP24_DISTRICT_TOTAL_MEMBER_D" },
+			districtTotalMember: { type: DataTypes.BIGINT, field: "TNRTP24_DISTRICT_TOTAL_MEMBER_D" },
 			TNRTP24_STATUS_D: { type: DataTypes.INTEGER },
 			TNTRP24_CREATED_AT: { type: DataTypes.DATE },
 			TNTRP24_UPDATED_AT: { type: DataTypes.DATE },

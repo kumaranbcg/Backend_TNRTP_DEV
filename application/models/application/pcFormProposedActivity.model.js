@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
 			activityName: { type: DataTypes.STRING, field: "TNRTP12_ACTIVITY_NAME_N" },
 			activityTimeLine: { type: DataTypes.INTEGER, field: "TNRTP12_ACTIVITY_TIMELINE_MASTER_D" },
 			activityTimeLineVal: { type: DataTypes.INTEGER, field: "TNRTP12_ACTIVITY_TIMELINE_VALUE_D" },
-			amtReq: { type: DataTypes.INTEGER, field: "TNRTP12_AMOUNT_REQUIRED_D" },
+			amtReq: { type: DataTypes.BIGINT, field: "TNRTP12_AMOUNT_REQUIRED_D" },
 			status: {
 				type: DataTypes.INTEGER,
 				defaultValue: FORM_SECTION_STATUS.FILLED,

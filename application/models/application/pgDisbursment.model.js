@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
 			isDisbursment: { type: DataTypes.BOOLEAN, field: "TNRTP50_IS_PC_FORM_DISBURSEMENT_D" },
 			disbursmentDate: { type: DataTypes.DATE, field: "TNRTP50_PG_FORM_DISBURSEMENT_DATE" },
 			disbursmentAmount: {
-				type: DataTypes.INTEGER,
+				type: DataTypes.BIGINT,
 				field: "TNRTP50_PG_FORM_DISBURSEMENT_AMOUNT_D",
 			},
 			firstTrancheSubmitDate: {

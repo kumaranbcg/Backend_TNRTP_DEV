@@ -13,7 +13,8 @@ module.exports = (sequelize, DataTypes) => {
 			dateRegistration: { type: DataTypes.DATE, field: "TNRTP55_DATE_OF_REGISTRATION" },
 			registrationUnder: { type: DataTypes.INTEGER, field: "TNRTP55_REGISTRATION_UNDER_MASTER_D" },
 			registrationNumber: { type: DataTypes.STRING, field: "TNRTP55_REGISTRATION_NUMBER_R" },
-			promotingOrgName: { type: DataTypes.STRING, field: "TNRTP55_PROMOTING_ORGANIZATION_NAME_N" },
+			promotingOrgName: { type: DataTypes.INTEGER, field: "TNRTP55_PROMOTING_ORGANIZATION_NAME_D" },
+			orgOthersName: { type: DataTypes.STRING, field: "TNRTP55_OTHERS_ORGANISATION_NAME_N" },
 			formSupportedBy: { type: DataTypes.INTEGER, field: "TNRTP55_FORMED_SUPPORTED_BY_MASTER_D" },
 			othersName: { type: DataTypes.STRING, field: "TNRTP55_OTHERS_NAME_N" },
 			noOfEG: { type: DataTypes.INTEGER, field: "TNRTP55_NO_OF_EG_N" },
@@ -53,6 +54,10 @@ module.exports = (sequelize, DataTypes) => {
 		egFormDetails.belongsTo(models.formedSupported, {
 			foreignKey: "TNRTP55_FORMED_SUPPORTED_BY_MASTER_D",
 			as: "formSupportedData",
+		});
+		egFormDetails.belongsTo(models.promotingOrg, {
+			foreignKey: "TNRTP55_PROMOTING_ORGANIZATION_NAME_D",
+			as: "promotingOrg",
 		});
 	};
 	egFormDetails.selectedFields = [

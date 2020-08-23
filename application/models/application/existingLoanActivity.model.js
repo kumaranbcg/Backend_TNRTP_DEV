@@ -9,13 +9,13 @@ module.exports = (sequelize, DataTypes) => {
 				autoIncrement: true,
 			},
 			loanSource: { type: DataTypes.STRING, field: "TNRTP89_LOAN_SOURCE_N" },
-            existingLoanId: { type: DataTypes.INTEGER, field: "TNRTP89_SYMR_EXISTING_LOAN_D" },
+			existingLoanId: { type: DataTypes.INTEGER, field: "TNRTP89_SYMR_EXISTING_LOAN_D" },
 			loanReceivedDate: { type: DataTypes.DATE, field: "TNRTP89_LOAN_RECEIVED_DATE_D" },
-            loanAmount: { type: DataTypes.INTEGER, field: "TNRTP89_LOAN_AMOUNT_D" },
+			loanAmount: { type: DataTypes.BIGINT, field: "TNRTP89_LOAN_AMOUNT_D" },
 			interestRate: { type: DataTypes.DOUBLE, field: "TNRTP89_INTEREST_RATE_D" },
-			amountToBeRepaid: { type: DataTypes.DOUBLE, field: "TNRTP89_AMOUNT_TO_BE_REPAID_D" },
-			amountRepaid: { type: DataTypes.DOUBLE, field: "TNRTP89_AMOUNT_REPAID_D" },
-            balanceAmtToBeRepaid: { type: DataTypes.DOUBLE, field: "TNRTP89_BALANCE_AMOUNT_TO_REPAY_D" },
+			amountToBeRepaid: { type: DataTypes.BIGINT, field: "TNRTP89_AMOUNT_TO_BE_REPAID_D" },
+			amountRepaid: { type: DataTypes.BIGINT, field: "TNRTP89_AMOUNT_REPAID_D" },
+			balanceAmtToBeRepaid: { type: DataTypes.BIGINT, field: "TNRTP89_BALANCE_AMOUNT_TO_REPAY_D" },
 			reason: { type: DataTypes.STRING, field: "TNRTP89_REASON_N" },
 			status: {
 				type: DataTypes.INTEGER,
@@ -34,14 +34,14 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	);
 	existingLoanActivity.selectedFields = [
-        "loanSource", 
-        "loanReceivedDate", 
-        "loanAmount",
-        "interestRate",
-        "amountToBeRepaid",
-        "amountRepaid",
-        "balanceAmtToBeRepaid",
-        "reason"
-    ];
+		"loanSource",
+		"loanReceivedDate",
+		"loanAmount",
+		"interestRate",
+		"amountToBeRepaid",
+		"amountRepaid",
+		"balanceAmtToBeRepaid",
+		"reason",
+	];
 	return existingLoanActivity;
 };
