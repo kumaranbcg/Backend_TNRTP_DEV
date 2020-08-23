@@ -19,6 +19,11 @@ const {
 	symrBankDetails,
 	symrBasicDetails,
 	mainDashboard,
+	egFormMaster,
+	egFormBankDetails,
+	egFormBasicDetails,
+	egFormDetails,
+	selectedEg
 } = require("../models");
 const { DELETE_STATUS, FORM_TYPES } = require("./../constants/index");
 const { Op, Sequelize } = require("sequelize");
@@ -27,6 +32,7 @@ class UserFormService {}
 UserFormService.prototype.getUserApplicationsService = async (params) => {
 	try {
 		const { userId, mobileNumber, limit, page } = params;
+		console.log(params);
 		let { rows, count } = await mainDashboard.findAndCountAll({
 			where: {
 				[Op.or]: [{ userId }, { mobileNumber }],
@@ -80,6 +86,19 @@ UserFormService.prototype.getUserApplicationsService = async (params) => {
 				where: {
 					TNRTP83_SYMR_FORMS_MASTER_D: {
 						[Op.eq]: application.col("TNRTP68_SYMR_FORMS_MASTER.TNRTP68_SYMR_FORMS_MASTER_D"),
+					},
+				},
+			}
+		).slice(0, -1);
+		const egFormAmt = application.dialect.QueryGenerator.selectQuery(
+			"TNRTP59_EG_FORMS_PROPOSED_ACTIVITY",
+			{
+				attributes: [
+					[application.fn("SUM", application.col("TNRTP59_AMOUNT_REQUIRED_D")), "totalAmount"],
+				],
+				where: {
+					TNRTP59_EG_FORMS_MASTER_D: {
+						[Op.eq]: application.col("TNRTP53_EG_FORMS_MASTER.TNRTP53_EG_FORMS_MASTER_D"),
 					},
 				},
 			}
@@ -186,34 +205,85 @@ UserFormService.prototype.getUserApplicationsService = async (params) => {
 				},
 			],
 		});
-		// let symrForms = await symrFormMaster.findAll({
-		// 	where: {
-		// 		TNRTP68_DELETED_F: DELETE_STATUS.NOT_DELETED,
-		// 		formId: rows.filter((x) => x.formTypeId == FORM_TYPES.SYMR_FORM).map((x) => x.formId),
-		// 	},
-		// 	attributes: [
-		// 		"formId",
-		// 		"status",
-		// 		["TNRTP68_UPDATED_AT", "appSubmitDate"],
-		// 		[application.literal("(" + symrFormAmt + ")"), "totalAmount"],
-		// 	],
-		// 	include: [
-		// 		{
-		// 			model: symrBasicDetails,
-		// 			as: "basicDetails",
-		// 			required: false,
-		// 			where: { TNRTP69_DELETED_F: DELETE_STATUS.NOT_DELETED },
-		// 			attributes: ["mobileNumber", "name"],
-		// 		},
-		// 		{
-		// 			model: symrBankDetails,
-		// 			as: "symrBankDetails",
-		// 			where: { TNRTP82_DELETED_F: DELETE_STATUS.NOT_DELETED },
-		// 			required: false,
-		// 			attributes: ["bnkName"],
-		// 		},
-		// 	],
-		// });
+		let symrForms = await symrFormMaster.findAll({
+			where: {
+				TNRTP68_DELETED_F: DELETE_STATUS.NOT_DELETED,
+				formId: rows.filter((x) => x.formTypeId == FORM_TYPES.SYMR_FORM).map((x) => x.formId),
+			},
+			attributes: [
+				"formId",
+				"status",
+				["TNRTP68_UPDATED_AT", "appSubmitDate"],
+				[application.literal("(" + symrFormAmt + ")"), "totalAmount"],
+			],
+			include: [
+				{
+					model: symrBasicDetails,
+					as: "basicDetails",
+					required: false,
+					where: { TNRTP69_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					attributes: ["mobileNumber", "name"],
+				},
+				{
+					model: symrBankDetails,
+					as: "symrBankDetails",
+					where: { TNRTP82_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
+					attributes: ["bnkName"],
+				},
+			],
+		});
+		let egForms = await egFormMaster.findAll({
+			where: {
+				TNRTP53_DELETED_F: DELETE_STATUS.NOT_DELETED,
+				formId: rows.filter((x) => x.formTypeId == FORM_TYPES.EG_FORM).map((x) => x.formId),
+			},
+			attributes: [
+				"formId",
+				"status",
+				["TNRTP53_UPDATED_AT", "appSubmitDate"],
+				[application.literal("(" + egFormAmt + ")"), "totalAmount"],
+			],
+			include: [
+				{
+					model: egFormBasicDetails,
+					as: "basicDetails",
+					where: { TNRTP54_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
+					attributes: ["mobileNumber", "name", "egName"],
+				},
+				{
+					model: egFormDetails,
+					as: "egDetails",
+					where: { TNRTP55_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
+					attributes: ["dateFormation"],
+					include: [
+						{
+							model: selectedEg,
+							as: "egTypes",
+							required: false,
+							attributes: selectedEg.selectedFields,
+							include: [
+								{
+									model: pcTypes,
+									as: "egTypesData",
+									required: false,
+									attributes: pcTypes.selectedFields,
+								},
+							],
+						},
+					],
+				},
+				{
+					model: egFormBankDetails,
+					as: "egFormBankDetails",
+					where: { TNRTP58_DELETED_F: DELETE_STATUS.NOT_DELETED },
+					required: false,
+					attributes: ["bnkName"],
+				},
+			],
+		});
 		pcForms.map((element) => {
 			element.dataValues.type = FORM_TYPES.PC_FORM;
 			return element;
@@ -222,14 +292,19 @@ UserFormService.prototype.getUserApplicationsService = async (params) => {
 			element.dataValues.type = FORM_TYPES.PG_FORM;
 			return element;
 		});
-		// symrForms.map((element) => {
-		// 	element.dataValues.type = FORM_TYPES.SYMR_FORM;
-		// 	return element;
-		// });
+		symrForms.map((element) => {
+			element.dataValues.type = FORM_TYPES.SYMR_FORM;
+			return element;
+		});
+		egForms.map((element) => {
+			element.dataValues.type = FORM_TYPES.EG_FORM;
+			return element;
+		});
 		let forms = [
 			...pcForms,
 			...pgForms,
-			// ...symrForms
+			...symrForms,
+			...egForms
 		];
 		return {
 			code: errorCodes.HTTP_OK,
