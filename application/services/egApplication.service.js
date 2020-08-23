@@ -471,6 +471,36 @@ EGApplicationService.prototype.getEgFormService = async (params) => {
 						},
 					],
 				},
+				{
+					model: egApplicationStatus,
+					as: "egDmpuApplicationStatus",
+					required: false,
+					where: { TNRTP108_TYPE_D: EG_APPLICATION_STATUS_TYPE.DMPU_OPEN_APPLICATION },
+					attributes: [
+						"decMeetingDate",
+						["TNRTP108_UPDATED_AT", "approvedDate"],
+						["TNRTP108_UPDATED_D", "approvedBy"],
+					],
+				},
+				{
+					model: egDisbursement,
+					as: "amountDisbursment",
+					required: false,
+					where: { disbursmentType: EG_DISBURSEMENT_STATE.AMOUNT_DISBURSMENT },
+					attributes: [
+						"disbursmentDate",
+						"disbursmentAmount",
+						"firstTrancheSubmitDate",
+						["TNRTP110_UPDATED_D", "disbursedBy"],
+					],
+				},
+				{
+					model: egDisbursement,
+					as: "disbursmentUc",
+					required: false,
+					where: { disbursmentType: EG_DISBURSEMENT_STATE.SUBMIT_UC_DISBURSMENT },
+					attributes: ["disbursmentSubmitDate", ["TNRTP110_UPDATED_D", "disbursedBy"]],
+				},
 			],
 			nested: true,
 		});

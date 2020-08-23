@@ -512,6 +512,7 @@ PGApplicationService.prototype.getPgFormService = async (params) => {
 					where: { disbursmentType: PG_DISBURSEMENT_STATE.AMOUNT_DISBURSMENT },
 					attributes: [
 						"disbursmentDate",
+						"disbursmentAmount",
 						"firstTrancheSubmitDate",
 						["TNRTP50_UPDATED_D", "disbursedBy"],
 					],
