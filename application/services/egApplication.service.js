@@ -473,6 +473,18 @@ EGApplicationService.prototype.getEgFormService = async (params) => {
 				},
 				{
 					model: egApplicationStatus,
+					as: "egBmpuApplicationStatus",
+					required: false,
+					where: { TNRTP108_TYPE_D: EG_APPLICATION_STATUS_TYPE.BMPU_OPEN_APPLICATION },
+					attributes: [
+						"activityCategory",
+						"approvedAmount",
+						["TNRTP108_UPDATED_AT", "recommendedDate"],
+						["TNRTP108_UPDATED_D", "recommendedBy"],
+					],
+				},
+				{
+					model: egApplicationStatus,
 					as: "egDmpuApplicationStatus",
 					required: false,
 					where: { TNRTP108_TYPE_D: EG_APPLICATION_STATUS_TYPE.DMPU_OPEN_APPLICATION },
