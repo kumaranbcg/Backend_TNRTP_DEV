@@ -640,6 +640,7 @@ PCApplicationService.prototype.getPcMasterService = async (params) => {
 				attributes: [
 					["TNRTP113_NAME_N", "label"],
 					["TNRTP113_PROMOTING_ORGANISATION_MASTER_D", "value"],
+					["TNRTP113_IS_OTHERS_D", "isOthers"],
 				],
 			}
 		);

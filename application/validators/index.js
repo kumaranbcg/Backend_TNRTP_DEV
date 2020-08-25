@@ -323,6 +323,7 @@ const schemas = {
 		egFormMembers: BaseJoi.object({
 			formId: BaseJoi.number().required(),
 			totalMembers: BaseJoi.number().required(),
+			noOfStaffEngaged: BaseJoi.number.required(),
 			noOfMale: BaseJoi.number().required(),
 			noOfFemale: BaseJoi.number().required(),
 			noOfTransGender: BaseJoi.number().required(),

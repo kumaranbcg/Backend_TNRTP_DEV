@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			formId: { type: DataTypes.INTEGER, field: "TNRTP56_EG_FORMS_MASTER_D" },
 			totalMembers: { type: DataTypes.INTEGER, field: "TNRTP56_TOTAL_MEMBERS_D" },
+			noOfStaffEngaged: { type: DataTypes.INTEGER, field: "TNRTP56_NO_OF_STAFF_ENGAGED_D" },
 			noOfActive: { type: DataTypes.INTEGER, field: "TNRTP56_NO_OF_ACTIVE_D" },
 			noOfInActive: { type: DataTypes.INTEGER, field: "TNRTP56_NO_OF_INACTIVE_D" },
 			activeInactiveTotal: { type: DataTypes.INTEGER, field: "TNRTP56_ACTIVE_INACTIVE_TOTAL_D" },
@@ -59,6 +60,7 @@ module.exports = (sequelize, DataTypes) => {
 	);
 	egFormMembers.selectedFields = [
 		"totalMembers",
+		"noOfStaffEngaged",
 		"noOfActive",
 		"noOfInActive",
 		"activeInactiveTotal",
