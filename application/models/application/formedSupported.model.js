@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
 				field: "TNRTP03_FORMED_SUPPORTED_BY_MASTER_D",
 			},
 			label: { type: DataTypes.STRING, field: "TNRTP03_FORMED_SUPPORTED_BY_NAME_N" },
+			isOthers: { type: DataTypes.BOOLEAN, field: "TNRTP03_IS_OTHERS_D" },
 			TNRTP03_STATUS_D: { type: DataTypes.INTEGER },
 			TNRTP03_CREATED_AT: { type: DataTypes.DATE },
 			TNRTP03_UPDATED_AT: { type: DataTypes.DATE },
@@ -18,6 +19,6 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: false,
 		}
 	);
-	formedSupported.selectedFields = ["value", "label"];
+	formedSupported.selectedFields = ["value", "label", "isOthers"];
 	return formedSupported;
 };

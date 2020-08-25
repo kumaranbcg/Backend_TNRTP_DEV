@@ -611,6 +611,7 @@ PCApplicationService.prototype.getPcMasterService = async (params) => {
 				attributes: [
 					["TNRTP02_REGISTRATION_UNDER_NAME_N", "label"],
 					["TNRTP02_REGISTRATION_UNDER_MASTER_D", "value"],
+					["TNRTP02_IS_OTHERS_D", "isOthers"],
 				],
 			}
 		);
@@ -620,6 +621,7 @@ PCApplicationService.prototype.getPcMasterService = async (params) => {
 				attributes: [
 					["TNRTP03_FORMED_SUPPORTED_BY_NAME_N", "label"],
 					["TNRTP03_FORMED_SUPPORTED_BY_MASTER_D", "value"],
+					["TNRTP03_IS_OTHERS_D", "isOthers"],
 				],
 			}
 		);

@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
 				field: "TNRTP74_EDUC_QUALIFICATION_MASTER_D",
 			},
 			label: { type: DataTypes.STRING, field: "TNRTP74_EDUC_QUALIFICATION_NAME_N" },
+			isOthers: { type: DataTypes.BOOLEAN, field: "TNRTP74_IS_OTHERS_D" },
 			TNRTP74_STATUS_D: { type: DataTypes.INTEGER },
 			TNRTP74_CREATED_AT: { type: DataTypes.DATE },
 			TNRTP74_UPDATED_AT: { type: DataTypes.DATE },
@@ -18,6 +19,6 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: false,
 		}
 	);
-	educQualification.selectedFields = ["value", "label"];
+	educQualification.selectedFields = ["value", "label", "isOthers"];
 	return educQualification;
 };

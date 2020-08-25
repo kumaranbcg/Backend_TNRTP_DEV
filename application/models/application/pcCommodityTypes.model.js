@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			sectorId: { type: DataTypes.INTEGER, field: "TNRTP05_TYPE_OF_SECTOR_MASTER_D" },
 			label: { type: DataTypes.STRING, field: "TNRTP05_TYPE_OF_COMMODITY_NAME_N" },
+			isOthers: { type: DataTypes.BOOLEAN, field: "TNRTP05_IS_OTHERS_D" },
 			status: { type: DataTypes.INTEGER, field: "TNRTP05_STATUS_D" },
 			TNRTP05_CREATED_AT: { type: DataTypes.DATE },
 			TNRTP05_UPDATED_AT: { type: DataTypes.DATE },
@@ -25,6 +26,6 @@ module.exports = (sequelize, DataTypes) => {
 			as: "commodityType",
 		});
 	};
-	pcCommodityTypes.selectedFields = ["value", "label"];
+	pcCommodityTypes.selectedFields = ["value", "label", "isOthers"];
 	return pcCommodityTypes;
 };

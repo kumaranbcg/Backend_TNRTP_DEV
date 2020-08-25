@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
 				field: "TNRTP99_SYMR_PROPOSED_ENTERPRISE_LOCAITON_MASTER_D",
 			},
 			label: { type: DataTypes.STRING, field: "TNRTP99_ENTERPRISE_LOCATION_NAME_N" },
+			isOthers: { type: DataTypes.BOOLEAN, field: "TNRTP99_IS_OTHERS_D" },
 			TNRTP99_STATUS_D: { type: DataTypes.INTEGER },
 			TNRTP99_CREATED_AT: { type: DataTypes.DATE },
 			TNRTP99_UPDATED_AT: { type: DataTypes.DATE },
@@ -18,6 +19,6 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: false,
 		}
 	);
-	symrProposedEnterpriseLocation.selectedFields = ["value", "label"];
+	symrProposedEnterpriseLocation.selectedFields = ["value", "label", "isOthers"];
 	return symrProposedEnterpriseLocation;
 };

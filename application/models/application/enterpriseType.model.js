@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
 				field: "TNRTP86_ENTERPRISE_TYPE_MASTER_D",
 			},
 			label: { type: DataTypes.STRING, field: "TNRTP86_ENTERPRISE_TYPE_NAME_N" },
+			isOthers: { type: DataTypes.BOOLEAN, field: "TNRTP86_IS_OTHERS_D" },
 			TNRTP86_STATUS_D: { type: DataTypes.INTEGER },
 			TNRTP86_CREATED_AT: { type: DataTypes.DATE },
 			TNRTP86_UPDATED_AT: { type: DataTypes.DATE },
@@ -24,6 +25,6 @@ module.exports = (sequelize, DataTypes) => {
 			as: "enterpriseType",
 		});
 	};
-	enterpriseType.selectedFields = ["value", "label"];
+	enterpriseType.selectedFields = ["value", "label", "isOthers"];
 	return enterpriseType;
 };

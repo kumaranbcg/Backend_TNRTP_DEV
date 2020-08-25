@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
 				field: "TNRTP70_SOURCE_OF_INFO_MASTER_D",
 			},
 			label: { type: DataTypes.STRING, field: "TNRTP70_SOURCE_OF_INFO_NAME_N" },
+			isOthers: { type: DataTypes.BOOLEAN, field: "TNRTP70_IS_OTHERS_D" },
 			TNRTP70_STATUS_D: { type: DataTypes.INTEGER },
 			TNRTP70_CREATED_AT: { type: DataTypes.DATE },
 			TNRTP70_UPDATED_AT: { type: DataTypes.DATE },
@@ -18,6 +19,6 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: false,
 		}
 	);
-	sourceOfInfo.selectedFields = ["value", "label"];
+	sourceOfInfo.selectedFields = ["value", "label", "isOthers"];
 	return sourceOfInfo;
 };

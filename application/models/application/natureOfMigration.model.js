@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
 				field: "TNRTP76_NATURE_OF_MIGRATION_MASTER_D",
 			},
 			label: { type: DataTypes.STRING, field: "TNRTP76_NATURE_OF_MIGRATION_NAME_N" },
+			isOthers: { type: DataTypes.BOOLEAN, field: "TNRTP76_IS_OTHERS_D" },
 			TNRTP76_STATUS_D: { type: DataTypes.INTEGER },
 			TNRTP76_CREATED_AT: { type: DataTypes.DATE },
 			TNRTP76_UPDATED_AT: { type: DataTypes.DATE },
@@ -18,6 +19,6 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: false,
 		}
 	);
-	natureOfMigration.selectedFields = ["value", "label"];
+	natureOfMigration.selectedFields = ["value", "label", "isOthers"];
 	return natureOfMigration;
 };

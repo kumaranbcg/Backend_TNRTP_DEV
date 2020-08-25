@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
 				field: "TNRTP73_COMMUNITY_MASTER_D",
 			},
 			label: { type: DataTypes.STRING, field: "TNRTP73_COMMUNITY_NAME_N" },
+			isOthers: { type: DataTypes.BOOLEAN, field: "TNRTP73_IS_OTHERS_D" },
 			TNRTP73_STATUS_D: { type: DataTypes.INTEGER },
 			TNRTP73_CREATED_AT: { type: DataTypes.DATE },
 			TNRTP73_UPDATED_AT: { type: DataTypes.DATE },
@@ -18,6 +19,6 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: false,
 		}
 	);
-	community.selectedFields = ["value", "label"];
+	community.selectedFields = ["value", "label", "isOthers"];
 	return community;
 };

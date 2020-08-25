@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
 				field: "TNRTP80_SCHEME_MASTER_D",
 			},
 			label: { type: DataTypes.STRING, field: "TNRTP80_SCHEME_NAME_N" },
+			isOthers: { type: DataTypes.BOOLEAN, field: "TNRTP80_IS_OTHERS_D" },
 			TNRTP80_STATUS_D: { type: DataTypes.INTEGER },
 			TNRTP80_CREATED_AT: { type: DataTypes.DATE },
 			TNRTP80_UPDATED_AT: { type: DataTypes.DATE },
@@ -18,6 +19,6 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: false,
 		}
 	);
-	scheme.selectedFields = ["value", "label"];
+	scheme.selectedFields = ["value", "label", "isOthers"];
 	return scheme;
 };
