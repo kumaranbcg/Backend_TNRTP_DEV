@@ -35,4 +35,5 @@ module.exports = {
 			} else next();
 		};
 	},
+	docUpload: require("./docUpload"),
 };

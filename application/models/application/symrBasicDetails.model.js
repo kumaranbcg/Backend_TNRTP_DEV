@@ -1,5 +1,6 @@
 const { DELETE_STATUS, FORM_SECTION_STATUS } = require("../../constants/index");
-const db = require("..");
+const Cryptr = require("cryptr");
+const cryptr = new Cryptr(process.env.AES_KEY);
 module.exports = (sequelize, DataTypes) => {
 	const symrBasicDetails = sequelize.define(
 		"TNRTP69_SYMR_BASIC_DETAILS",
@@ -52,6 +53,18 @@ module.exports = (sequelize, DataTypes) => {
 			TNRTP69_UPDATED_D: { type: DataTypes.INTEGER },
 		},
 		{
+			getterMethods: {
+				ifscCode: function () {
+					return (
+						this.getDataValue("govtIdNumber") && cryptr.decrypt(this.getDataValue("govtIdNumber"))
+					);
+				},
+			},
+			setterMethods: {
+				accNumber: function (value) {
+					this.setDataValue("govtIdNumber", value && cryptr.encrypt(value));
+				},
+			},
 			freezeTableName: true,
 			timestamps: false,
 		}

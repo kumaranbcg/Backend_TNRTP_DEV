@@ -1,7 +1,7 @@
 const express = require("express");
 const messages = require("./../configs/errorMsgs.js");
 const ErrorCodes = require("./../configs/errorCodes.js");
-const Auth = require("./../utils/index");
+const { verifyToken, docUpload, hasRole } = require("./../utils/index");
 const router = express.Router();
 const { STAFF_ROLE } = require("../constants/index");
 let { AdminController } = require("./../controllers/controller.js");
@@ -30,16 +30,24 @@ router.use((err, req, res, next) => {
 
 router.post(
 	"/admin/getStaffList",
-	Auth.verifyToken,
-	Auth.hasRole(STAFF_ROLE.ADMIN),
+	verifyToken,
+	hasRole(STAFF_ROLE.ADMIN),
 	AdminController.getStaffList
 );
 
-router.get("/admin/getDistrictList", Auth.verifyToken, AdminController.getDistrictList);
+router.get("/admin/getDistrictList", verifyToken, AdminController.getDistrictList);
 
-router.get("/admin/getBlockList", Auth.verifyToken, AdminController.getBlockList);
+router.get("/admin/getBlockList", verifyToken, AdminController.getBlockList);
 
-router.get("/admin/getPanchayatList", Auth.verifyToken, AdminController.getPanchayatList);
+router.get("/admin/getPanchayatList", verifyToken, AdminController.getPanchayatList);
 
-router.get("/admin/getProfile", Auth.verifyToken, AdminController.getProfile);
+router.get("/admin/getProfile", verifyToken, AdminController.getProfile);
+
+router.post(
+	"/master/insertLocation",
+	verifyToken,
+	hasRole(STAFF_ROLE.ADMIN),
+	docUpload,
+	AdminController.insertLocation
+);
 module.exports = router;

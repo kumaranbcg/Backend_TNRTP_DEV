@@ -23,7 +23,7 @@ const {
 	egFormBankDetails,
 	egFormBasicDetails,
 	egFormDetails,
-	selectedEg
+	selectedEg,
 } = require("../models");
 const { DELETE_STATUS, FORM_TYPES } = require("./../constants/index");
 const { Op, Sequelize } = require("sequelize");
@@ -300,12 +300,7 @@ UserFormService.prototype.getUserApplicationsService = async (params) => {
 			element.dataValues.type = FORM_TYPES.EG_FORM;
 			return element;
 		});
-		let forms = [
-			...pcForms,
-			...pgForms,
-			...symrForms,
-			...egForms
-		];
+		let forms = [...pcForms, ...pgForms, ...symrForms, ...egForms];
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.formCreated,

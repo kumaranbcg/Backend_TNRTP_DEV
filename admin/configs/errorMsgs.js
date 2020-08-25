@@ -10,6 +10,8 @@ module.exports = {
 	alreadyRegistered: "Mobile number you have entered already registered",
 	registered: "Successfully registered",
 	passwordNotMatch: "Password does not matched",
+	success: "Success",
+	uploadDoc: "Please upload excel file",
 	loggedIn: "Successfully logged in",
 	passwordChanged: "Password changed successfully",
 	emailExist: "Email Id already exists ",

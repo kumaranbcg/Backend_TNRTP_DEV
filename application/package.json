@@ -19,12 +19,14 @@
     "joi": "^17.1.1",
     "joi-date-extensions": "^1.2.0",
     "jsonwebtoken": "^8.5.1",
+    "moment": "^2.27.0",
     "multer": "^1.4.2",
     "mysql2": "^2.1.0",
     "nodemailer": "^6.4.10",
     "sendotp": "^1.2.9",
     "sequelizer": "^1.1.4",
-    "twilio": "^3.48.1"
+    "twilio": "^3.48.1",
+    "xlsx": "^0.16.6"
   },
   "devDependencies": {
     "dotenv": "^8.2.0"

@@ -8,7 +8,10 @@ module.exports = (sequelize, DataTypes) => {
 				field: "TNRTP09_PANCHAYAT_MASTER_D",
 			},
 			blockId: { type: DataTypes.INTEGER, field: "TNRTP09_BLOCK_MASTER_D" },
+			code: { type: DataTypes.BIGINT, field: "TNRTP09_PANCHAYAT_CODE_D" },
+			labelTamil: { type: DataTypes.STRING, field: "TNRTP09_PANCHAYAT_TAMIL_NAME_N" },
 			label: { type: DataTypes.STRING, field: "TNRTP09_PANCHAYAT_NAME" },
+			isTNRTP: { type: DataTypes.BOOLEAN, field: "TNRTP09_IS_TNRTP_D" },
 			TNRTP09_STATUS: { type: DataTypes.BOOLEAN },
 			TNRTP09_CREATED_AT: { type: DataTypes.DATE },
 			TNRTP09_UPDATED_AT: { type: DataTypes.DATE },
@@ -18,6 +21,6 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: false,
 		}
 	);
-	panchayatMaster.selectedFields = ["value", "label"];
+	panchayatMaster.selectedFields = ["value", "label", "code", "labelTamil", "isTNRTP"];
 	return panchayatMaster;
 };
