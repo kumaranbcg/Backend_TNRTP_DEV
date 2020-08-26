@@ -303,9 +303,9 @@ EGApplicationService.prototype.egFormUploadDocSerivce = async (params) => {
 
 EGApplicationService.prototype.updateEgFormStatus = async (params) => {
 	try {
-		const { formId, status } = params;
+		const { formId, status, appSubmitDate } = params;
 		await egFormMaster.update(
-			{ status, TNRTP53_UPDATED_AT: new Date() },
+			{ status, TNRTP53_UPDATED_AT: appSubmitDate ? appSubmitDate : new Date() },
 			{
 				where: { formId },
 			}
@@ -591,13 +591,14 @@ EGApplicationService.prototype.getEgMasterService = async (params) => {
 
 EGApplicationService.prototype.getEgApplicationService = async (params) => {
 	try {
-		const { status, search, sortBy, page, limit, districtId, blockId, user } = params;
-		let districtBlockFilter = {};
+		const { status, search, sortBy, page, limit, districtId, blockId, panchayatId, user } = params;
+		let locationFilter = {};
 		if (user.role != STAFF_ROLE.SPMU) {
-			districtBlockFilter = {
+			locationFilter = {
 				[Op.or]: [
-					{ TNRTP54_US_DISTRICT_MASTER_D: districtId },
-					{ TNRTP54_US_BLOCK_MASTER_D: blockId },
+					{ TNRTP54_US_DISTRICT_MASTER_D: districtId || [] },
+					{ TNRTP54_US_BLOCK_MASTER_D: blockId || [] },
+					{ TNRTP54_US_PANCHAYAT_MASTER_D: panchayatId || [] },
 				],
 			};
 		}
@@ -631,7 +632,7 @@ EGApplicationService.prototype.getEgApplicationService = async (params) => {
 		const districtBlockForms = application.dialect.QueryGenerator.selectQuery(
 			"TNRTP54_EG_FORMS_BASIC_DETAILS",
 			{
-				where: { ...districtBlockFilter },
+				where: { ...locationFilter },
 				attributes: ["TNRTP53_EG_FORMS_MASTER_D"],
 			}
 		).slice(0, -1);
@@ -755,7 +756,7 @@ EGApplicationService.prototype.getEgApplicationService = async (params) => {
 					required: true,
 					where: {
 						TNRTP54_DELETED_F: DELETE_STATUS.NOT_DELETED,
-						...districtBlockFilter,
+						...locationFilter,
 					},
 
 					attributes: ["name", "egName", "blockId", "districtId", "panchayatId"],

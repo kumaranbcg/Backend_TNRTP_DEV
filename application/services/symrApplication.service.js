@@ -842,9 +842,17 @@ SYMRApplicationService.prototype.updateSymrFormStatus = async (params) => {
 
 SYMRApplicationService.prototype.getSymrApplicationService = async (params) => {
 	try {
-		const { status, search, sortBy, page, limit, districtId } = params;
-		let districtFilter = {}; //
-		if (user.role != STAFF_ROLE.SPMU) districtFilter = { TNRTP69_US_DISTRICT_MASTER_D: districtId };
+		const { status, search, sortBy, page, limit, districtId, blockId, panchayatId, user } = params;
+		let locationFilter = {};
+		if (user.role != STAFF_ROLE.SPMU) {
+			locationFilter = {
+				[Op.or]: [
+					{ TNRTP69_US_DISTRICT_MASTER_D: districtId || [] },
+					{ TNRTP69_US_BLOCK_MASTER_D: blockId || [] },
+					{ TNRTP69_US_PANCHAYAT_MASTER_D: panchayatId || [] },
+				],
+			};
+		}
 		const searchCondition = !!search
 			? {
 					[Op.or]: [
@@ -883,7 +891,7 @@ SYMRApplicationService.prototype.getSymrApplicationService = async (params) => {
 		const districtForms = application.dialect.QueryGenerator.selectQuery(
 			"TNRTP69_SYMR_BASIC_DETAILS",
 			{
-				where: { ...districtFilter },
+				where: { ...locationFilter },
 				attributes: ["TNRTP68_SYMR_FORMS_MASTER_D"],
 			}
 		).slice(0, -1);
@@ -971,7 +979,7 @@ SYMRApplicationService.prototype.getSymrApplicationService = async (params) => {
 					model: symrBasicDetails,
 					as: "basicDetails",
 					required: true,
-					where: { TNRTP69_DELETED_F: DELETE_STATUS.NOT_DELETED, ...districtFilter },
+					where: { TNRTP69_DELETED_F: DELETE_STATUS.NOT_DELETED, ...locationFilter },
 					attributes: symrBasicDetails.selectedFields,
 					include: [
 						{

@@ -43,7 +43,7 @@ SYMRFormController.prototype.symrFormFill = async (req, res) => {
 				break;
 			}
 			case SYMR_FORM_STAGE.EXISTING_LOAN: {
-				result = await service.symrExistingLoanSerivce({...req.body});
+				result = await service.symrExistingLoanSerivce({ ...req.body });
 				break;
 			}
 			case SYMR_FORM_STAGE.UPLOAD_DOCUMENTS: {
@@ -66,9 +66,7 @@ SYMRFormController.prototype.submitSymrForm = async (req, res) => {
 		let skillRes = await service.symrSkillDetailService({ ...req.body.symrSkillTraining });
 		let enterpriseRes = await service.symrEnterpriseDetailService({ ...req.body.symrEnterprise });
 		let bankRes = await service.symrBankDetailsSerivce({ ...req.body.symrBankDetails });
-		let proposedRes = await service.symrProposedActivitySerivce([
-			...req.body.symrProposedActivity,
-		]);
+		let proposedRes = await service.symrProposedActivitySerivce([...req.body.symrProposedActivity]);
 		let ExistingRes = await service.symrExistingLoanSerivce({
 			...req.body.symrExistingLoan,
 		});
@@ -86,6 +84,7 @@ SYMRFormController.prototype.submitSymrForm = async (req, res) => {
 			let data = {
 				formId: req.body.basicDetails.formId,
 				status: SYMR_FORM_MASTER_STATUS.OPEN_APPLICATION,
+				appSubmitDate: req.body.basicDetails.appSubmitDate,
 			};
 			let result = await service.updateSymrFormStatus({ ...data });
 			res.status(result.code).json({ message: result.message, data: result.data });
@@ -131,11 +130,11 @@ SYMRFormController.prototype.uploadDoc = async (req, res) => {
 
 SYMRFormController.prototype.getSymrApplication = async (req, res) => {
 	try {
+		req.body.user = req.user;
 		let result = await service.getSymrApplicationService({ ...req.body });
-		console.log(result)
 		res.status(result.code).json({ message: result.message, data: result.data });
 	} catch (err) {
-		console.log(err)
+		console.log(err);
 		res.status(errorCodes.HTTP_INTERNAL_SERVER_ERROR).json({ errMessage: JSON.stringify(err) });
 	}
 };

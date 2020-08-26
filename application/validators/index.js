@@ -13,6 +13,7 @@ const schemas = {
 			pcAddress: BaseJoi.string().required(),
 			name: BaseJoi.string().required(),
 			mobileNumber: BaseJoi.string().required(),
+			appSubmitDate: BaseJoi.optional(),
 		}).required(),
 		pcDetails: BaseJoi.object({
 			formId: BaseJoi.number().required(),
@@ -160,6 +161,7 @@ const schemas = {
 			pgAddress: BaseJoi.string().required(),
 			name: BaseJoi.string().required(),
 			mobileNumber: BaseJoi.string().required(),
+			appSubmitDate: BaseJoi.optional(),
 		}).required(),
 		pgDetails: BaseJoi.object({
 			formId: BaseJoi.number().required(),
@@ -296,6 +298,7 @@ const schemas = {
 			egAddress: BaseJoi.string().required(),
 			name: BaseJoi.string().required(),
 			mobileNumber: BaseJoi.string().required(),
+			appSubmitDate: BaseJoi.optional(),
 		}).required(),
 		egDetails: BaseJoi.object({
 			formId: BaseJoi.number().required(),

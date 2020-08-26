@@ -580,13 +580,14 @@ PGApplicationService.prototype.updatePgFormStatus = async (params) => {
 };
 PGApplicationService.prototype.getPgApplicationService = async (params) => {
 	try {
-		const { status, search, sortBy, page, limit, districtId, blockId, user } = params;
-		let districtBlockFilter = {};
+		const { status, search, sortBy, page, limit, districtId, blockId, panchayatId, user } = params;
+		let locationFilter = {};
 		if (user.role != STAFF_ROLE.SPMU) {
-			districtBlockFilter = {
+			locationFilter = {
 				[Op.or]: [
-					{ TNRTP37_US_DISTRICT_MASTER_D: districtId },
-					{ TNRTP37_US_BLOCK_MASTER_D: blockId },
+					{ TNRTP37_US_DISTRICT_MASTER_D: districtId || [] },
+					{ TNRTP37_US_BLOCK_MASTER_D: blockId || [] },
+					{ TNRTP37_US_PANCHAYAT_MASTER_D: panchayatId || [] },
 				],
 			};
 		}
@@ -620,7 +621,7 @@ PGApplicationService.prototype.getPgApplicationService = async (params) => {
 		const districtBlockForms = application.dialect.QueryGenerator.selectQuery(
 			"TNRTP37_PG_FORMS_BASIC_DETAILS",
 			{
-				where: { ...districtBlockFilter },
+				where: { ...locationFilter },
 				attributes: ["TNRTP37_PG_FORMS_MASTER_D"],
 			}
 		).slice(0, -1);
@@ -743,7 +744,7 @@ PGApplicationService.prototype.getPgApplicationService = async (params) => {
 					required: true,
 					where: {
 						TNRTP37_DELETED_F: DELETE_STATUS.NOT_DELETED,
-						...districtBlockFilter,
+						...locationFilter,
 					},
 					attributes: ["name", "pgName", "blockId", "districtId", "panchayatId"],
 				},

@@ -162,6 +162,7 @@ EGFormController.prototype.submitEgForm = async (req, res) => {
 			let data = {
 				formId: req.body.basicDetails.formId,
 				status: EG_FORM_MASTER_STATUS.BMPU_OPEN_APPLICATION,
+				appSubmitDate: req.body.basicDetails.appSubmitDate,
 			};
 			let result = await service.updateEgFormStatus({ ...data });
 			res.status(result.code).json({ message: result.message, data: result.data });
@@ -187,7 +188,6 @@ EGFormController.prototype.getEgApplication = async (req, res) => {
 EGFormController.prototype.updateEgBmpuOpenApplication = async (req, res) => {
 	try {
 		req.body.userData = req.user;
-		console.log(req.body);
 		let result = await service.updateBmpuOpenApplicationService({ ...req.body });
 		res.status(result.code).json({ message: result.message, data: result.data });
 	} catch (err) {

@@ -693,9 +693,17 @@ PCApplicationService.prototype.updatePcFormStatus = async (params) => {
 
 PCApplicationService.prototype.getPcApplicationService = async (params) => {
 	try {
-		const { status, search, sortBy, page, limit, districtId, user } = params;
-		let districtFilter = {}; //
-		if (user.role != STAFF_ROLE.SPMU) districtFilter = { TNRTP07_US_DISTRICT_MASTER_D: districtId };
+		const { status, search, sortBy, page, limit, districtId, blockId, panchayatId, user } = params;
+		let locationFilter = {}; //
+		if (user.role != STAFF_ROLE.SPMU) {
+			locationFilter = {
+				[Op.or]: [
+					{ TNRTP07_US_DISTRICT_MASTER_D: districtId || [] },
+					{ TNRTP07_US_BLOCK_MASTER_D: blockId || [] },
+					{ TNRTP07_US_PANCHAYAT_MASTER_D: panchayatId || [] },
+				],
+			};
+		}
 		const searchCondition = !!search
 			? {
 					[Op.or]: [
@@ -734,7 +742,7 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 		const districtForms = application.dialect.QueryGenerator.selectQuery(
 			"TNRTP07_PC_FORMS_BASIC_DETAILS",
 			{
-				where: { ...districtFilter },
+				where: { ...locationFilter },
 				attributes: ["TNRTP07_PC_FORMS_MASTER_D"],
 			}
 		).slice(0, -1);
@@ -823,7 +831,7 @@ PCApplicationService.prototype.getPcApplicationService = async (params) => {
 					model: pcFormBasicDetails,
 					as: "basicDetails",
 					required: true,
-					where: { TNRTP07_DELETED_F: DELETE_STATUS.NOT_DELETED, ...districtFilter },
+					where: { TNRTP07_DELETED_F: DELETE_STATUS.NOT_DELETED, ...locationFilter },
 					attributes: ["name", "pcName", "blockId", "districtId"],
 				},
 				{
