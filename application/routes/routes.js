@@ -11,6 +11,7 @@ const {
 	SYMRFormController,
 	EGFormController,
 	DashboardController,
+	MasterController,
 } = require("./../controllers/controller");
 
 const { pcFormSubmit, pgFormSubmit, egFormSubmit, symrFormSubmit } = require("../validators");
@@ -597,6 +598,14 @@ router.post(
 	verifyToken,
 	hasRole([STAFF_ROLE.DPMU, STAFF_ROLE.SPMU, STAFF_ROLE.PLF, STAFF_ROLE.BPMU, STAFF_ROLE.VPRC]),
 	DashboardController.dashboardStatistics
+);
+
+router.post(
+	"/master/insertActivityMaster",
+	verifyToken,
+	hasRole([STAFF_ROLE.ADMIN]),
+	// docUpload,
+	MasterController.insertActivityMaster
 );
 
 module.exports = router;

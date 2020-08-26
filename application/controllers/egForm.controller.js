@@ -8,7 +8,7 @@ class EGFormController {}
 EGFormController.prototype.egFormCreate = async (req, res) => {
 	try {
 		let result = await service.egFormCreateSerivce({ ...req.user });
-		
+
 		res.status(result.code).json({ message: result.message, data: result.data });
 	} catch (err) {
 		console.log(err);
@@ -131,7 +131,7 @@ EGFormController.prototype.submitEgForm = async (req, res) => {
 		let userData = {
 			userData: req.user,
 		};
-		
+
 		let basicRes = await service.egFormBasicDetailsSerivce({
 			...req.body.basicDetails,
 			...userData,
@@ -177,6 +177,7 @@ EGFormController.prototype.submitEgForm = async (req, res) => {
 
 EGFormController.prototype.getEgApplication = async (req, res) => {
 	try {
+		req.body.user = req.user;
 		let result = await service.getEgApplicationService({ ...req.body });
 		res.status(result.code).json({ message: result.message, data: result.data });
 	} catch (err) {
@@ -186,7 +187,7 @@ EGFormController.prototype.getEgApplication = async (req, res) => {
 EGFormController.prototype.updateEgBmpuOpenApplication = async (req, res) => {
 	try {
 		req.body.userData = req.user;
-		console.log(req.body)
+		console.log(req.body);
 		let result = await service.updateBmpuOpenApplicationService({ ...req.body });
 		res.status(result.code).json({ message: result.message, data: result.data });
 	} catch (err) {
@@ -213,7 +214,7 @@ EGFormController.prototype.updateEgDmpuOpenApplication = async (req, res) => {
 EGFormController.prototype.updateEgAmountDisbursment = async (req, res) => {
 	try {
 		req.body.userData = req.user;
-		console.log(req.body)
+		console.log(req.body);
 		let result = await service.updateAmountDisbursmentService({ ...req.body });
 		res.status(result.code).json({ message: result.message, data: result.data });
 	} catch (err) {

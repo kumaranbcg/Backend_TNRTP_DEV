@@ -10,6 +10,7 @@ const {
 	EG_DISBURSEMENT_STATE,
 	DASHBOARD_FORM_STATUS,
 	FORM_TYPES,
+	STAFF_ROLE,
 } = require("../constants/index");
 
 const { Op } = require("sequelize");
@@ -590,9 +591,16 @@ EGApplicationService.prototype.getEgMasterService = async (params) => {
 
 EGApplicationService.prototype.getEgApplicationService = async (params) => {
 	try {
-		console.log("working");
-		const { status, search, sortBy, page, limit, districtId } = params;
-		console.log(params);
+		const { status, search, sortBy, page, limit, districtId, blockId, user } = params;
+		let districtBlockFilter = {};
+		if (user.role != STAFF_ROLE.SPMU) {
+			districtBlockFilter = {
+				[Op.or]: [
+					{ TNRTP54_US_DISTRICT_MASTER_D: districtId },
+					{ TNRTP54_US_BLOCK_MASTER_D: blockId },
+				],
+			};
+		}
 		const searchCondition = !!search
 			? {
 					[Op.and]: [
@@ -623,12 +631,7 @@ EGApplicationService.prototype.getEgApplicationService = async (params) => {
 		const districtBlockForms = application.dialect.QueryGenerator.selectQuery(
 			"TNRTP54_EG_FORMS_BASIC_DETAILS",
 			{
-				where: {
-					[Op.or]: [
-						{ TNRTP54_US_DISTRICT_MASTER_D: districtId },
-						// { TNRTP54_US_BLOCK_MASTER_D: blockId },
-					],
-				},
+				where: { ...districtBlockFilter },
 				attributes: ["TNRTP53_EG_FORMS_MASTER_D"],
 			}
 		).slice(0, -1);
@@ -752,10 +755,7 @@ EGApplicationService.prototype.getEgApplicationService = async (params) => {
 					required: true,
 					where: {
 						TNRTP54_DELETED_F: DELETE_STATUS.NOT_DELETED,
-						[Op.or]: [
-							{ districtId },
-							// { blockId }
-						],
+						...districtBlockFilter,
 					},
 
 					attributes: ["name", "egName", "blockId", "districtId", "panchayatId"],

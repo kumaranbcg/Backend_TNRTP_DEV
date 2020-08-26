@@ -18,6 +18,7 @@ module.exports = {
 	loggedIn: "Successfully logged in",
 	passwordChanged: "Password changed successfully",
 	emailExist: "Email Id already exists ",
+	uploadDoc: "Please upload excel file",
 	emailNotExist: "Email Id already exists ",
 	pcFormPending: "You have already raised Producer Collective form, which is in pending status",
 	pgFormPending: "You have already raised Producer Group form, which is in pending status",

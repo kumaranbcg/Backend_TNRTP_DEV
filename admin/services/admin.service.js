@@ -180,10 +180,17 @@ AdminService.prototype.geBlockSerivce = async (params) => {
 
 AdminService.prototype.gePanchayatSerivce = async (params) => {
 	try {
-		const { blockId } = params;
+		const { blockId, isTNRTP } = params;
+		let isTNRTPFiler = {};
+		if (parseInt(isTNRTP)) {
+			isTNRTPFiler = {
+				TNRTP09_IS_TNRTP_D: true,
+			};
+		}
 		const rows = await panchayatMaster.findAll({
 			where: {
 				TNRTP09_BLOCK_MASTER_D: blockId,
+				...isTNRTPFiler,
 				TNRTP09_STATUS: true,
 			},
 			order: [["TNRTP09_PANCHAYAT_NAME", "ASC"]],

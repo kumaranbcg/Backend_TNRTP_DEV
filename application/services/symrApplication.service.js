@@ -57,6 +57,7 @@ const {
 	ORDERBY,
 	SYMR_STAFF_DOC,
 	FORM_TYPES,
+	STAFF_ROLE,
 	DASHBOARD_FORM_STATUS,
 } = require("../constants/index");
 const { Op } = require("sequelize");
@@ -842,6 +843,8 @@ SYMRApplicationService.prototype.updateSymrFormStatus = async (params) => {
 SYMRApplicationService.prototype.getSymrApplicationService = async (params) => {
 	try {
 		const { status, search, sortBy, page, limit, districtId } = params;
+		let districtFilter = {}; //
+		if (user.role != STAFF_ROLE.SPMU) districtFilter = { TNRTP69_US_DISTRICT_MASTER_D: districtId };
 		const searchCondition = !!search
 			? {
 					[Op.or]: [
@@ -880,7 +883,7 @@ SYMRApplicationService.prototype.getSymrApplicationService = async (params) => {
 		const districtForms = application.dialect.QueryGenerator.selectQuery(
 			"TNRTP69_SYMR_BASIC_DETAILS",
 			{
-				where: { TNRTP69_US_DISTRICT_MASTER_D: districtId },
+				where: { ...districtFilter },
 				attributes: ["TNRTP68_SYMR_FORMS_MASTER_D"],
 			}
 		).slice(0, -1);
@@ -968,7 +971,7 @@ SYMRApplicationService.prototype.getSymrApplicationService = async (params) => {
 					model: symrBasicDetails,
 					as: "basicDetails",
 					required: true,
-					where: { TNRTP69_DELETED_F: DELETE_STATUS.NOT_DELETED, districtId },
+					where: { TNRTP69_DELETED_F: DELETE_STATUS.NOT_DELETED, ...districtFilter },
 					attributes: symrBasicDetails.selectedFields,
 					include: [
 						{

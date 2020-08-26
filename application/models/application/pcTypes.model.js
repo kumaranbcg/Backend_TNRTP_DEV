@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
 				field: "TNRTP04_TYPE_OF_PC_MASTER_D",
 			},
 			label: { type: DataTypes.STRING, field: "TNRTP04_TYPE_OF_PC_NAME_N" },
+			labelTamil: { type: DataTypes.STRING, field: "TNRTP04_TYPE_OF_PC_TAMIL_NAME_N" },
 			status: { type: DataTypes.INTEGER, field: "TNRTP04_STATUS_D" },
 			TNRTP04_CREATED_AT: { type: DataTypes.DATE },
 			TNRTP04_UPDATED_AT: { type: DataTypes.DATE },
@@ -28,6 +29,6 @@ module.exports = (sequelize, DataTypes) => {
 			as: "activityType",
 		});
 	};
-	pcTypes.selectedFields = ["value", "label"];
+	pcTypes.selectedFields = ["value", "label", "labelTamil"];
 	return pcTypes;
 };
