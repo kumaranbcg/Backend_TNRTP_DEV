@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.INTEGER,
 				primaryKey: true,
 				autoIncrement: true,
-				field: "TNRTP116_DOMAIN_MASTER",
+				field: "TNRTP116_DOMAIN_MASTER_D",
 			},
 			label: { type: DataTypes.STRING, field: "TNRTP116_DOMAIN_NAME_N" },
 			labelTamil: { type: DataTypes.STRING, field: "TNRTP116_DOMAIN_TAMIL_NAME_N" },
@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
 	);
 	domain.associate = function (models) {
 		domain.hasMany(models.commodityHold, {
-			foreignKey: "TNRTP05_DOMAIN_MASTER_D",
+			foreignKey: "TNRTP117_DOMAIN_MASTER_D",
 			as: "commodityHoldTypes",
 		});
 	};

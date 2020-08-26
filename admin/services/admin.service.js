@@ -266,7 +266,7 @@ AdminService.prototype.getProfileSerivce = async (params) => {
 AdminService.prototype.insertLocationService = async (params) => {
 	try {
 		const { documentUrls } = params;
-		if (documentUrls.length) {
+		if (documentUrls && documentUrls.length) {
 			let docPath = "./public" + documentUrls[0].url.split("/public")[1];
 			var workbook = await xlsx.readFile(docPath);
 			var sheet_name_list = workbook.SheetNames;

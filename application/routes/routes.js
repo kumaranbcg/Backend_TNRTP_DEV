@@ -604,7 +604,7 @@ router.post(
 	"/master/insertActivityMaster",
 	verifyToken,
 	hasRole([STAFF_ROLE.ADMIN]),
-	// docUpload,
+	docUpload,
 	MasterController.insertActivityMaster
 );
 
