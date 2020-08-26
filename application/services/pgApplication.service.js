@@ -87,7 +87,7 @@ PGApplicationService.prototype.pgFormCreateSerivce = async (params) => {
 };
 PGApplicationService.prototype.pgFormBasicDetailsSerivce = async (params) => {
 	try {
-		const { formId } = params;
+		const { formId, appSubmitDate } = params;
 		params.TNRTP37_CREATED_D = params.userData.userId;
 		params.TNRTP37_UPDATED_D = params.userData.userId;
 		let formData = await pgFormBasicDetails.findOne({
@@ -98,6 +98,12 @@ PGApplicationService.prototype.pgFormBasicDetailsSerivce = async (params) => {
 		} else {
 			await pgFormBasicDetails.create({ ...params });
 		}
+		await pgFormMaster.update(
+			{ TNRTP36_UPDATED_AT: appSubmitDate ? appSubmitDate : new Date() },
+			{
+				where: { formId },
+			}
+		);
 		await mainDashboard.update(
 			{ ...params },
 			{

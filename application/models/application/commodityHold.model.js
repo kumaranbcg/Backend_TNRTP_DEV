@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
 	commodityHold.associate = function (models) {
 		commodityHold.hasMany(models.pcCommodityTypes, {
 			foreignKey: "TNRTP05_COMMODITY_HOLD_MASTER_D",
-			as: "holdCommodities",
+			as: "commodityTypes",
 		});
 	};
 	commodityHold.selectedFields = ["value", "label", "labelTamil"];

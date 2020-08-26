@@ -114,7 +114,7 @@ PCApplicationService.prototype.pcFormCreateSerivce = async (params) => {
 };
 PCApplicationService.prototype.pcFormBasicDetailsSerivce = async (params) => {
 	try {
-		const { formId } = params;
+		const { formId, appSubmitDate } = params;
 		let formData = await pcFormBasicDetails.findOne({
 			where: { formId },
 		});
@@ -123,6 +123,12 @@ PCApplicationService.prototype.pcFormBasicDetailsSerivce = async (params) => {
 		} else {
 			await pcFormBasicDetails.create({ ...params });
 		}
+		await pcFormMaster.update(
+			{ TNRTP01_UPDATED_AT: appSubmitDate ? appSubmitDate : new Date() },
+			{
+				where: { formId },
+			}
+		);
 		await mainDashboard.update(
 			{ ...params },
 			{

@@ -104,7 +104,7 @@ SYMRApplicationService.prototype.symrFormCreateSerivce = async (params) => {
 };
 SYMRApplicationService.prototype.symrBasicDetailsSerivce = async (params) => {
 	try {
-		const { formId } = params;
+		const { formId, appSubmitDate } = params;
 		let formData = await symrBasicDetails.findOne({
 			where: { formId },
 		});
@@ -113,6 +113,12 @@ SYMRApplicationService.prototype.symrBasicDetailsSerivce = async (params) => {
 		} else {
 			await symrBasicDetails.create({ ...params });
 		}
+		await symrFormMaster.update(
+			{ TNRTP68_UPDATED_AT: appSubmitDate ? appSubmitDate : new Date() },
+			{
+				where: { formId },
+			}
+		);
 		await mainDashboard.update(
 			{ ...params },
 			{

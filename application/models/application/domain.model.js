@@ -8,7 +8,6 @@ module.exports = (sequelize, DataTypes) => {
 				autoIncrement: true,
 				field: "TNRTP116_DOMAIN_MASTER",
 			},
-			sectorId: { type: DataTypes.INTEGER, field: "TNRTP116_SECTOR_MASTER_D" },
 			label: { type: DataTypes.STRING, field: "TNRTP116_DOMAIN_NAME_N" },
 			labelTamil: { type: DataTypes.STRING, field: "TNRTP116_DOMAIN_TAMIL_NAME_N" },
 			TNRTP116_STATUS_D: { type: DataTypes.INTEGER },
@@ -21,9 +20,9 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	);
 	domain.associate = function (models) {
-		domain.hasMany(models.pcCommodityTypes, {
+		domain.hasMany(models.commodityHold, {
 			foreignKey: "TNRTP05_DOMAIN_MASTER_D",
-			as: "allCommodityTypes",
+			as: "commodityHoldTypes",
 		});
 	};
 	domain.selectedFields = ["value", "label", "labelTamil"];

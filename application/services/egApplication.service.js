@@ -89,8 +89,7 @@ EGApplicationService.prototype.egFormCreateSerivce = async (params) => {
 };
 EGApplicationService.prototype.egFormBasicDetailsSerivce = async (params) => {
 	try {
-		console.log("Eg form service");
-		const { formId } = params;
+		const { formId, appSubmitDate } = params;
 		params.TNRTP54_CREATED_D = params.userData.userId;
 		params.TNRTP54_UPDATED_D = params.userData.userId;
 		let formData = await egFormBasicDetails.findOne({
@@ -101,6 +100,18 @@ EGApplicationService.prototype.egFormBasicDetailsSerivce = async (params) => {
 		} else {
 			await egFormBasicDetails.create({ ...params });
 		}
+		await egFormMaster.update(
+			{ TNRTP53_UPDATED_AT: appSubmitDate ? appSubmitDate : new Date() },
+			{
+				where: { formId },
+			}
+		);
+		await mainDashboard.update(
+			{ ...params },
+			{
+				where: { formId, formTypeId: FORM_TYPES.EG_FORM },
+			}
+		);
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -140,6 +151,35 @@ EGApplicationService.prototype.egFormDetailsSerivce = async (params) => {
 				}
 			);
 		});
+		let dashBoardData = await mainDashboard.findOne({
+			where: { formId, formTypeId: FORM_TYPES.PG_FORM },
+			raw: true,
+		});
+		if (dashBoardData) {
+			await mainDashboard.destroy({ where: { formId, formTypeId: FORM_TYPES.EG_FORM } });
+			dashBoardData.dashboardActivity = params.egTypes;
+			dashBoardData.dashboardSector = params.egSectorTypes;
+			dashBoardData.dashboardCommodity = params.egCommodityTypes;
+			await mainDashboard.create(
+				{ ...dashBoardData },
+				{
+					include: [
+						{
+							model: dashboardActivity,
+							as: "dashboardActivity",
+						},
+						{
+							model: dashboardSector,
+							as: "dashboardSector",
+						},
+						{
+							model: dashboardCommodity,
+							as: "dashboardCommodity",
+						},
+					],
+				}
+			);
+		}
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
@@ -165,6 +205,12 @@ EGApplicationService.prototype.egFormMemberSerivce = async (params) => {
 		} else {
 			await egFormMembers.create({ ...params });
 		}
+		await mainDashboard.update(
+			{ ...params },
+			{
+				where: { formId, formTypeId: FORM_TYPES.EG_FORM },
+			}
+		);
 		return {
 			code: errorCodes.HTTP_OK,
 			message: messages.success,
