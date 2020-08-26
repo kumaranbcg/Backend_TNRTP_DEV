@@ -12,11 +12,16 @@ module.exports = (sequelize, DataTypes) => {
 			dateFormation: { type: DataTypes.DATE, field: "TNRTP55_DATE_OF_FORMATION" },
 			dateRegistration: { type: DataTypes.DATE, field: "TNRTP55_DATE_OF_REGISTRATION" },
 			registrationUnder: { type: DataTypes.INTEGER, field: "TNRTP55_REGISTRATION_UNDER_MASTER_D" },
+			registrationUnderOthers: {
+				type: DataTypes.STRING,
+				field: "TNRTP55_REGISTRATION_UNDER_OTHERS_N",
+			},
 			registrationNumber: { type: DataTypes.STRING, field: "TNRTP55_REGISTRATION_NUMBER_R" },
 			promotingOrgName: { type: DataTypes.INTEGER, field: "TNRTP55_PROMOTING_ORGANIZATION_NAME_D" },
 			orgOthersName: { type: DataTypes.STRING, field: "TNRTP55_OTHERS_ORGANISATION_NAME_N" },
 			formSupportedBy: { type: DataTypes.INTEGER, field: "TNRTP55_FORMED_SUPPORTED_BY_MASTER_D" },
 			othersName: { type: DataTypes.STRING, field: "TNRTP55_OTHERS_NAME_N" },
+			otherCommodity: { type: DataTypes.STRING, field: "TNRTP55_OTHER_COMMODITY_N" },
 			noOfEG: { type: DataTypes.INTEGER, field: "TNRTP55_NO_OF_EG_N" },
 			status: {
 				type: DataTypes.INTEGER,
@@ -67,6 +72,8 @@ module.exports = (sequelize, DataTypes) => {
 		"promotingOrgName",
 		"othersName",
 		"noOfEG",
+		"registrationUnderOthers",
+		"otherCommodity",
 	];
 	return egFormDetails;
 };

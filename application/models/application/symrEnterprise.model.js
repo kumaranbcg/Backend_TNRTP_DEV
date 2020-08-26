@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
 			// activityType: { type: DataTypes.INTEGER, field: "TNRTP81_ACTIVITY_TYPE_MASTER_D" },
 			// sector: { type: DataTypes.INTEGER, field: "TNRTP81_TYPE_OF_SECTOR_MASTER_D" },
 			// commodity: { type: DataTypes.INTEGER, field: "TNRTP81_TYPE_OF_COMMODITY_MASTER_D" },
+			otherCommodity: { type: DataTypes.STRING, field: "TNRTP81_OTHER_COMMODITY_N" },
 			summary: { type: DataTypes.STRING, field: "TNRTP81_SUMMARY_N" },
 			noOfPersons: { type: DataTypes.INTEGER, field: "TNRTP81_NO_OF_PERSONS_D" },
 			isExperiencedEnterpreneur: {
@@ -94,6 +95,7 @@ module.exports = (sequelize, DataTypes) => {
 		"location",
 		"schemeName",
 		"schemeAmount",
+		"otherCommodity",
 	];
 	return symrEnterprise;
 };

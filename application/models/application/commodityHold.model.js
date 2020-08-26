@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
 				autoIncrement: true,
 				field: "TNRTP117_COMMODITY_HOLD_MASTER_D",
 			},
-			sectorId: { type: DataTypes.INTEGER, field: "TNRTP117_SECTOR_MASTER_D" },
+			domainId: { type: DataTypes.INTEGER, field: "TNRTP117_DOMAIN_MASTER_D" },
 			label: { type: DataTypes.STRING, field: "TNRTP117_COMMODITY_HOLD_NAME_N" },
 			labelTamil: { type: DataTypes.STRING, field: "TNRTP117_COMMODITY_HOLD_TAMIL_NAME_N" },
 			status: { type: DataTypes.INTEGER, field: "TNRTP117_STATUS_D" },
@@ -22,8 +22,8 @@ module.exports = (sequelize, DataTypes) => {
 	);
 	commodityHold.associate = function (models) {
 		commodityHold.hasMany(models.pcCommodityTypes, {
-			foreignKey: "TNRTP14_TYPE_OF_ACTIVITY_MASTER_D",
-			as: "sectorTypes",
+			foreignKey: "TNRTP05_COMMODITY_HOLD_MASTER_D",
+			as: "holdCommodities",
 		});
 	};
 	commodityHold.selectedFields = ["value", "label", "labelTamil"];

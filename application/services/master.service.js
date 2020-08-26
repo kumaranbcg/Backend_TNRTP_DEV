@@ -44,50 +44,70 @@ MasterService.prototype.insertActivityMasterService = async (params) => {
 			ACTIVITY_COLUMN.COMMODITY_HOLD_TAMIL == cells["I1"].h &&
 			ACTIVITY_COLUMN.COMMODITY_TAMIL == cells["J1"].h
 		) {
-			let domainData = _.uniqBy(data, ACTIVITY_COLUMN.DOMAIN).map((eachDomain) => ({
-				label: eachDomain[ACTIVITY_COLUMN.DOMAIN],
-				labelTamil: eachDomain[ACTIVITY_COLUMN.DOMAIN_TAMIL],
-				activityTypes: _.uniqBy(data, ACTIVITY_COLUMN.ACTIVITY)
-					.filter((x) => x[ACTIVITY_COLUMN.DOMAIN] == eachDomain[ACTIVITY_COLUMN.DOMAIN])
-					.map((eachActivity) => ({
-						label: eachActivity[ACTIVITY_COLUMN.ACTIVITY],
-						labelTamil: eachActivity[ACTIVITY_COLUMN.ACTIVITY_TAMIL],
-						sectorTypes: _.uniqBy(data, ACTIVITY_COLUMN.SECTOR)
-							.filter((y) => y[ACTIVITY_COLUMN.ACTIVITY] == eachActivity[ACTIVITY_COLUMN.ACTIVITY])
-							.map((eachSector) => ({
-								label: eachSector[ACTIVITY_COLUMN.SECTOR],
-								labelTamil: eachSector[ACTIVITY_COLUMN.SECTOR_TAMIL],
-								commodityHoldTypes: _.uniqBy(data, ACTIVITY_COLUMN.COMMODITY_HOLD)
-									.filter((z) => z[ACTIVITY_COLUMN.SECTOR] == eachSector[ACTIVITY_COLUMN.SECTOR])
-									.map((eachCommodityHold) => ({
-										label: eachCommodityHold[ACTIVITY_COLUMN.COMMODITY_HOLD],
-										labelTamil: eachCommodityHold[ACTIVITY_COLUMN.COMMODITY_HOLD_TAMIL],
-									})),
-								commodityTypes: data
-									.filter((a) => a[ACTIVITY_COLUMN.SECTOR] == eachSector[ACTIVITY_COLUMN.SECTOR])
-									.map((eachCommodity) => ({
-										label: eachCommodity[ACTIVITY_COLUMN.COMMODITY],
-										labelTamil: eachCommodity[ACTIVITY_COLUMN.COMMODITY_TAMIL],
-									})),
+			let activityData = _.uniqBy(data, ACTIVITY_COLUMN.ACTIVITY).map((eachActivity) => ({
+				label: eachActivity[ACTIVITY_COLUMN.ACTIVITY],
+				labelTamil: eachActivity[ACTIVITY_COLUMN.ACTIVITY_TAMIL],
+				sectorTypes: _.uniqBy(data, ACTIVITY_COLUMN.SECTOR)
+					.filter((y) => y[ACTIVITY_COLUMN.ACTIVITY] == eachActivity[ACTIVITY_COLUMN.ACTIVITY])
+					.map((eachSector) => ({
+						label: eachSector[ACTIVITY_COLUMN.SECTOR],
+						labelTamil: eachSector[ACTIVITY_COLUMN.SECTOR_TAMIL],
+						commodityHoldTypes: _.uniqBy(data, ACTIVITY_COLUMN.COMMODITY_HOLD)
+							.filter((z) => z[ACTIVITY_COLUMN.SECTOR] == eachSector[ACTIVITY_COLUMN.SECTOR])
+							.map((eachCommodityHold) => ({
+								label: eachCommodityHold[ACTIVITY_COLUMN.COMMODITY_HOLD],
+								labelTamil: eachCommodityHold[ACTIVITY_COLUMN.COMMODITY_HOLD_TAMIL],
+							})),
+						commodityTypes: data
+							.filter((a) => a[ACTIVITY_COLUMN.SECTOR] == eachSector[ACTIVITY_COLUMN.SECTOR])
+							.map((eachCommodity) => ({
+								label: eachCommodity[ACTIVITY_COLUMN.COMMODITY],
+								labelTamil: eachCommodity[ACTIVITY_COLUMN.COMMODITY_TAMIL],
+							})),
+						domainTypes: _.uniqBy(data, ACTIVITY_COLUMN.DOMAIN)
+							.filter((a) => a[ACTIVITY_COLUMN.SECTOR] == eachSector[ACTIVITY_COLUMN.SECTOR])
+							.map((eachDomain) => ({
+								label: eachDomain[ACTIVITY_COLUMN.DOMAIN],
+								labelTamil: eachDomain[ACTIVITY_COLUMN.DOMAIN_TAMIL],
 							})),
 					})),
 			}));
-			let count = 0;
-			console.log(_.uniqBy(data, ACTIVITY_COLUMN.ACTIVITY));
-			domainData.forEach((eachActivity) => {
-				eachActivity.activityTypes.forEach((eachSector) => {
-					eachSector.sectorTypes.forEach((eachCommodity) => {
-						eachCommodity.commodityTypes.forEach((ele) => {
-							count++;
-						});
+			let commodityCount = 0,
+				commodityHoldCount = 0,
+				domainCount = 0,
+				sectorCount = 0,
+				activityCount = 0;
+			activityData.forEach((eachActivity) => {
+				activityCount++;
+				eachActivity.sectorTypes.forEach((eachCommodity) => {
+					sectorCount++;
+					eachCommodity.commodityTypes.forEach((eachdata) => {
+						commodityCount++;
+					});
+					eachCommodity.commodityHoldTypes.forEach((eachdata) => {
+						commodityHoldCount++;
+					});
+					eachCommodity.domainTypes.forEach((eachdata) => {
+						domainCount++;
 					});
 				});
 			});
-			console.log("Count", count);
+			console.log(
+				"commodityCount",
+				commodityCount,
+				"commodityHoldCount",
+				commodityHoldCount,
+				"domainCount",
+				domainCount,
+				"sectorCount",
+				sectorCount,
+				"activityCount",
+				activityCount
+			);
 			return {
 				code: errorCodes.HTTP_OK,
 				message: messages.success,
-				data: domainData,
+				data: activityData,
 			};
 		} else {
 			return {

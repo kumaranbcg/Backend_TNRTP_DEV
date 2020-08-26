@@ -25,14 +25,6 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: "TNRTP05_TYPE_OF_SECTOR_MASTER_D",
 			as: "commodityTypes",
 		});
-		pcSectorTypes.hasMany(models.commodityHold, {
-			foreignKey: "TNRTP117_SECTOR_MASTER_D",
-			as: "commodityHoldTypes",
-		});
-		pcSectorTypes.hasMany(models.domain, {
-			foreignKey: "TNRTP117_SECTOR_MASTER_D",
-			as: "commodityHoldTypes",
-		});
 		pcSectorTypes.hasMany(models.dashboardSector, {
 			foreignKey: "TNRTP106_TYPE_OF_SECTOR_MASTER_D",
 			as: "sectorType",

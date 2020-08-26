@@ -21,10 +21,10 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	);
 	domain.associate = function (models) {
-		// domain.hasMany(models.pcCommodityTypes, {
-		// 	foreignKey: "TNRTP04_DOMAIN_MASTER_D",
-		// 	as: "allCommodityTypes",
-		// });
+		domain.hasMany(models.pcCommodityTypes, {
+			foreignKey: "TNRTP05_DOMAIN_MASTER_D",
+			as: "allCommodityTypes",
+		});
 	};
 	domain.selectedFields = ["value", "label", "labelTamil"];
 	return domain;

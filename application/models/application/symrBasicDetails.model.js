@@ -20,10 +20,16 @@ module.exports = (sequelize, DataTypes) => {
 			age: { type: DataTypes.INTEGER, field: "TNRTP69_AGE_D" },
 			gender: { type: DataTypes.INTEGER, field: "TNRTP69_GENDER_MASTER_D" },
 			religion: { type: DataTypes.INTEGER, field: "TNRTP69_RELIGION_MASTER_D" },
+			otherReligion: { type: DataTypes.STRING, field: "TNRTP69_OTHER_RELIGION_N" },
 			community: { type: DataTypes.INTEGER, field: "TNRTP69_COMMUNITY_MASTER_D" },
+			otherCommunity: { type: DataTypes.INTEGER, field: "TNRTP69_OTHER_COMMUNITY_N" },
 			educationQualification: {
 				type: DataTypes.INTEGER,
 				field: "TNRTP69_EDUC_QUALIFICATION_MASTER_D",
+			},
+			otherEduQualification: {
+				type: DataTypes.STRING,
+				field: "TNRTP69_OTHER_EDUC_QUALIFICATION_N",
 			},
 			//ID PROOF
 			proofType: { type: DataTypes.INTEGER, field: "TNRTP69_PROOF_TYPE_MASTER_D" },
@@ -111,6 +117,9 @@ module.exports = (sequelize, DataTypes) => {
 		"previousOccupation",
 		"isWomeHeaded",
 		"isVulnerableCategory",
+		"otherReligion",
+		"otherCommunity",
+		"otherEduQualification",
 		["TNRTP69_US_DISTRICT_MASTER_D", "district"],
 		["TNRTP69_US_BLOCK_MASTER_D", "block"],
 		["TNRTP69_US_PANCHAYAT_MASTER_D", "panchayat"],
