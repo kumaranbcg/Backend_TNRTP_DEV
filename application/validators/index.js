@@ -453,6 +453,7 @@ const schemas = {
 			districtId: BaseJoi.number().required(),
 			blockId: BaseJoi.number().required(),
 			panchayatId: BaseJoi.number().required(),
+			appSubmitDate: BaseJoi.optional(),
 		}).required(),
 		symrShgDetails: BaseJoi.object({
 			formId: BaseJoi.number().required(),
