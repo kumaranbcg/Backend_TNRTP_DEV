@@ -4,6 +4,7 @@ const {
 	panchayatMaster,
 	blockMaster,
 	staffAddress,
+	sequelize,
 } = require("../models");
 const xlsx = require("xlsx");
 const _ = require("lodash");
@@ -313,7 +314,11 @@ AdminService.prototype.insertLocationService = async (params) => {
 								})),
 						})),
 				}));
-				await districtMaster.destroy({ truncate: { cascade: true }, restartIdentity: true });
+				await districtMaster.destroy({ truncate: { cascade: true } }).then((data) => {
+					return sequelize.query(
+						`ALTER TABLE ${districtMaster.getTableName()} AUTO_INCREMENT = 0;ALTER TABLE ${blockMaster.getTableName()} AUTO_INCREMENT = 0;ALTER TABLE ${panchayatMaster.getTableName()} AUTO_INCREMENT = 0;`
+					);
+				});
 				await districtMaster.bulkCreate([...districts], {
 					include: [
 						{

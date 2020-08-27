@@ -55,31 +55,32 @@ MasterService.prototype.insertActivityMasterService = async (params) => {
 							labelTamil: eachCommodityHold[ACTIVITY_COLUMN.COMMODITY_HOLD_TAMIL],
 						})),
 				}));
-				await domain
-					.destroy({ where: {}, truncate: { cascade: true }, restartIdentity: true })
-					.then(async (data) => {
-						await application.query(`ALTER TABLE ${domain} AUTO_INCREMENT = 0;`);
-						return domain.bulkCreate([...domainData], {
-							include: [
-								{
-									model: commodityHold,
-									as: "commodityHoldTypes",
-								},
-							],
-						});
+				await domain.destroy({ where: {}, truncate: { cascade: true } }).then(async (data) => {
+					await application.query(
+						`ALTER TABLE ${domain.getTableName()} AUTO_INCREMENT = 0;ALTER TABLE ${commodityHold.getTableName()} AUTO_INCREMENT = 0;`
+					);
+					return domain.bulkCreate([...domainData], {
+						include: [
+							{
+								model: commodityHold,
+								as: "commodityHoldTypes",
+							},
+						],
 					});
-				await pcTypes
-					.destroy({ where: {}, truncate: { cascade: true }, restartIdentity: true })
-					.then(async (data) => {
-						return pcTypes.bulkCreate([...activityData], {
-							include: [
-								{
-									model: pcSectorTypes,
-									as: "sectorTypes",
-								},
-							],
-						});
+				});
+				await pcTypes.destroy({ where: {}, truncate: { cascade: true } }).then(async (data) => {
+					await application.query(
+						`ALTER TABLE ${pcTypes.getTableName()} AUTO_INCREMENT = 0;ALTER TABLE ${pcSectorTypes.getTableName()} AUTO_INCREMENT = 0;ALTER TABLE ${pcCommodityTypes.getTableName()} AUTO_INCREMENT = 0;`
+					);
+					return pcTypes.bulkCreate([...activityData], {
+						include: [
+							{
+								model: pcSectorTypes,
+								as: "sectorTypes",
+							},
+						],
 					});
+				});
 
 				let commodityHolds = await commodityHold.findAll({
 					attributes: commodityHold.selectedFields,
