@@ -14,7 +14,13 @@ const {
 	MasterController,
 } = require("./../controllers/controller");
 
-const { pcFormSubmit, pgFormSubmit, egFormSubmit, symrFormSubmit } = require("../validators");
+const {
+	pcFormSubmit,
+	pgFormSubmit,
+	egFormSubmit,
+	symrFormSubmit,
+	getPcForm,
+} = require("../validators");
 
 router.use((req, res, next) => {
 	if (req.headers.authorization) {
@@ -37,8 +43,6 @@ router.use((err, req, res, next) => {
 		next();
 	}
 });
-
-router.post("/application/insertActivity", PCFormController.insertActvityMaster);
 
 router.get(
 	"/application/pcFormCreate",
@@ -79,6 +83,7 @@ router.get(
 		STAFF_ROLE.BPMU,
 		STAFF_ROLE.VPRC,
 	]),
+	getPcForm,
 	PCFormController.getPcForm
 );
 

@@ -650,6 +650,9 @@ const schemas = {
 			remarks: BaseJoi.string().required(),
 		}).required(),
 	}),
+	getPcForm: BaseJoi.object({
+		formId: BaseJoi.required(),
+	}),
 };
 
 const options = {
@@ -675,19 +678,7 @@ const pgFormSubmit = async (req, res, next) => {
 		await schema.validateAsync({ ...req.body }, option);
 		next();
 	} catch (err) {
-		let error = err.details.reduce((prev, curr) => {
-			prev[curr.path[0]] = curr.message.replace(/"/g, "");
-			return prev;
-		}, {});
-		console.log(error);
-		let message = errorMessages[errorCodes.HTTP_UNPROCESSABLE_ENTITY];
-		let status = errorCodes.HTTP_UNPROCESSABLE_ENTITY;
-
-		return res.status(status).json({
-			status,
-			message,
-			error,
-		});
+		throwError(err, res);
 	}
 };
 const egFormSubmit = async (req, res, next) => {
@@ -697,19 +688,7 @@ const egFormSubmit = async (req, res, next) => {
 		await schema.validateAsync({ ...req.body }, option);
 		next();
 	} catch (err) {
-		let error = err.details.reduce((prev, curr) => {
-			prev[curr.path[0]] = curr.message.replace(/"/g, "");
-			return prev;
-		}, {});
-		console.log(error);
-		let message = errorMessages[errorCodes.HTTP_UNPROCESSABLE_ENTITY];
-		let status = errorCodes.HTTP_UNPROCESSABLE_ENTITY;
-
-		return res.status(status).json({
-			status,
-			message,
-			error,
-		});
+		throwError(err, res);
 	}
 };
 
@@ -720,19 +699,7 @@ const pcFormSubmit = async (req, res, next) => {
 		await schema.validateAsync({ ...req.body }, option);
 		next();
 	} catch (err) {
-		let error = err.details.reduce((prev, curr) => {
-			prev[curr.path[0]] = curr.message.replace(/"/g, "");
-			return prev;
-		}, {});
-		console.log(error);
-		let message = errorMessages[errorCodes.HTTP_UNPROCESSABLE_ENTITY];
-		let status = errorCodes.HTTP_UNPROCESSABLE_ENTITY;
-
-		return res.status(status).json({
-			status,
-			message,
-			error,
-		});
+		throwError(err, res);
 	}
 };
 const symrFormSubmit = async (req, res, next) => {
@@ -742,22 +709,35 @@ const symrFormSubmit = async (req, res, next) => {
 		await schema.validateAsync({ ...req.body }, option);
 		next();
 	} catch (err) {
-		let error = err.details.reduce((prev, curr) => {
-			prev[curr.path[0]] = curr.message.replace(/"/g, "");
-			return prev;
-		}, {});
-		console.log(error);
-		let message = errorMessages[errorCodes.HTTP_UNPROCESSABLE_ENTITY];
-		let status = errorCodes.HTTP_UNPROCESSABLE_ENTITY;
-
-		return res.status(status).json({
-			status,
-			message,
-			error,
-		});
+		throwError(err, res);
 	}
+};
+const getPcForm = async (req, res, next) => {
+	var schema = schemas.getPcForm;
+	let option = options.basic;
+	try {
+		await schema.validateAsync({ ...req.query }, option);
+		next();
+	} catch (err) {
+		throwError(err, res);
+	}
+};
+const throwError = (err, res) => {
+	let error = err.details.reduce((prev, curr) => {
+		prev[curr.path[0]] = curr.message.replace(/"/g, "");
+		return prev;
+	}, {});
+	let message = errorMessages[errorCodes.HTTP_UNPROCESSABLE_ENTITY];
+	let status = errorCodes.HTTP_UNPROCESSABLE_ENTITY;
+
+	return res.status(status).json({
+		status,
+		message,
+		error,
+	});
 };
 module.exports.pcFormSubmit = pcFormSubmit;
 module.exports.pgFormSubmit = pgFormSubmit;
 module.exports.egFormSubmit = egFormSubmit;
 module.exports.symrFormSubmit = symrFormSubmit;
+module.exports.getPcForm = getPcForm;

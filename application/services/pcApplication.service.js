@@ -54,29 +54,7 @@ const { Op } = require("sequelize");
 const Cryptr = require("cryptr");
 const cryptr = new Cryptr(process.env.AES_KEY);
 class PCApplicationService {}
-PCApplicationService.prototype.insertActvityMasterService = async (params) => {
-	await pcTypes.destroy({ where: {}, truncate: true });
-	await pcSectorTypes.destroy({ where: {}, truncate: true });
-	await pcCommodityTypes.destroy({ where: {}, truncate: true });
-	await pcTypes.bulkCreate([...params], {
-		include: [
-			{
-				model: pcSectorTypes,
-				as: "sectorTypes",
-				include: [
-					{
-						model: pcCommodityTypes,
-						as: "commodityTypes",
-					},
-				],
-			},
-		],
-	});
-	return {
-		code: errorCodes.HTTP_OK,
-		message: messages.success,
-	};
-};
+
 PCApplicationService.prototype.pcFormCreateSerivce = async (params) => {
 	try {
 		const { userId } = params;
