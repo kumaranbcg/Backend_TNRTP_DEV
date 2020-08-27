@@ -74,6 +74,7 @@ module.exports = (sequelize, DataTypes) => {
 		"noOfEG",
 		"registrationUnderOthers",
 		"otherCommodity",
+		"orgOthersName",
 	];
 	return egFormDetails;
 };

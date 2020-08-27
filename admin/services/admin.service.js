@@ -313,7 +313,7 @@ AdminService.prototype.insertLocationService = async (params) => {
 								})),
 						})),
 				}));
-				await districtMaster.destroy({ where: {} });
+				await districtMaster.destroy({ truncate: { cascade: true }, restartIdentity: true });
 				await districtMaster.bulkCreate([...districts], {
 					include: [
 						{

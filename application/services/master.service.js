@@ -1,6 +1,13 @@
 const errorCodes = require("./../configs/errorCodes");
 const messages = require("./../configs/errorMsgs");
-const { pcTypes, pcSectorTypes, pcCommodityTypes, domain, commodityHold } = require("../models");
+const {
+	pcTypes,
+	pcSectorTypes,
+	pcCommodityTypes,
+	domain,
+	commodityHold,
+	application,
+} = require("../models");
 const { DELETE_STATUS, ACTIVITY_COLUMN } = require("./../constants/index");
 const { Op } = require("sequelize");
 const xlsx = require("xlsx");
@@ -48,26 +55,31 @@ MasterService.prototype.insertActivityMasterService = async (params) => {
 							labelTamil: eachCommodityHold[ACTIVITY_COLUMN.COMMODITY_HOLD_TAMIL],
 						})),
 				}));
-				await domain.destroy({ where: {} }).then((data) => {
-					return domain.bulkCreate([...domainData], {
-						include: [
-							{
-								model: commodityHold,
-								as: "commodityHoldTypes",
-							},
-						],
+				await domain
+					.destroy({ where: {}, truncate: { cascade: true }, restartIdentity: true })
+					.then(async (data) => {
+						await application.query(`ALTER TABLE ${domain} AUTO_INCREMENT = 0;`);
+						return domain.bulkCreate([...domainData], {
+							include: [
+								{
+									model: commodityHold,
+									as: "commodityHoldTypes",
+								},
+							],
+						});
 					});
-				});
-				await pcTypes.destroy({ where: {} }).then((data) => {
-					return pcTypes.bulkCreate([...activityData], {
-						include: [
-							{
-								model: pcSectorTypes,
-								as: "sectorTypes",
-							},
-						],
+				await pcTypes
+					.destroy({ where: {}, truncate: { cascade: true }, restartIdentity: true })
+					.then(async (data) => {
+						return pcTypes.bulkCreate([...activityData], {
+							include: [
+								{
+									model: pcSectorTypes,
+									as: "sectorTypes",
+								},
+							],
+						});
 					});
-				});
 
 				let commodityHolds = await commodityHold.findAll({
 					attributes: commodityHold.selectedFields,
@@ -92,9 +104,7 @@ MasterService.prototype.insertActivityMasterService = async (params) => {
 					};
 					commodityData.push(commodityPush);
 				});
-				await pcCommodityTypes.destroy({ where: {} }).then((data) => {
-					return pcCommodityTypes.bulkCreate([...commodityData]);
-				});
+				await pcCommodityTypes.bulkCreate([...commodityData]);
 				return {
 					code: errorCodes.HTTP_OK,
 					message: messages.success,
